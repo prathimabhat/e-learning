@@ -17,3 +17,40 @@ class CustomUser(AbstractUser):
 
 	def __str__(self):
 		return f"{self.email}"
+
+class AdminHOD(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.CustomUserManager()
+
+class Parents(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    father_occupation = models.CharField(max_length=255)
+    #parent_roll_number=models.CharField(max_length=50)
+    mother_occupation = models.CharField(max_length=255)
+    parent_ph_no = models.CharField(max_length=10)
+    fcm_token = models.TextField(default="")
+    parent_address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.CustomUserManager()
+
+
+class Staffs(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    teacher_roll_number = models.CharField(max_length=50)
+    dob = models.DateField()
+    blood_group = models.CharField(max_length=10)
+    qualification = models.CharField(max_length=50)
+    gender = models.CharField(max_length=255)
+    profile_pic = models.FileField()
+    ph_no = models.CharField(max_length=10)
+    address = models.TextField()
+    fcm_token = models.TextField(default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.CustomUserManager()
