@@ -27,7 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
     'accounts',
+    'student_management',
+    'forum',
+    'assignments'
 ]
 
 MIDDLEWARE = [
@@ -82,10 +90,11 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-#ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-#ACCOUNT_UNIQUE_EMAIL = True
-#ACCOUNT_USERNAME_REQUIRED = False
-#ACCOUNT_AUTHENTICATION_METHOD = 'email'
+AUTHENTICATION_BACKENDS =['accounts.backends.EmailBackEnd']
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -104,7 +113,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'prathimabhatm01@gmail.com' #replace by original email id and pass word
+EMAIL_HOST_PASSWORD = 'Baba&chukkiare2lovelycats'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL=False
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+LOGIN_REDIRECT_URL = 'accounts:login_request'
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -119,7 +136,31 @@ USE_L10N = True
 USE_TZ = True
 
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        
+        'height':200,
+        'width':700,
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+           
+            ['Bold', 'Italic', 'Underline','Strike', 'SpellChecker'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat'],
+            ["Image", "Table", "Link", "Unlink", "Anchor", "SectionLink", "Subscript", "Superscript"],
+            ['Undo', 'Redo'],
+           
+            ['Smiley','Insert Special Character'],
+            
+
+        ]
+       
+    }
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"

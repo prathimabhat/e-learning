@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser,SessionYearModel,AdminHOD,Parents,Staffs,Students
+from student_management.models import Courses,Subjects,Attendance,AttendanceReport,FeedBackStudent,FeedBackStaffs,FeedBackParent,NotificationStudent,NotificationStaffs,NotificationParent,StudentResult,LeaveReportStudent,LeaveReportStaff
+from forum.models import Questions,Answers
+from assignments.models import Assignment,Submission
 # Register your models here.
 
 class CustomUserAdmin(UserAdmin):
@@ -21,3 +24,25 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 admin.site.register(CustomUser)
+admin.site.register(SessionYearModel)
+admin.site.register(AdminHOD)
+admin.site.register(Parents)
+admin.site.register(Staffs)
+admin.site.register(Students)
+admin.site.register(Courses)
+admin.site.register(Subjects)
+admin.site.register(Attendance)
+admin.site.register(AttendanceReport)
+admin.site.register(LeaveReportStudent)
+admin.site.register(FeedBackStudent)
+admin.site.register(NotificationStudent)
+admin.site.register(StudentResult)
+admin.site.register(LeaveReportStaff)
+admin.site.register(FeedBackStaffs)
+admin.site.register(NotificationStaffs)
+admin.site.register(FeedBackParent)
+admin.site.register(NotificationParent)
+admin.site.register(Questions)
+admin.site.register(Answers)
+admin.site.register(Assignment)
+admin.site.register(Submission)
