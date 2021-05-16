@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import datetime
-
+from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -45,12 +45,12 @@ def admin_home(request):
     attendance_absent_list_staff = []
     staff_name_list = []
     for staff in staffs:
-        subject_ids = Subjects.objects.filter(staff_id=staff.admin.id)
+        subject_ids = Subjects.objects.filter(staff_id=staff.user.id)
         attendance = Attendance.objects.filter(subject_id__in=subject_ids).count()
         leaves = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
         attendance_present_list_staff.append(attendance)
         attendance_absent_list_staff.append(leaves)
-        staff_name_list.append(staff.admin.username)
+        staff_name_list.append(staff.user.username)
 
     students_all = Students.objects.all()
     attendance_present_list_student = []
@@ -62,7 +62,7 @@ def admin_home(request):
         leaves = LeaveReportStudent.objects.filter(student_id=student.id, leave_status=1).count()
         attendance_present_list_student.append(attendance)
         attendance_absent_list_student.append(leaves + absent)
-        student_name_list.append(student.admin.username)
+        student_name_list.append(student.user.username)
 
     return render(request, "hod_template/main_content.html",
                   {"student_count": student_count1, "staff_count": staff_count, "subject_count": subject_count,
@@ -74,6 +74,9 @@ def admin_home(request):
                    "attendance_absent_list_staff": attendance_absent_list_staff, "student_name_list": student_name_list,
                    "attendance_present_list_student": attendance_present_list_student,
                    "attendance_absent_list_student": attendance_absent_list_student})
+
+
+
 
 
 def add_staff(request):
@@ -101,10 +104,13 @@ def add_staff_save(request):
         fs = FileSystemStorage()
         filename = fs.save(profile_pic.name, profile_pic)
         profile_pic_url = fs.url(filename)
-
+        staff_name=first_name+last_name
         try:
-            user = CustomUser.objects.create_user(username=username, password=password, email=email,
-                                                  last_name=last_name, first_name=first_name, user_type=2)
+            user = CustomUser.objects.create_user( email=email,password=password, user_type='2',
+                first_name=first_name,last_name=last_name)
+            user.save()
+            user.refresh_from_db()
+            user.staffs.staff_name=staff_name
             user.staffs.gender = gender
             user.staffs.address = address
             user.staffs.ph_no = ph_no
@@ -113,7 +119,7 @@ def add_staff_save(request):
             user.staffs.blood_group = blood_group
             user.staffs.teacher_roll_number = teacher_roll_number
             user.staffs.profile_pic = profile_pic_url
-            user.save()
+            user.staffs.save()
             messages.success(request, "Successfully Added Staff")
             return HttpResponseRedirect(reverse("add_staff"))
         except:
@@ -153,8 +159,8 @@ def add_student_save(request):
         first_name = request.POST.get("first_name")
         password = request.POST.get("password")
         last_name = request.POST.get("last_name")
-        username = request.POST.get("username")
-        parent_username = request.POST.get("parent_username")
+        #username = request.POST.get("username")
+        #parent_username = request.POST.get("parent_username")
         blood_group = request.POST.get("blood_group")
         email = request.POST.get("email")
         address = request.POST.get("address")
@@ -180,11 +186,11 @@ def add_student_save(request):
         profile_pic_url = fs.url(filename)
 
         try:
-            user = CustomUser.objects.create_user(username=username, password=password,
-                                                  email=email, last_name=last_name, first_name=first_name, user_type=3)
-            user1 = CustomUser.objects.create_user(username=parent_username, password=parent_password,
-                                                   email=parent_email, last_name=mother_name, first_name=father_name,
-                                                   user_type=4)
+            user = CustomUser.objects.create( email=email,password=password,
+                                                   last_name=last_name, first_name=first_name, user_type='3')
+            user1 = CustomUser.objects.create( email=parent_email, password=parent_password,
+                                                   last_name=mother_name, first_name=father_name,
+                                                   user_type='4')
             user.students.address = address
             course_obj = Courses.objects.get(id=course_id)
             user.students.course_id = course_obj
@@ -205,8 +211,8 @@ def add_student_save(request):
             session_year = SessionYearModel.object.get(id=session_year_id)
             user.students.session_year_id = session_year
 
-            user.save()
-            user1.save()
+            user.students.save()
+            user1.parents.save()
             messages.success(request, "Successfully Added Student Details")
             return HttpResponseRedirect(reverse("add_student"))
         except:
@@ -262,7 +268,7 @@ def manage_subject(request):
 
 
 def edit_staff(request, staff_id):
-    staff = Staffs.objects.get(admin=staff_id)
+    staff = Staffs.objects.get(user=staff_id)
     return render(request, "hod_template/edit_staff_template.html", {"staff": staff, "id": staff_id})
 
 
@@ -299,7 +305,7 @@ def edit_staff_save(request):
             user.email = email
             user.save()
 
-            staff_model = Staffs.objects.get(admin=staff_id)
+            staff_model = Staffs.objects.get(user=staff_id)
             staff_model.address = address
             staff_model.dob = dob
             staff_model.qualification = qualification
@@ -318,11 +324,11 @@ def edit_staff_save(request):
 
 
 def edit_student(request, student_id):
-    student = Students.objects.get(admin=student_id)
+    student = Students.objects.get(user=student_id)
     x = int(student_id) + 1
     courses = Courses.objects.all()
     sessions = SessionYearModel.object.all()
-    parents = Parents.objects.get(admin=str(x))
+    parents = Parents.objects.get(user=str(x))
     print(student_id, x)
     return render(request, "hod_template/edit_student_template.html",
                   {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents})
@@ -378,8 +384,8 @@ def edit_student_save(request):
             user1.email = parent_email
             user1.save()
 
-            student = Students.objects.get(admin=student_id)
-            parent = Parents.objects.get(admin=str(x))
+            student = Students.objects.get(user=student_id)
+            parent = Parents.objects.get(user=str(x))
 
             parent.parent_address = parent_address
             parent.ph_no = parent_ph_no
@@ -688,8 +694,8 @@ def admin_get_attendance_student(request):
     list_data = []
 
     for student in attendance_data:
-        data_small = {"id": student.student_id.admin.id,
-                      "name": student.student_id.admin.first_name + " " + student.student_id.admin.last_name,
+        data_small = {"id": student.student_id.user.id,
+                      "name": student.student_id.user.first_name + " " + student.student_id.user.last_name,
                       "status": student.status}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -751,7 +757,7 @@ def admin_send_notification_staff(request):
 def send_student_notification(request):
     id = request.POST.get("id")
     message = request.POST.get("message")
-    student = Students.objects.get(admin=id)
+    student = Students.objects.get(user=id)
     token = student.fcm_token
     url = "https://fcm.googleapis.com/fcm/send"
     body = {
@@ -775,7 +781,7 @@ def send_student_notification(request):
 def send_parent_notification(request):
     id = request.POST.get("id")
     message = request.POST.get("message")
-    parent = Parents.objects.get(admin=id)
+    parent = Parents.objects.get(user=id)
     token = parent.fcm_token
     url = "https://fcm.googleapis.com/fcm/send"
     body = {
@@ -799,7 +805,7 @@ def send_parent_notification(request):
 def send_staff_notification(request):
     id = request.POST.get("id")
     message = request.POST.get("message")
-    staff = Staffs.objects.get(admin=id)
+    staff = Staffs.objects.get(user=id)
     token = staff.fcm_token
     url = "https://fcm.googleapis.com/fcm/send"
     body = {
@@ -903,7 +909,7 @@ def student_view_attendance_post(request):
 
     subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=request.user.id)
-    stud_obj = Students.objects.get(admin=user_obj)
+    stud_obj = Students.objects.get(user=user_obj)
 
     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
                                            subject_id=subject_obj)
@@ -1070,7 +1076,7 @@ def staff_home(request):
     attendance_count = Attendance.objects.filter(subject_id__in=subjects).count()
 
     # Fetch All Approve Leave
-    staff = Staffs.objects.get(admin=request.user.id)
+    staff = Staffs.objects.get(user=request.user.id)
     leave_count = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
     subject_count = subjects.count()
 
@@ -1089,7 +1095,7 @@ def staff_home(request):
     for student in students_attendance:
         attendance_present_count = AttendanceReport.objects.filter(status=True, student_id=student.id).count()
         attendance_absent_count = AttendanceReport.objects.filter(status=False, student_id=student.id).count()
-        student_list.append(student.admin.username)
+        student_list.append(student.user.username)
         student_list_attendance_present.append(attendance_present_count)
         student_list_attendance_absent.append(attendance_absent_count)
 
@@ -1134,8 +1140,8 @@ def get_students(request):
     list_data = []
 
     for student in students:
-        data_small = {"id": student.admin.id, "roll_number": student.roll_number,
-                      "name": student.admin.first_name + " " + student.admin.last_name}
+        data_small = {"id": student.user.id, "roll_number": student.roll_number,
+                      "name": student.user.first_name + " " + student.user.last_name}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
@@ -1158,7 +1164,7 @@ def save_attendance_data(request):
         attendance.save()
 
         for stud in json_sstudent:
-            student = Students.objects.get(admin=stud['id'])
+            student = Students.objects.get(user=stud['id'])
             attendance_report = AttendanceReport(student_id=student, attendance_id=attendance, status=stud['status'])
             attendance_report.save()
         return HttpResponse("OK")
@@ -1199,8 +1205,8 @@ def get_attendance_student(request):
     list_data = []
 
     for student in attendance_data:
-        data_small = {"id": student.student_id.admin.id,
-                      "name": student.student_id.admin.first_name + " " + student.student_id.admin.last_name,
+        data_small = {"id": student.student_id.user.id,
+                      "name": student.student_id.user.first_name + " " + student.student_id.user.last_name,
                       "status": student.status}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -1215,7 +1221,7 @@ def save_updateattendance_data(request):
     json_sstudent = json.loads(student_ids)
     try:
         for stud in json_sstudent:
-            student = Students.objects.get(admin=stud['id'])
+            student = Students.objects.get(user=stud['id'])
             attendance_report = AttendanceReport.objects.get(student_id=student, attendance_id=attendance)
             attendance_report.status = stud['status']
             attendance_report.save()
@@ -1225,7 +1231,7 @@ def save_updateattendance_data(request):
 
 
 def staff_apply_leave(request):
-    staff_obj = Staffs.objects.get(admin=request.user.id)
+    staff_obj = Staffs.objects.get(user=request.user.id)
     leave_data = LeaveReportStaff.objects.filter(staff_id=staff_obj)
     return render(request, "staff_template/staff_apply_leave.html", {'leave_data': leave_data})
 
@@ -1237,7 +1243,7 @@ def staff_apply_leave_save(request):
         leave_date = request.POST.get("leave_date")
         leave_message = request.POST.get("leave_message")
 
-        staff_obj = Staffs.objects.get(admin=request.user.id)
+        staff_obj = Staffs.objects.get(user=request.user.id)
         try:
             leave_report = LeaveReportStaff(staff_id=staff_obj, leave_date=leave_date, leave_message=leave_message,
                                             leave_status=0)
@@ -1250,7 +1256,7 @@ def staff_apply_leave_save(request):
 
 
 def staff_feedback(request):
-    staff_id = Staffs.objects.get(admin=request.user.id)
+    staff_id = Staffs.objects.get(user=request.user.id)
     feedback_data = FeedBackStaffs.objects.filter(staff_id=staff_id)
     return render(request, "staff_template/staff_feedback.html", {"feedback_data": feedback_data})
 
@@ -1261,7 +1267,7 @@ def staff_feedback_save(request):
     else:
         feedback_message = request.POST.get("feedback_message")
 
-        staff_obj = Staffs.objects.get(admin=request.user.id)
+        staff_obj = Staffs.objects.get(user=request.user.id)
         try:
             feedback = FeedBackStaffs(staff_id=staff_obj, feedback=feedback_message, feedback_reply="")
             feedback.save()
@@ -1273,8 +1279,8 @@ def staff_feedback_save(request):
 
 
 def staff_profile(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    staff = Staffs.objects.get(admin=user)
+    user_ = CustomUser.objects.get(id=request.user.id)
+    staff = Staffs.objects.get(user=user_)
     return render(request, "staff_template/staff_profile.html", {"user": user, "staff": staff})
 
 
@@ -1300,7 +1306,7 @@ def staff_profile_save(request):
                 customuser.set_password(password)
             customuser.save()
             '''
-            staff = Staffs.objects.get(admin=customuser.id)
+            staff = Staffs.objects.get(user=customuser.id)
             staff.address = address
             staff.gender = gender
             staff.ph_no = ph_no
@@ -1317,7 +1323,7 @@ def staff_profile_save(request):
 def staff_fcmtoken_save(request):
     token = request.POST.get("token")
     try:
-        staff = Staffs.objects.get(admin=request.user.id)
+        staff = Staffs.objects.get(user=request.user.id)
         staff.fcm_token = token
         staff.save()
         return HttpResponse("True")
@@ -1326,7 +1332,7 @@ def staff_fcmtoken_save(request):
 
 
 def staff_all_notification(request):
-    staff = Staffs.objects.get(admin=request.user.id)
+    staff = Staffs.objects.get(user=request.user.id)
     notifications = NotificationStaffs.objects.filter(staff_id=staff.id)
     return render(request, "staff_template/all_notification.html", {"notifications": notifications})
 
@@ -1336,7 +1342,7 @@ def staff_add_result(request):
     # subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
     subjects = Subjects.objects.filter(staff_id=request.user.id)
     courses = Courses.objects.all()
-    session_years = SessionYearModel.object.all()
+    session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_add_result.html",
                   {"subjects": subjects, "courses": courses, "session_years": session_years})
 
@@ -1346,12 +1352,12 @@ def save_student_result(request):
     print(subject)
     if request.method != 'POST':
         return HttpResponseRedirect('staff_add_result')
-    student_admin_id = request.POST.get('student_list')
+    student_user_id = request.POST.get('student_list')
     assignment_marks = request.POST.get('assignment_marks')
     exam_marks = request.POST.get('exam_marks')
     subject_id = request.POST.get('subject')
 
-    student_obj = Students.objects.get(admin=student_admin_id)
+    student_obj = Students.objects.get(user=student_user_id)
     subject_obj = Subjects.objects.get(id=subject_id)
 
     try:
@@ -1378,7 +1384,7 @@ def save_student_result(request):
 def fetch_result_student(request):
     subject_id = request.POST.get('subject_id')
     student_id = request.POST.get('student_id')
-    student_obj = Students.objects.get(admin=student_id)
+    student_obj = Students.objects.get(user=student_id)
     result = StudentResult.objects.filter(student_id=student_obj.id, subject_id=subject_id).exists()
     if result:
         result = StudentResult.objects.get(student_id=student_obj.id, subject_id=subject_id)
@@ -1390,7 +1396,7 @@ def fetch_result_student(request):
 def edit_result_select_class_session(request):
     subjects = Subjects.objects.filter(staff_id=request.user.id)
     courses = Courses.objects.all()
-    session_years = SessionYearModel.object.all()
+    session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/edit_result_select_class_session.html",
                   {"subjects": subjects, "courses": courses, "session_years": session_years})
 
@@ -1444,7 +1450,7 @@ def parent_home(request):
 
 def parent_view_attendance(request):
     x = int(request.user.id) - 1
-    student = Students.objects.get(admin=str(x))
+    student = Students.objects.get(user=str(x))
     course = student.course_id
     subjects = Subjects.objects.filter(course_id=course)
     return render(request, "parent_template/parent_view_attendance.html", {"subjects": subjects})
@@ -1462,7 +1468,7 @@ def parent_view_attendance_post(request):
     #print(request.user.id,x)
     subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=str(x))
-    stud_obj = Students.objects.get(admin=user_obj)
+    stud_obj = Students.objects.get(user=user_obj)
 
     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
                                            subject_id=subject_obj)
@@ -1472,12 +1478,12 @@ def parent_view_attendance_post(request):
 
 def parent_view_result(request):
     x = int(request.user.id) - 1
-    student = Students.objects.get(admin=str(x))
+    student = Students.objects.get(user=str(x))
     studentresult = StudentResult.objects.filter(student_id=student.id)
     return render(request, "parent_template/parent_result.html", {"studentresult": studentresult})
 
 def parent_feedback(request):
-    parent_id = Parents.objects.get(admin=request.user.id)
+    parent_id = Parents.objects.get(user=request.user.id)
     feedback_data = FeedBackParent.objects.filter(parent_id=parent_id)
     return render(request, "parent_template/parent_feedback.html", {"feedback_data": feedback_data})
 
@@ -1488,7 +1494,7 @@ def parent_feedback_save(request):
     else:
         feedback_msg = request.POST.get("feedback_msg")
 
-        parent_obj = Parents.objects.get(admin=request.user.id)
+        parent_obj = Parents.objects.get(user=request.user.id)
         try:
             feedback = FeedBackParent(parent_id=parent_obj, feedback=feedback_msg, feedback_reply="")
             feedback.save()
@@ -1499,13 +1505,13 @@ def parent_feedback_save(request):
             return HttpResponseRedirect(reverse("parent_feedback"))
 
 def parent_all_notification(request):
-    parent = Parents.objects.get(admin=request.user.id)
+    parent = Parents.objects.get(user=request.user.id)
     notifications = NotificationParent.objects.filter(parent_id=parent.id)
     return render(request, "parent_template/all_notification.html", {"notifications": notifications})
 
 def parent_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
-    parent = Parents.objects.get(admin=user)
+    parent = Parents.objects.get(user=user)
     return render(request, "parent_template/parent_profile.html",
                   {"parent": parent})
 
@@ -1524,7 +1530,7 @@ def parent_profile_save(request):
                 customuser.set_password(password)
             customuser.save()
             '''
-            student = Students.objects.get(admin=customuser)
+            student = Students.objects.get(user=customuser)
             student.address = address
             student.dob = dob
             student.gender = gender

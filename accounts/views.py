@@ -18,7 +18,7 @@ def login_request(request):
     if request.user.user_type=='1':
         return redirect('/admin_home')
     elif request.user.user_type=='2':
-        return redirect('/student_home')
+        return redirect('/staff_home')
     elif request.user.user_type=='3':
         return redirect('/student_home')
     elif request.user.user_type=='4':

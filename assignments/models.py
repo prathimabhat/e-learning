@@ -1,6 +1,7 @@
 from django.db import models
-from accounts.models import Students
+from accounts.models import Students,CustomUser
 from student_management.models import Subjects
+
 # Create your models here.
 class Assignment(models.Model):
     ## The description of the assignment
@@ -10,7 +11,7 @@ class Assignment(models.Model):
     file = models.FileField(default='')
 
     ## The course associated with the assignment
-    subject = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name='assignment')
+    subject = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name='assignment',null=True)
 
     ## The date,time of posting the assignment
     post_time = models.CharField(max_length=100)
@@ -38,3 +39,43 @@ class Submission(models.Model):
 
     ## The feedback given to the assignment by the student while uploading the submission
     feedback = models.IntegerField(choices=CHOICES)
+
+
+## @brief This class represents the messages displayed in the forum.
+class Message(models.Model):
+    ## The content of message
+    content = models.CharField(max_length=500)
+
+    ## The course associated with the message
+    course = models.ForeignKey(Subjects,default=1,on_delete=models.CASCADE,related_name='message')
+
+    ## The sender of the message
+    sender = models.ForeignKey(CustomUser,default=1, on_delete=models.CASCADE,related_name='sender')
+
+    ## The time when the message was posted
+    time = models.CharField(max_length=100)
+
+
+## @brief This class represents the notifications receieved by the students.
+class Notification(models.Model):
+    ## The content of notification
+    content = models.CharField(max_length=500)
+
+    ## The course associated with the notification
+    course = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="notification")
+
+    ## The time when the notification was posted/generated
+    time = models.CharField(max_length=100)
+
+
+## @brief This class represents the resources(lectures/study materials) for a course.
+class Resources(models.Model):
+    ## The resource file 
+    file_resource = models.FileField(default='')
+
+    ## The title for the resource
+    title = models.CharField(max_length=100)
+
+    ## The course associated with the resource
+    course = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="resources")
+

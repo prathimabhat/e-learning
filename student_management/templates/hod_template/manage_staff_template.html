@@ -36,16 +36,16 @@ Manage Staff
                   {% for staff in staffs %}
                     <tr>
                       <td>{{ staff.teacher_roll_number }}</td>
-                      <td>{{ staff.admin.first_name }}</td>
-                      <td>{{ staff.admin.last_name }}</td>
-                      <td>{{ staff.admin.username }}</td>
-                      <td>{{ staff.admin.email }}</td>
+                      <td>{{ staff.user.first_name }}</td>
+                      <td>{{ staff.user.last_name }}</td>
+                      <td>{{ staff.user.username }}</td>
+                      <td>{{ staff.user.email }}</td>
                       <td>{{ staff.gender }}</td>
                       <td><img src="{{ staff.profile_pic }}" style="width:100px;"/></td>
                       <td>{{ staff.ph_no }}</td>
                       <td>{{ staff.address }}</td>
-                      <td>{{ staff.admin.last_login }}</td>
-                      <td><a href="/edit_staff/{{ staff.admin.id }}" class="btn btn-success">Edit</a><a href="/delete_staff/{{ staff.admin.id }}" class="btn btn-danger">Delete</a></td>
+                      <td>{{ staff.user.last_login }}</td>
+                      <td><a href="/edit_staff/{{ staff.admin.id }}" class="btn btn-success">Edit</a><a href="/delete_staff/{{ staff.user.id }}" class="btn btn-danger">Delete</a></td>
                     </tr>
                   {% endfor %}
                   </tbody>
