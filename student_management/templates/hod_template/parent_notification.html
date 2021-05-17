@@ -36,11 +36,11 @@ Parent Notification
                   <tbody>
                   {% for parent in parents %}
                     <tr>
-                      <td>{{ parent.admin.id }}</td>
-                      <td>{{ parent.admin.first_name }}</td>
-                      <td>{{ parent.admin.last_name }}</td>
-                      <td>{{ parent.admin.username }}</td>
-                      <td>{{ parent.admin.email }}</td>
+                      <td>{{ parent.user.id }}</td>
+                      <td>{{ parent.user.first_name }}</td>
+                      <td>{{ parent.user.last_name }}</td>
+                      <td>{{ parent.user.username }}</td>
+                      <td>{{ parent.user.email }}</td>
                       <td><a href="#" class="btn btn-success show_notification" data-toggle="modal" data-target="#myModal">Send Notification</a></td>
                     </tr>
                   {% endfor %}

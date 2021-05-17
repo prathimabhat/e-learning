@@ -46,26 +46,7 @@ class AdminHOD(models.Model):
 	def __str__(self):
 		return f"{self.id} {self.admin_name}"
 
-class Parents(models.Model):
-	class Meta:
-		verbose_name_plural="Parents"
 
-	id = models.AutoField(primary_key=True)
-	user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,null=True)
-	father_name=models.CharField(max_length=255)
-	father_occupation = models.CharField(max_length=255)
-	#parent_roll_number=models.CharField(max_length=50)
-	mother_name=models.CharField(max_length=255)
-	mother_occupation = models.CharField(max_length=255)
-	parent_ph_no = models.CharField(max_length=10)
-	fcm_token = models.TextField(default="")
-	parent_address = models.TextField()
-	created_at = models.DateTimeField(auto_now_add=True)
-	updated_at = models.DateTimeField(auto_now_add=True)
-	objects = CustomUserManager()
-
-	def __str__(self):
-		return f"{self.father_name}and {self.mother_name}"
 
 class Staffs(models.Model):
 	class Meta:
@@ -116,15 +97,35 @@ class Students(models.Model):
 	fcm_token = models.TextField(default="")
 	address = models.TextField()
 	course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING,null=True,blank=True)
-	session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,related_name='student')
+	session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,related_name='student',null=True,blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now_add=True)
 	objects = CustomUserManager()
 
 
 	def __str__(self):
-		return f"{self.student_name}"
+		return f"{self.id}"
+class Parents(models.Model):
+	class Meta:
+		verbose_name_plural="Parents"
 
+	id = models.AutoField(primary_key=True)
+	user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,null=True)
+	parent_of=models.ForeignKey(Students,on_delete=models.CASCADE,null=True)
+	father_name=models.CharField(max_length=255)
+	father_occupation = models.CharField(max_length=255)
+	#parent_roll_number=models.CharField(max_length=50)
+	mother_name=models.CharField(max_length=255)
+	mother_occupation = models.CharField(max_length=255)
+	parent_ph_no = models.CharField(max_length=10)
+	fcm_token = models.TextField(default="")
+	parent_address = models.TextField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now_add=True)
+	objects = CustomUserManager()
+
+	def __str__(self):
+		return f"{self.id}"
 
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
