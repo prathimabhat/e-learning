@@ -1130,6 +1130,7 @@ def select_class(request):
                   {"courses": courses})
 
 
+
 def edit_select_class(request):
     courses = Courses.objects.all()
     return render(request, "staff_template/edit_select_class_template.html", {"courses": courses})

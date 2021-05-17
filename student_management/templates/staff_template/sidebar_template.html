@@ -29,6 +29,17 @@
               </p>
             </a>
           </li>
+
+          <li class="nav-item">
+            {% url 'assignments:assignment' as assignment %}
+            <a href="{{assignment}}" class="nav-link {% if request.path == assignment %} active {% endif %}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Assignments
+              </p>
+            </a>
+          </li>
+
           <li class="nav-item">
             {% url 'select_class' as select_class %}
             {% url 'staff_take_attendance' as staff_take_attendance %}

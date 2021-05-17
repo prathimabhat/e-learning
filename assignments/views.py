@@ -7,6 +7,28 @@ from django.shortcuts import render, HttpResponse, redirect
 from .forms import AssignmentForm, NotificationForm, ResourceForm,MessageForm
 import datetime
 # Create your views here.
+
+@login_required
+def assignment(request):
+    subjects=Subjects.objects.filter(staff_id=request.user.id)
+    context={
+        'subjects':subjects
+    }
+    return render(request,'staff_template/assignment.html',context)
+
+def get_subject(request):
+    sub=request.POST.get("subject")
+    action=request.POST.get("action")
+    subject=Subjects.objects.get(id=sub)
+    sub_=subject.id
+    if action=="view_assignment":
+      
+        return redirect('assignments:view_all_assignments',sub_)
+    else:
+        
+        return redirect('assignments:add_assignment',sub_)
+
+
 @login_required
 def add_assignment(request, course_id):
     form = AssignmentForm(request.POST or None, request.FILES or None)

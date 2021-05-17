@@ -2,10 +2,14 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from . import views
+from django.urls import path
 
 app_name="assignments"
 ## @brief url patterns for the instructor app.
 urlpatterns = [
+	path('',views.assignment,name='assignment'),
+	#path('select_subject/',views.select_subject,name="select_subject"),
+	path('get_subject/',views.get_subject,name='get_subject'),
     url(r'^instructor_index/$', views.instructor_index, name='instructor_index'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/$', views.instructor_detail, name='instructor_detail'),
     url(r'^(?P<course_id>[0-9]+)/add_assignment/$', views.add_assignment, name='add_assignment'),
