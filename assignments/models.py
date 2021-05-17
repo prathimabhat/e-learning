@@ -47,7 +47,7 @@ class Message(models.Model):
     content = models.CharField(max_length=500)
 
     ## The course associated with the message
-    course = models.ForeignKey(Subjects,default=1,on_delete=models.CASCADE,related_name='message')
+    subject = models.ForeignKey(Subjects,default=1,on_delete=models.CASCADE,related_name='message')
 
     ## The sender of the message
     sender = models.ForeignKey(CustomUser,default=1, on_delete=models.CASCADE,related_name='sender')
@@ -62,7 +62,7 @@ class Notification(models.Model):
     content = models.CharField(max_length=500)
 
     ## The course associated with the notification
-    course = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="notification")
+    subject = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="notification")
 
     ## The time when the notification was posted/generated
     time = models.CharField(max_length=100)
@@ -77,5 +77,5 @@ class Resources(models.Model):
     title = models.CharField(max_length=100)
 
     ## The course associated with the resource
-    course = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="resources")
+    subject = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="resources")
 

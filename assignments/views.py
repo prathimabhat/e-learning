@@ -15,11 +15,11 @@ def add_assignment(request, course_id):
         assignment = form.save(commit=False)
         assignment.file = request.FILES['file']
         assignment.post_time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
-        assignment.course = course
+        assignment.subject = course
         assignment.save()
         notification = Notification()
         notification.content = "New Assignment Uploaded"
-        notification.course = course
+        notification.subject = course
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         notification.save()
         return redirect('assignments:instructor_detail', course.id)
@@ -39,11 +39,11 @@ def add_resource(request, course_id):
     if form.is_valid():
         resource = form.save(commit=False)
         resource.file_resource = request.FILES['file_resource']
-        resource.course = course
+        resource.subject = course
         resource.save()
         notification = Notification()
         notification.content = "New Resource Added - " + resource.title
-        notification.course = course
+        notification.subject = course
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         notification.save()
         return redirect('assignments:instructor_detail', course.id)
@@ -70,7 +70,7 @@ def view_all_assignments(request, course_id):
 def view_all_submissions(request,assignment_id):
     assignment = Assignment.objects.get(id=assignment_id)
     submissions = Submission.objects.filter(assignment=assignment)
-    course = assignment.course
+    course = assignment.subject
     return render(request, 'instructor/view_all_submissions.html', {'submissions' : submissions,'course': course})
 
 
@@ -117,10 +117,10 @@ def view_feedback(request,assignment_id):
 @login_required
 def add_notification(request, course_id):
     form = NotificationForm(request.POST or None)
-    course = Course.objects.get(id=course_id)
+    course = Subjects.objects.get(id=course_id)
     if form.is_valid():
         notification = form.save(commit=False)
-        notification.course = course
+        notification.subject = course
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y') # get the current date,time and convert into string
         notification.save()
         return redirect('assignments:instructor_detail', course.id)
@@ -151,13 +151,13 @@ def instructor_detail(request, course_id):
     instructor = Staffs.objects.get(user=request.user)
     courses = Subjects.objects.filter(staff_id=instructor.id)
     course = Subjects.objects.get(id=course_id)
-    messages = Message.objects.filter(course=course)
+    messages = Message.objects.filter(subject=course)
     form = MessageForm(request.POST or None)
 
     if request.method == 'POST':
         if form.is_valid():
             message = form.save(commit=False)
-            message.course = course
+            message.subject = course
             message.sender = user
             message.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
             message.save()
