@@ -20,20 +20,20 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                 <div class="card-body">
                   <div class="form-group">
                     <label>Email address</label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ student.admin.email }}">
+                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ student.user.email }}">
                   </div>
                    <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ student.admin.first_name }}">
+                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ student.user.first_name }}">
                   </div>
                    <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ student.admin.last_name }}" >
+                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ student.user.last_name }}" >
                     <input type="hidden" name="student_id" value="{{ student.admin.id }}">
                    </div>
                    <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ student.admin.username }}">
+                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ student.user.username }}">
                   </div>
                     <div class="form-group">
                     <label>Gender</label>
@@ -110,7 +110,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                 -->
                 <div class="form-group">
                <label>Father's Name</label>
-              <input type="text" class="form-control" placeholder="Father's Name" name="father_name" value="{{ parents.admin.first_name }}">
+              <input type="text" class="form-control" placeholder="Father's Name" name="father_name" value="{{ parents.user.first_name }}">
                </div>
                 <div class="form-group">
                <label>Father's Occupation</label>
@@ -118,7 +118,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                </div>
                    <div class="form-group">
                <label>Mother's Name</label>
-              <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name" value="{{ parents.admin.last_name }}">
+              <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name" value="{{ parents.user.last_name }}">
                </div>
                 <div class="form-group">
               <label>Mother's Occupation</label>

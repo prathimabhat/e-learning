@@ -29,9 +29,9 @@ Parent Feedback
                         {% for feedback in feedbacks %}
                         <tr>
                             <td>{{ feedback.id }}</td>
-                            <td>{{ feedback.parent_id.admin.id }}</td>
-                            <td>{{ feedback.parent_id.admin.first_name }}</td>
-                            <td>{{ feedback.parent_id.admin.last_name }}</td>
+                            <td>{{ feedback.parent_id.user.id }}</td>
+                            <td>{{ feedback.parent_id.user.first_name }}</td>
+                            <td>{{ feedback.parent_id.user.last_name }}</td>
                             <td>{{ feedback.feedback }}</td>
                             <td>{{ feedback.created_at }}</td>
                             <td>

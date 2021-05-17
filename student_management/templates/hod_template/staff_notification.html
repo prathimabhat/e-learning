@@ -35,11 +35,11 @@ Staff Notification
                   <tbody>
                   {% for staff in staffs %}
                     <tr>
-                      <td>{{ staff.admin.id }}</td>
-                      <td>{{ staff.admin.first_name }}</td>
-                      <td>{{ staff.admin.last_name }}</td>
-                      <td>{{ staff.admin.username }}</td>
-                      <td>{{ staff.admin.email }}</td>
+                      <td>{{ staff.user.id }}</td>
+                      <td>{{ staff.user.first_name }}</td>
+                      <td>{{ staff.user.last_name }}</td>
+                      <td>{{ staff.user.username }}</td>
+                      <td>{{ staff.user.email }}</td>
                       <td><a href="#" class="btn btn-success show_notification" data-toggle="modal" data-target="#myModal">Send Notification</a></td>
                     </tr>
                   {% endfor %}

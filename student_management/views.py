@@ -184,35 +184,41 @@ def add_student_save(request):
         fs = FileSystemStorage()
         filename = fs.save(profile_pic.name, profile_pic)
         profile_pic_url = fs.url(filename)
-
+        student_name=first_name+last_name
         try:
-            user = CustomUser.objects.create( email=email,password=password,
-                                                   last_name=last_name, first_name=first_name, user_type='3')
-            user1 = CustomUser.objects.create( email=parent_email, password=parent_password,
-                                                   last_name=mother_name, first_name=father_name,
-                                                   user_type='4')
+            user = CustomUser.objects.create_user( email=email,password=password, user_type='3',
+                                                   last_name=last_name, first_name=first_name)
+            user.save()
+
+            user1 = CustomUser.objects.create_user( email=parent_email, password=parent_password,user_type='4')
+            user1.save()
+
+            user.refresh_from_db()
+            user.students.student_name=student_name                                     
             user.students.address = address
             course_obj = Courses.objects.get(id=course_id)
-            user.students.course_id = course_obj
-            # parent_obj = Parents.objects.get(id=parent_roll_number)
-            # user.students.parent_roll_number = parent_obj
+            user.students.course_id = course_obj 
             user.students.gender = gender
             user.students.roll_number = roll_number
-            # user1.parents.parent_roll_number = parent_roll_number
-            # user.students.parent_roll_number = parent_roll_number
             user.students.dob = dob
             user.students.blood_group = blood_group
+            user.students.ph_no = ph_no
+            user.students.profile_pic = profile_pic_url
+            session_year = SessionYearModel.objects.get(id=session_year_id)
+            user.students.session_year_id = session_year
+
+            user.students.save()
+            stu_id=Students.objects.get(id=user.students.id)
+            user1.refresh_from_db()
+            user1.parents.father_name=father_name
+            user1.parents.mother_name=mother_name
             user1.parents.parent_ph_no = parent_ph_no
             user1.parents.father_occupation = father_occupation
             user1.parents.mother_occupation = mother_occupation
             user1.parents.parent_address = parent_address
-            user.students.ph_no = ph_no
-            user.students.profile_pic = profile_pic_url
-            session_year = SessionYearModel.object.get(id=session_year_id)
-            user.students.session_year_id = session_year
-
-            user.students.save()
+            user1.parents.parent_of=stu_id  
             user1.parents.save()
+
             messages.success(request, "Successfully Added Student Details")
             return HttpResponseRedirect(reverse("add_student"))
         except:
@@ -327,7 +333,7 @@ def edit_student(request, student_id):
     student = Students.objects.get(user=student_id)
     x = int(student_id) + 1
     courses = Courses.objects.all()
-    sessions = SessionYearModel.object.all()
+    sessions = SessionYearModel.objects.all()
     parents = Parents.objects.get(user=str(x))
     print(student_id, x)
     return render(request, "hod_template/edit_student_template.html",
@@ -394,7 +400,7 @@ def edit_student_save(request):
             parent.save()
 
             student.address = address
-            session_year = SessionYearModel.object.get(id=session_year_id)
+            session_year = SessionYearModel.objects.get(id=session_year_id)
             student.session_year_id = session_year
             student.gender = gender
             student.roll_number = roll_number
@@ -664,7 +670,7 @@ def admin_view_attendance(request):
     #return render(request, "staff_template/staff_take_attendance.html",
                   #{"subjects": subjects, "session_years": session_years})
     #subjects = Subjects.objects.all()
-    session_year_id = SessionYearModel.object.all()
+    session_year_id = SessionYearModel.objects.all()
     return render(request, "hod_template/admin_view_attendance.html",
                   {"subjects": subjects, "session_year_id": session_year_id})
 
@@ -674,7 +680,7 @@ def admin_get_attendance_dates(request):
     subject = request.POST.get("subject")
     session_year_id = request.POST.get("session_year_id")
     subject_obj = Subjects.objects.get(id=subject)
-    session_year_obj = SessionYearModel.object.get(id=session_year_id)
+    session_year_obj = SessionYearModel.objects.get(id=session_year_id)
     attendance = Attendance.objects.filter(subject_id=subject_obj, session_year_id=session_year_obj)
     attendance_obj = []
     for attendance_single in attendance:
@@ -1113,7 +1119,7 @@ def staff_take_attendance(request):
     # subject1 = Subjects.objects.get(course_id=course)
     # subject2 = Subjects.objects.get(staff_id=request.user.id)
     subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
-    session_years = SessionYearModel.object.all()
+    session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
                   {"subjects": subjects, "session_years": session_years})
 
@@ -1135,7 +1141,7 @@ def get_students(request):
     session_year = request.POST.get("session_year")
 
     subject = Subjects.objects.get(id=subject_id)
-    session_model = SessionYearModel.object.get(id=session_year)
+    session_model = SessionYearModel.objects.get(id=session_year)
     students = Students.objects.filter(course_id=subject.course_id, session_year_id=session_model)
     list_data = []
 
@@ -1154,7 +1160,7 @@ def save_attendance_data(request):
     session_year_id = request.POST.get("session_year_id")
 
     subject_model = Subjects.objects.get(id=subject_id)
-    session_model = SessionYearModel.object.get(id=session_year_id)
+    session_model = SessionYearModel.objects.get(id=session_year_id)
     json_sstudent = json.loads(student_ids)
     # print(data[0]['id'])
 
@@ -1175,7 +1181,7 @@ def save_attendance_data(request):
 def staff_update_attendance(request):
     course = request.POST.get("course")
     subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
-    session_year_id = SessionYearModel.object.all()
+    session_year_id = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_update_attendance.html",
                   {"subjects": subjects, "session_year_id": session_year_id})
 
@@ -1185,7 +1191,7 @@ def get_attendance_dates(request):
     subject = request.POST.get("subject")
     session_year_id = request.POST.get("session_year_id")
     subject_obj = Subjects.objects.get(id=subject)
-    session_year_obj = SessionYearModel.object.get(id=session_year_id)
+    session_year_obj = SessionYearModel.objects.get(id=session_year_id)
     attendance = Attendance.objects.filter(subject_id=subject_obj, session_year_id=session_year_obj)
     attendance_obj = []
     for attendance_single in attendance:

@@ -20,21 +20,18 @@ Edit Staff | Username : {{ staff.admin.username }} |  #ID : {{ staff.admin.id }}
                 <div class="card-body">
                   <div class="form-group">
                     <label>Email address</label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ staff.admin.email }}">
+                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ staff.user.email }}">
                   </div>
                    <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ staff.admin.first_name }}">
+                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ staff.user.first_name }}">
                   </div>
                    <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ staff.admin.last_name }}" >
-                    <input type="hidden" name="staff_id" value="{{ staff.admin.id }}">
+                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ staff.user.last_name }}" >
+                    <input type="hidden" name="staff_id" value="{{ staff.user.id }}">
                    </div>
-                   <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ staff.admin.username }}">
-                  </div>
+                   
                     <div class="form-group">
                     <label>ID</label>
                     <input type="text" class="form-control" placeholder="Enter Staff ID" name="teacher_roll_number" value="{{ staff.teacher_roll_number }}" disabled="disabled">
