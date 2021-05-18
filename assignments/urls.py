@@ -8,8 +8,11 @@ app_name="assignments"
 ## @brief url patterns for the instructor app.
 urlpatterns = [
 	path('',views.assignment,name='assignment'),
+    path('resource/',views.resource,name='resource'),
 	#path('select_subject/',views.select_subject,name="select_subject"),
 	path('get_subject/',views.get_subject,name='get_subject'),
+    path('get_subject_resource/',views.get_subject_resource,name='get_subject_resource'),
+    path('view_resources_staff/<int:pk>/',views.view_resources_staff,name='view_resources_staff'),
     url(r'^instructor_index/$', views.instructor_index, name='instructor_index'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/$', views.instructor_detail, name='instructor_detail'),
     url(r'^(?P<course_id>[0-9]+)/add_assignment/$', views.add_assignment, name='add_assignment'),
