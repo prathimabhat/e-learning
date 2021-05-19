@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import  Submission, Assignment,Message,Notification
+from .models import  Submission, Assignment,Message,Notification,Resources
 from student_management.models import Subjects
 from accounts.models import Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
@@ -16,6 +16,15 @@ def assignment(request):
     }
     return render(request,'staff_template/assignment.html',context)
 
+@login_required
+def resource(request):
+    subjects=Subjects.objects.filter(staff_id=request.user.id)
+    context={
+        'subjects':subjects
+    }
+    return render(request,'staff_template/resource.html',context)
+
+@login_required
 def get_subject(request):
     sub=request.POST.get("subject")
     action=request.POST.get("action")
@@ -27,7 +36,25 @@ def get_subject(request):
     else:
         
         return redirect('assignments:add_assignment',sub_)
+@login_required
+def get_subject_student(request):
+    sub=request.POST.get("subject")
+    action=request.POST.get("action")
+    subject=Subjects.objects.get(id=sub)
+    sub_=subject.id
+    if action=="view_assignment":
+      
+        return redirect('assignments:view_all_assignments',sub_)
+    else:
+        
+        return redirect('assignments:add_assignment',sub_)
 
+@login_required
+def get_subject_resource(request):
+    sub=request.POST.get("subject")
+    subject=Subjects.objects.get(id=sub)
+    sub_=subject.id
+    return redirect('assignments:add_resource',sub_)
 
 @login_required
 def add_assignment(request, course_id):
@@ -68,10 +95,20 @@ def add_resource(request, course_id):
         notification.subject = course
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         notification.save()
-        return redirect('assignments:instructor_detail', course.id)
+        course_=course.id
+        return redirect('assignments:view_resources_staff', course_)
 
     return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})
 
+@login_required
+def view_resources_staff(request, pk):
+    course = Subjects.objects.get(id=pk)
+    resources = Resources.objects.filter(subject=course)
+    context = {
+        'course' : course,
+        'resources' : resources,
+    }
+    return render(request,'instructor/view_resources_staff.html',context)
 
 ## @brief view for the assignments page of a course.
 #
@@ -203,3 +240,51 @@ def instructor_detail(request, course_id):
             }
 
         return render(request, 'instructor/instructor_detail.html', context)
+
+
+@login_required
+def view_assignments(request, course_id):
+    course = Course.objects.get(id=course_id)
+    assignments = Assignment.objects.filter(course=course)
+    context = {
+        'course' : course,
+        'assignments' : assignments,
+    }
+    return render(request,'course/view_assignments.html',context)
+
+
+## @brief view for the resources page of a course.
+#
+# This view is called by <course_id>/view_resources url.\n
+# It returns the webpage containing all the resources of the course and links to download them.
+@login_required
+def view_resources(request, course_id):
+    course = Course.objects.get(id=course_id)
+    resources = Resources.objects.filter(course=course)
+    context = {
+        'course' : course,
+        'resources' : resources,
+    }
+    return render(request,'course/view_resources.html',context)
+
+
+## @brief view for the assignment's submission page.
+#
+# This view is called by <assignment_id>/upload_submission url.\n
+# It returns the webpage containing a form to upload submission and redirects to the assignments page again after the form is submitted.
+@login_required
+def upload_submission(request, assignment_id):
+    form = SubmissionForm(request.POST or None, request.FILES or None)
+    assignment = Assignment.objects.get(id=assignment_id)
+    course_id = assignment.course.id
+    course = Course.objects.get(id=course_id)
+    if form.is_valid():
+        submission = form.save(commit=False)
+        submission.user = request.user
+        submission.assignment = assignment
+        submission.time_submitted = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        submission.save()
+        return view_assignments(request, course_id)
+
+    return render(request, 'course/upload_submission.html', {'form': form,'course': course})
+
