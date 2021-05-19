@@ -122,6 +122,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL=False
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_REDIRECT_URL = 'accounts:login_request'
+LOGOUT_REDIRECT_URL = 'accounts:logout_request'
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 

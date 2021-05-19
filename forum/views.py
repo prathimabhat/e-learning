@@ -15,19 +15,41 @@ from django.core.mail import send_mail,EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import get_template
 # Create your views here.
+
+
+@login_required
+def SubjectView(request, *args, **kwargs):
+
+	subjects=Subjects.objects.filter(course_id=request.user.students.course_id).order_by('subject_name')
+	context={
+		'subjects':subjects
+	}
+	return render(request,'forum/SubjectView.html',context)
+
+def SubforumView(request,*args,**kwargs):
+	subject=kwargs['subject']
+	subject_=get_object_or_404(Subjects,subject_name=subject)
+	subject_questions=Questions.objects.filter(subject=subject_)
+
+	return render(request,'forum/subforums.html',
+			{'subject':subject,
+			'subject_questions':subject_questions
+			
+			}
+		)
+
 class QuestionView(View):
 
 	def get(self,request,*args,**kwargs):
 		question_id=kwargs['pk']
 		question=get_object_or_404(Questions,id=question_id)
 		answers=Answers.objects.filter(question=question_id)
-		#category=Categories.objects.filter(category_name=kwargs['category'])
 		context={
 			'question':question,
 			'answers':answers,
 			
 		}
-		return render(request,'community_forum/questions.html',context)
+		return render(request,'forum/questions.html',context)
 
 
 class AnswerView(LoginRequiredMixin,CreateView):
@@ -48,9 +70,9 @@ class AnswerView(LoginRequiredMixin,CreateView):
 		obj.save()
 		subject='New message'
 		from_email=settings.EMAIL_HOST_USER
-		to_email=obj.user.email_id
+		to_email=self.request.user.email
 		text_content="Hi, somebody answered your question.Login to see!"
-		html_content=get_template("community_forum/answered_email.html").render()
+		html_content=get_template("forum/answered_email.html").render()
 		msg= EmailMultiAlternatives(subject,text_content,from_email,[to_email])
 		msg.attach_alternative(html_content, "text/html")
 		msg.send()
@@ -59,11 +81,13 @@ class AnswerView(LoginRequiredMixin,CreateView):
 		#return self.render_to_response(self.get_context_data(form=form))
 		
 
-class NewQuestionView(LoginRequiredMixin,CreateView):
 
+
+class NewQuestionView(LoginRequiredMixin,CreateView):
+	
 	model=Questions
 	form_class=QuestionForm
-	success_url='/'
+	success_url='/forum/'
 	
 	def form_valid(self,form):
 		

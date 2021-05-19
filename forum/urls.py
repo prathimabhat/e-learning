@@ -1,7 +1,9 @@
 from django.urls import path
 from forum import views
-
+app_name='forum'
 urlpatterns=[
+	path('',views.SubjectView,name="SubjectView"),
+	path('<str:subject>/',views.SubforumView,name="subforum"),
 	path('<str:subjects>/questions/new/',views.NewQuestionView.as_view()),
 	path('questions/<int:pk>/',views.QuestionView.as_view(),name="question-detail"),
 	path('questions/<int:pk>/answer/',views.AnswerView.as_view(),name="answer-detail"),

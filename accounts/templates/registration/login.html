@@ -36,7 +36,7 @@
 			    	{{fields.label}}<br>
 			    	{{fields}}<br><br>
 			    {% endfor %}<br>
-			    <input type="submit" value="Submit">
+			    <input class="btn btn-primary" type="submit" value="Submit">
 			</form>
 		</span>
        
@@ -45,21 +45,17 @@
           <div class="col-12">
             <br>
             <a href="{% url 'password_reset' %}">Forgot Password?</a>
-          </div>
-        </div>
 
-
-        <div class="row">
-          {% if messages %}
-         <div class="col-12">
-            {% for message in messages %}
-            {% if message.tags == 'error' %}
-            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+            <br><br>
+          <div class="row" style="display: flex;justify-content: center;align-content: center;color: red;">
+           {% if form.errors%}
+            <p>Incorrect email or password</p>
             {% endif %}
-            {% endfor %}
           </div>
-          {% endif %}
+          </div>
         </div>
+
+
       </form>
 
     </div>

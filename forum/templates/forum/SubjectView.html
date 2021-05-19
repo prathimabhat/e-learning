@@ -1,0 +1,38 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+Forum
+{% endblock page_title %}
+{% block main_content %}
+
+
+
+<br><br>
+
+
+
+<div class="container">
+
+	<div class="row">
+
+		
+
+			{% for subject in subjects%}
+			<div class="card card-primary mb-3 ml-3 mr-3">
+				<div class="card-title mb-3 ml-3 mr-3">
+					<span style="font-weight: bolder;"><br>{{subject.subject_name|safe}}<br></span>
+					
+				</div>
+				<div class="card-body">
+					<a href="/forum/{{subject.subject_name}}/">View forum</a>
+				</div>
+			</div>
+			{% endfor %}
+			<br>
+		
+
+
+</div>
+
+	
+
+{% endblock main_content %}
