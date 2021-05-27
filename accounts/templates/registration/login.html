@@ -60,43 +60,6 @@
 
       </form>
 
-            {% for fields in form%}
-            {{fields.label}}<br>
-            {{fields}}<br><br>
-            {% endfor %}<br>
-            <input type="submit" value="Submit">
-          </form>
-        </span>
-
-
-
-        <div class="col-12">
-          <br>
-          <a href="{% url 'password_reset' %}">Forgot Password?</a>
-        </div>
-      </div>
-      {% if form.errors %}
-      <div class="col-12">
-        <br>
-        <p>username or password not correct</p>
-      </div>
-    </div>
-    {% endif %}
-
-
-    <div class="row">
-      {% if messages %}
-      <div class="col-12">
-        {% for message in messages %}
-        {% if message.tags == 'error' %}
-        <div class="alert alert-danger" style="margin-top:10px">{{ message }}<p>username or password not correct</p>
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-    </div>
-    </form>
 
   </div>
   <!-- /.login-card-body -->

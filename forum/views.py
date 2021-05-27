@@ -52,34 +52,33 @@ class QuestionView(View):
 		return render(request,'forum/questions.html',context)
 
 
-class AnswerView(LoginRequiredMixin,CreateView):
+		
+def AnswerView(request,*args,**kwargs):
+	form=AnswerForm
+	if request.method=='POST':
+		form=AnswerForm(request.POST)
+		if form.is_valid():
+			question_=get_object_or_404(Questions,pk=kwargs['pk'])
+			subject_=get_object_or_404(Subjects,subject_name=question_.subject.subject_name)
+			obj=form.save(commit=False)
+			obj.user=request.user.students
+			obj.subject=subject_
+			obj.question=question_
+			obj.save()
+			pk=kwargs['pk']
 
-	model=Answers
-	form_class=AnswerForm
-	success_url='/'
-	
-	def form_valid(self,form):
+			
+			return redirect('forum:question-detail',pk)
+		else:
+			form=AnswerForm()
+	else:
+		form=AnswerForm()
+	context={
+		'form':form
+	}
 		
-		
-		question_=get_object_or_404(Questions,pk=self.kwargs['pk'])
-		subject_=get_object_or_404(Subjects,subject_name=question_.subject.subject_name)
-		obj=form.save(commit=False)
-		obj.user=self.request.user.students
-		obj.subject=subject_
-		obj.question=question_
-		obj.save()
-		subject='New message'
-		from_email=settings.EMAIL_HOST_USER
-		to_email=self.request.user.email
-		text_content="Hi, somebody answered your question.Login to see!"
-		html_content=get_template("forum/answered_email.html").render()
-		msg= EmailMultiAlternatives(subject,text_content,from_email,[to_email])
-		msg.attach_alternative(html_content, "text/html")
-		msg.send()
+	return render(request,'forum/answers_form.html',context)	
 
-		return super().form_valid(form)
-		#return self.render_to_response(self.get_context_data(form=form))
-		
 
 
 
@@ -101,23 +100,23 @@ class NewQuestionView(LoginRequiredMixin,CreateView):
 
 def QuestionUpVoteView(request,*args,**kwargs):
 	question=get_object_or_404(Questions,id=request.POST.get('question_id_up'))
-	question.up_votes.add(request.user.profile)
+	question.up_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk'])]))
 
 def QuestionDownVoteView(request,*args,**kwargs):
 	question=get_object_or_404(Questions,id=request.POST.get('question_id_down'))
-	question.down_votes.add(request.user.profile)
+	question.down_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk'])]))
 
 
 def AnswerUpVoteView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=request.POST.get('answer_id_up'))
-	answer.up_votes.add(request.user.profile)
+	answer.up_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk_alt'])]))
 
 def AnswerDownVoteView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=request.POST.get('answer_id_down'))
-	answer.down_votes.add(request.user.profile)
+	answer.down_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk_alt'])]))
 
 from django.template.loader import render_to_string, get_template
@@ -182,7 +181,7 @@ def ReportAnswerView(request,*args,**kwargs):
 		}
 		subject = "Report"
 		from_email = settings.EMAIL_HOST_USER
-		html_message = render_to_string('community_forum/answer_mail.html',ctx,request=request)
+		html_message = render_to_string('forum/answer_mail.html',ctx,request=request)
 		plain_message = strip_tags(html_message)
 		to_email=[]
 		for i in admins:
@@ -190,5 +189,5 @@ def ReportAnswerView(request,*args,**kwargs):
 			to_email.append(i.user.email)
 			print(to_email)
 		mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
-		return redirect('community_forum:question-detail',question.id)
-	return render(request,"community_forum/report.html")
+		return redirect('forum:question-detail',question.id)
+	return render(request,"forum/report.html")
