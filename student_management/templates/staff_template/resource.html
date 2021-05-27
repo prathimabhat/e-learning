@@ -1,0 +1,40 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+Resource
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+
+<br>
+<section class="content">
+  <form role="form" action="/assignments/get_subject_resource/" method="POST">
+    {% csrf_token %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+
+
+          <h4>Select subject </h4>
+          <select class="form-control" name="subject">
+            {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+            {% endfor %}
+          </select>
+          <br><br><br>
+
+        </div>
+      </div>
+    </div>
+    <br><br><br><br><br><br>
+    <div>
+
+      <button class="btn btn-primary" id="fetch_resources">Add Resource</button>
+    </div>
+  </form>
+
+</section>
+
+
+
+<!-- /.content -->
+{% endblock main_content %}

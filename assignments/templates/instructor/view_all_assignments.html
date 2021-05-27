@@ -1,0 +1,88 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+Assignments
+{% endblock page_title %}
+{% block main_content %}
+ <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">View Assignments</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="card-body">
+                   <div class="form-group">
+                        {% for assignment in assignments reversed %}
+                        <div >
+                            Assignment name : {{ assignment.description }}<br>
+                            Deadline for submission : {{ assignment.deadline }}<br>
+                            <div>
+                                <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
+                                    <button type="submit" class="btn btn-primary" style="margin-right: 50px">Submissions</button>
+                                </a>
+                                <a href="{% url 'assignments:view_feedback' assignment.id %}">
+                                <button type="submit" class="btn btn-primary">Feedback</button>
+                            </a><br><br>
+                            </div>
+                          
+                        </div>
+                        {% endfor %}
+                  </div>
+
+                </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+<!--<br>
+<div class="container-fluid songs-container">
+
+    <div class="row">
+         
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-default">
+
+                <div class="panel-body" style="background-color: #e3f0e8;border: 0px solid #66cdaa;">
+                    <a href="{% url 'assignments:instructor_detail' course.id %}">
+                        {% if course.course_logo %}
+                        <img src="{{ course.course_logo.url }}" class="img-responsive">
+                        {% else %}
+                        <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
+                    <h2 align="center">{{ course.instructor }}</h2>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-7"
+            style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
+            <h3 align="center" ; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">
+                Assignments</h3>
+            {% for assignment in assignments reversed %}
+            <div >
+                {{ assignment.description }}<br>
+                Deadline : {{ assignment.deadline }}<br>
+                <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
+                    <button type="submit" class="btn btn-success">Submissions</button>
+                </a>
+                <a href="{% url 'assignments:view_feedback' assignment.id %}">
+                    <button type="submit" class="btn btn-success">Feedback</button>
+                </a><br>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>-->
+    {% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+Assignments
+{% endblock page_title %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Assignment</h3>
+              </div>
+
+               <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+
+                        <span class="text-danger small">{{ field.errors }}</span>
+                    </div>
+                    
+                <label class="control-label col-sm-5">{{ field.label_tag }}</label>
+                <div class="col-sm-5">{{ field }}</div>
+                </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+          </div>
+          </div>
+      </div>
+    </section>
+{% endblock %}
+<!--<br>
+<div class="container-fluid">
+
+
+    <div class="row">
+
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-default">
+
+                <div class="panel-body" style="background-color: #e3f0e8;border: 0px solid #66cdaa;">
+                    <a href="{% url 'assignments:instructor_detail' course.id %}">
+                        {% if course.course_logo %}
+                            <img src="{{ course.course_logo.url }}" class="img-responsive">
+                        {% else %}
+                            <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
+                    <h2 align="center">{{ course.instructor }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <br><br><br>
+        <div class="col-sm-6">
+
+
+                <div class="panel-body">
+                    <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Add Assignment</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+               <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <span class="text-danger small">{{ field.errors }}</span>
+            </div>
+        <label class="control-label col-sm-5">{{ field.label_tag }}</label>
+        <div class="col-sm-5">{{ field }}</div>
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+                </div>
+            </div>
+
+
+
+    </div>
+
+</div>-->
+
+
+
+
+
+
