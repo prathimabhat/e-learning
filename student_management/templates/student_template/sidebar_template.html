@@ -53,6 +53,25 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          {% url 'forum:my_questions' as my_questions %}
+          <a href="{{my_questions}}" class="nav-link {% if request.path == my_questions %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              My Questions
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          {% url 'forum:my_answers' as my_answers%}
+          <a href="{{my_answers}}" class="nav-link {% if request.path == my_answers%} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              My Answers
+            </p>
+          </a>
+        </li>
 
         <li class="nav-item">
           {% url 'assignments:student_resources' as student_resources %}
