@@ -1,6 +1,8 @@
-
-{% block content %}
-{% include 'accounts/base.html' %}
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{question.question_title}}
+{% endblock page_title %}
+{% block main_content %}
 <style type="text/css">
 	body{
 		background-color: #EEEEE0;
@@ -55,7 +57,6 @@
 
 	</div>
 </div>
-
 <script type="text/javascript">
 
 		var speechRecognition=window.webkitSpeechRecognition
@@ -96,5 +97,4 @@
 
 	
 </script>
-
 {% endblock %}

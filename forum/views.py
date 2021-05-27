@@ -8,7 +8,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from .forms import AnswerForm,QuestionForm
+from .forms import AnswerForm,QuestionForm,QuestionUpdateForm,AnswerUpdateForm
 from forum.models import Questions,Answers
 from django.urls import reverse
 from django.core.mail import send_mail,EmailMultiAlternatives
@@ -194,3 +194,64 @@ def ReportAnswerView(request,*args,**kwargs):
 		mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 		return redirect('forum:question-detail',question.id)
 	return render(request,"forum/report.html")
+
+
+class MyQuestionsView(LoginRequiredMixin,View):
+	def get(self,request,*args,**kwargs):
+		questions=Questions.objects.filter(user=self.request.user.students)
+		context={
+			'questions':questions
+		}
+		return render(request,'forum/my_questions.html',context)
+
+class MyAnswersView(LoginRequiredMixin,View):
+	def get(self,request,*args,**kwargs):
+
+		answers=Answers.objects.filter(user=self.request.user.students)
+		#questions=Questions.objects.filter(id=question_id)
+		context={
+			'answers':answers
+		}
+		return render(request,'forum/my_answers.html',context)
+
+
+@login_required
+def QuestionUpdateView(request,*args,**kwargs):
+	context={}
+	question_id=kwargs['pk']
+	obj=get_object_or_404(Questions,id=question_id)
+	form=QuestionUpdateForm(request.POST or None,instance=obj)
+	if form.is_valid():
+		form.save()
+		#redirect_url=reverse('therapist_dashboard:AnswerView',args=[question_id])
+		return redirect('/forum/my_questions/')
+	context["form"]=form
+	return render(request,'forum/question_update.html',context)
+
+@login_required
+def AnswerUpdateView(request,*args,**kwargs):
+	context={}
+	answer_id=kwargs['pk']
+	obj=get_object_or_404(Answers,id=answer_id)
+	form=AnswerUpdateForm(request.POST or None,instance=obj)
+	if form.is_valid():
+		form.save()
+		#redirect_url=reverse('therapist_dashboard:AnswerView',args=[question_id])
+		return redirect('/forum/my_answers/')
+	context["form"]=form
+	return render(request,'forum/answer_update.html',context)
+
+@login_required
+def QuestionDeleteView(request,pk):
+	obj=get_object_or_404(Questions,id=pk)
+	if request.method=='POST':
+		obj.delete()
+		return redirect('/forum/my_questions/')
+	return render(request,'forum/delete_question.html')
+
+def AnswerDeleteView(request,pk):
+	obj=get_object_or_404(Answers,id=pk)
+	if request.method=='POST':
+		obj.delete()
+		return redirect('/forum/my_answers/')
+	return render(request,'forum/delete_answer.html')

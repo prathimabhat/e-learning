@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% extends 'staff_template/base_template.html' %}
 {% block page_title %}
 Assignment
@@ -43,9 +42,8 @@ Assignment
     </section>
 {% endblock %}
 <!--<br>
-=======
-{% block content %}
-{% include 'accounts/base.html'%}
+
+>>>>>>> 63b38a20ebb809343720c7f2454f389f8af5b0af
 <br>
 >>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
 <div class="container-fluid">
@@ -56,13 +54,13 @@ Assignment
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
 
-                <div class="panel-body" style="background-color: #e3f0e8;border: 0px solid #66cdaa;">
-                    <a href="{% url 'assignments:instructor_detail' course.id %}">
+                <div class="panel-body">
+                    <a href=" {% url 'assignments:instructor_detail' course.id %}">
                         {% if course.course_logo %}
-                        <img src="{{ course.course_logo.url }}" class="img-responsive">
-                        {% else %}
-                        <h3>No image to display</h3>
-                        {% endif %}
+                    <img src="{{ course.course_logo.url }}" class="img-responsive">
+                    {% else %}
+                    <h3>No image to display</h3>
+                    {% endif %}
                     </a>
                     <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
                     <h2 align="center">{{ course.instructor }}</h2>
@@ -112,8 +110,3 @@ Assignment
 <<<<<<< HEAD
 -->
 
-=======
-
-
-{% endblock %}
->>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88

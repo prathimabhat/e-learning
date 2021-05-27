@@ -25,7 +25,9 @@ urlpatterns = [
 
 	
     path('',include('django.contrib.auth.urls')), 
-	path('accounts/',include('accounts.urls')),
+
+	path('accounts/',include('accounts.urls')),  
+
     path('admin/', admin.site.urls),
     path('reset_password/',
 	auth_views.PasswordResetView.as_view(template_name="accounts/password_reset.html",email_template_name = 'accounts/password_reset_email.html'),

@@ -1,6 +1,8 @@
-
-{% block content %}
-{% include 'accounts/base.html' %}
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{question.question_title}}
+{% endblock page_title %}
+{% block main_content %}
 <style type="text/css">
 	body{
 		background-color: #EEEEE0;
@@ -43,7 +45,7 @@
 							{{form.as_p}}
 							&nbsp;<button type="button" onclick="record1()" class="re"><i class="fas fa-microphone mic"></i></button>
 							<p id="instructions">Press the mic to speak</p>
-							<br><br><br><br>
+							<br><br>
 							<input type="submit" class="btn btn-primary" name="Submit">
 							
 						</form>

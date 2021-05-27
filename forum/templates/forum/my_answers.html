@@ -1,0 +1,42 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{question.question_title}}
+{% endblock page_title %}
+{% block main_content %}
+<style type="text/css">
+body{
+	background-color: #EEEEE0;
+}
+</style>
+<br><br>
+
+<div class="container" style="background-color: white;">
+	<br>
+	<div class="row">
+		
+		{% for answer in answers %}
+			<br>
+			<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+				<b>{{answer.question.question_title|safe}}</b><br><br>
+				{{answer.question.question_detail|safe}}<br>
+				<small>Question in {{answer.question.subject.subject_name}}</small><br><br>
+				<b><p>You answered:</p></b>
+				{{answer.answer|safe}}
+				<br>
+				<a href="/forum/my_answers/{{answer.id}}/edit/">Edit this answer?</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/forum/my_answers/{{answer.id}}/delete/"><i class="fa fa-trash"></i></a>
+				<br><hr>
+				
+			</div>
+			
+			
+			
+			{% empty %}
+			<div class="container" style="text-align: center;">
+				<p>You have not answered any questions</p>
+			</div>
+
+		{% endfor %}
+
+		</div>
+	</div>
+{% endblock %}

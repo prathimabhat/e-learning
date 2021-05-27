@@ -4,6 +4,13 @@ from forum import views
 app_name='forum'
 urlpatterns=[
 	path('',views.SubjectView,name="SubjectView"),
+	path('my_questions/',views.MyQuestionsView.as_view(),name="my_questions"),
+	path('my_answers/',views.MyAnswersView.as_view(),name="my_answers"),
+	path('my_questions/<int:pk>/edit/',views.QuestionUpdateView,name="question_update"),
+	path('my_answers/<int:pk>/edit/',views.AnswerUpdateView,name="answer_update"),
+	path('my_questions/<int:pk>/delete/',views.QuestionDeleteView,name="question_delete"),
+	path('my_answers/<int:pk>/delete/',views.AnswerDeleteView,name="answer_delete"),
+
 	path('<str:subject>/',views.SubforumView,name="subforum"),
 	path('<str:subjects>/questions/new/',views.NewQuestionView.as_view()),
 	path('questions/<int:pk>/',views.QuestionView.as_view(),name="question-detail"),
@@ -13,5 +20,6 @@ urlpatterns=[
 	path('answer_up_vote/<int:pk>/<int:pk_alt>',views.AnswerUpVoteView,name="answer_up_vote"),
 	path('answer_down_vote/<int:pk>/<int:pk_alt>',views.AnswerDownVoteView,name="answer_down_vote"),
 	path('report/<int:pk>',views.ReportView,name="report"),
-	path('report/answer/<int:pk>/',views.ReportAnswerView,name="report_answer")
+	path('report/answer/<int:pk>/',views.ReportAnswerView,name="report_answer"),
+	
 ]

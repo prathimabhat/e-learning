@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-{%block content%}
-{% include 'accounts/base.html'%}
 
-=======
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
 Report
 {% endblock page_title %}
 {% block main_content %}
->>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
 <style type="text/css">
     body{
     background-color:#EEEEE0;
@@ -33,13 +28,9 @@ Report
                 <label for="Harmful or dangerous content">Harmful or dangerous content</label><br>
                 <input type="radio" value="Spam or misleading" name="reason" >
                 <label for="Spam or misleading">Spam or misleading</label><br>
-<<<<<<< HEAD
-                <a href="/community_forum/questions/{{question.id}}/">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="submit" value="report">
-=======
                 <a href="/forum/questions/{{question.id}}/">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input class="btn btn-danger" type="submit" value="report">
->>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
+
 
             </form>
             <br><br>

@@ -29,8 +29,8 @@ Student Leave Application
                         {% for leave in leaves %}
                         <tr>
                             <td>{{ leave.id }}</td>
-                            <td>{{ leave.student_id.admin.id }}</td>
-                            <td>{{ leave.student_id.admin.first_name }} {{ leave.student_id.admin.last_name }}</td>
+                            <td>{{ leave.student_id.user.id }}</td>
+                            <td>{{ leave.student_id.user.first_name }} {{ leave.student_id.user.last_name }}</td>
                             <td>{{ leave.leave_date }}</td>
                             <td>{{ leave.leave_message }}</td>
                             <td>{{ leave.created_at }}</td>

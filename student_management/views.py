@@ -726,11 +726,11 @@ def admin_profile_save(request):
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
-            messages.success(request, "Successfully Updated Profile")
-            return HttpResponseRedirect(reverse("admin_profile"))
+            #messages.success(request, "Successfully Updated Profile")
+            return HttpResponseRedirect(reverse("login"))
         except:
-            messages.error(request, "Failed to Update Profile")
-            return HttpResponseRedirect(reverse("admin_profile"))
+            #messages.error(request, "Failed to Update Profile")
+            return HttpResponseRedirect(reverse("login"))
 
 
 def select_student_class(request):
