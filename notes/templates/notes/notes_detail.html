@@ -1,0 +1,27 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{notes.name}}
+{% endblock page_title %}
+{% block main_content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 offset-lg-1 offset-md-1">
+			
+			<div style="background-color: white;">
+				{{notes.note_text|safe}}<br>
+			</div>
+			<span style="font-size: 0.9rem;color: grey;">{{notes.post_time}}</span><br><br>
+
+		</div>
+		<div class="col-lg-2 col-md-2 col-xs-6">
+			<a href="/notes/{{notes.id}}/edit/"><button type="button" class="btn btn-primary">Edit</button></a>
+			
+		</div>
+		
+	</div>
+</div>
+
+
+
+{%endblock%}

@@ -1,12 +1,21 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
-{{question.question_title}}
+<div class="container">
+	<a class="bread-crumb" href="{% url 'forum:SubjectView' %}">Forum ></a>
+	<a class="bread-crumb" href="{% url 'forum:subforum' question.subject.subject_name %}">{{question.subject.subject_name}} ></a>
+	<span class="bread-crumb">{{question.question_title}}</span>
+</div>
+
 {% endblock page_title %}
 {% block main_content %}
 
 <style type="text/css">
 	body{
 		background-color: #EEEEE0;
+	}
+	.bread-crumb{
+		font-size: 1rem;
+
 	}
 	.up-votes{
 		font-size: 2rem;
@@ -33,6 +42,20 @@
 
 </style>
 <br><br>
+
+
+
+
+
+<div class="container">
+	{% if messages %}
+		{% for message in messages %}
+			{% if message.tags == 'error' %}
+			<div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+</div>
 
 
 <div class="container" style="background-color:white;">
@@ -63,7 +86,7 @@
 			{% if question.anonymous is True%}
 				<span style="color: blue;">Anonymous</span><br>
 			{% else %}
-	    		<span style="color: blue;">{{question.user.student_name}</span><br>
+	    		<span style="color: blue;">{{question.user.student_name}}</span><br>
 			{% endif %}
 	    	<span style="font-size: 0.9rem;color: grey;">{{question.date}}</span><br><br>
 

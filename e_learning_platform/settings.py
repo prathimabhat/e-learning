@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'accounts',
     'student_management',
     'forum',
-    'assignments'
+    'assignments',
+    'notes',
 ]
 
 MIDDLEWARE = [

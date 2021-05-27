@@ -1,11 +1,19 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
-{{subject.subject_name}}
+<div class="container">
+	<a class="bread-crumb" href="{% url 'forum:SubjectView' %}">Forum ></a>
+	<span class="bread-crumb">{{subject}}</span>
+</div>
+
 {% endblock page_title %}
 {% block main_content %}
 <style type="text/css">
 	body{
 		background-color: #EEEEE0;
+	}
+	.bread-crumb{
+		font-size: 1rem;
+
 	}
 	.cats{
 		background-color: white;

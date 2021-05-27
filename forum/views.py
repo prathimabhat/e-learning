@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.core.mail import send_mail,EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import get_template
+from django.contrib import messages
 # Create your views here.
 
 
@@ -74,7 +75,7 @@ def AnswerView(request,*args,**kwargs):
 	else:
 		form=AnswerForm()
 	context={
-		'form':form
+		'form':form,
 	}
 		
 	return render(request,'forum/answers_form.html',context)	
@@ -158,7 +159,7 @@ def ReportView(request,*args,**kwargs):
 			print(to_email)
 		mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 		
-
+		messages.error(request, "Question reported!")
 		return redirect('forum:question-detail',question.id)
 	return render(request,"forum/report.html",context)
 
@@ -167,7 +168,7 @@ def ReportAnswerView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=kwargs['pk'])
 	question=get_object_or_404(Questions,id=answer.question.id)
 	admins=AdminHOD.objects.all()
-	user=get_object_or_404(Students,id=request.user.profile.id)
+	user=get_object_or_404(Students,id=request.user.students.id)
 	
 	if request.method=='POST':
 
@@ -189,6 +190,7 @@ def ReportAnswerView(request,*args,**kwargs):
 			to_email.append(i.user.email)
 			print(to_email)
 		mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+		messages.error(request, "Answer reported!")
 		return redirect('forum:question-detail',question.id)
 	return render(request,"forum/report.html")
 

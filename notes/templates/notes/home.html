@@ -1,20 +1,12 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
-Forum
+My Notes
 {% endblock page_title %}
 {% block main_content %}
-
-
-
-<br><br>
-
-
 
 <div class="container">
 
 	<div class="row">
-
-		
 
 			{% for subject in subjects%}
 			<div class="card card-primary mb-3 ml-3 mr-3">
@@ -23,16 +15,23 @@ Forum
 					
 				</div>
 				<div class="card-body">
-					<a href="/forum/{{subject.subject_name}}/">View forum</a>
+					<strong><a href="/notes/{{subject.id}}/">View notes</a></strong>
+					<br>
+					<strong><a href="{% url 'notes:upload_notes' subject.id %}">
+					Upload notes</a></strong>
+					<br>
+					<strong><a href="{% url 'notes:write_notes' subject.id %}">Write notes</a></strong>
+            
+            
 				</div>
 			</div>
 			{% endfor %}
 			<br>
+		
 	</div>
-
 
 </div>
 
-	
 
-{% endblock main_content %}
+
+{% endblock %}

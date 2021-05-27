@@ -83,6 +83,19 @@
             </p>
           </a>
         </li>
+
+        <li class="nav-item">
+          {% url 'notes:home' as notes_home %}
+          <a href="{{notes_home}}"
+            class="nav-link {% if request.path == notes_home %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              My notes
+            </p>
+          </a>
+        </li>
+
+
         <li class="nav-item">
           {% url 'student_view_attendance' as student_view_attendance %}
           {% url 'student_view_attendance_post' as student_view_attendance_post %}

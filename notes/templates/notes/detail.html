@@ -1,0 +1,65 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{subject.subject_name}}
+{% endblock page_title %}
+{% block main_content %}
+<br><br>
+
+<section class="content" >
+      <div class="container-fluid" >
+        <div class="container">
+  <strong><a href="{% url 'notes:upload_notes' subject.id %}">Upload notes</a></strong>
+          &nbsp;&nbsp;&nbsp;
+  <strong><a href="{% url 'notes:write_notes' subject.id %}">Write notes</a></strong>
+</div><br><br>
+                    <div class="row" >
+              <div class="col-md-12">
+                
+            <!-- general form elements -->
+            <div class="card card-primary " >
+              <div class="card-header">
+                <h3 class="card-title">View Notes</h3>
+              </div>
+              <br><br>
+              {% for notes in notes reversed %}
+            <div style="padding-left: 2%">
+                
+                <div style="position:right">
+                  {% if notes.file %}
+                    Notes file: &nbsp;&nbsp;{{ notes.name}}
+                    <a href="{% url 'notes:delete_upload' notes.id %}" style="text-align:right">
+                        <button type="submit" class="btn btn-danger float-right" style="width: 6rem;margin-right:  100px;">Delete</button>
+                    </a>
+                    <a href="{{ notes.file.url }}" style="text-align:right">
+                        <button type="submit" class="btn btn-primary float-right " style="margin-right:   100px;">Download</button>
+                    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                  {%else%}
+                  Written notes : &nbsp;&nbsp;{{notes.name}} : &nbsp;&nbsp;
+                  <a href="/notes/{{notes.id}}/delete_upload/"><button type="button" class="btn btn-danger float-right" style="width:6rem;margin-right:100px;">Delete</button></a>
+                  <a href="{% url 'notes:view_notes' notes.id %}"><button type="submit" class="btn btn-primary float-right" style="width:6rem;margin-right:  100px;">View</button></a> &nbsp;&nbsp;
+                  
+                  {% endif %}
+                </div>
+                <br>
+            </div>
+           
+            {% empty %}
+            	<div class="container">
+                <div class="row" style="display: flex;justify-content: center;font-weight: bolder;font-size: 2rem;">
+
+              		<p >No notes!</p>
+                </div>
+            	</div>
+            {% endfor %}
+
+              
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+
+{% endblock %}
