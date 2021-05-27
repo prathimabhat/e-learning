@@ -170,7 +170,7 @@ def ReportAnswerView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=kwargs['pk'])
 	question=get_object_or_404(Questions,id=answer.question.id)
 	admins=AdminHOD.objects.all()
-	user=get_object_or_404(Students,id=request.user.profile.id)
+	user=get_object_or_404(Students,id=request.user.students.id)
 	
 	if request.method=='POST':
 
