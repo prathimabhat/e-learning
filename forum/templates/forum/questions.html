@@ -1,11 +1,15 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
+
 <div class="container">
 	<a class="bread-crumb" href="{% url 'forum:SubjectView' %}">Forum ></a>
 	<a class="bread-crumb" href="{% url 'forum:subforum' question.subject.subject_name %}">{{question.subject.subject_name}} ></a>
 	<span class="bread-crumb">{{question.question_title}}</span>
 </div>
 
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{question.question_title}}
+>>>>>>> e12c8af79a85a45713fb6f0edbdfd0bcdb096318
 {% endblock page_title %}
 {% block main_content %}
 
@@ -65,12 +69,15 @@
 	
 
 		<div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+
 			<form action="{% url 'forum:up_vote' question.pk %}" method="POST">
 				{% csrf_token %}
 				<button type="submit" name="question_id_up" value="{{question.id}}" class="btn"><i class="fas fa-long-arrow-alt-up up-votes"></i></button>
 			</form>
 			&nbsp;&nbsp;&nbsp;{{question.total_upvotes}}<br><br>
+
 			<form action="{% url 'forum:down_vote' question.pk %}" method="POST">
+
 				{% csrf_token %}
 				<button type="submit" name="question_id_down" value="{{question.id}}" class="btn"><i class="fas fa-long-arrow-alt-down down-votes"></i></button>
 			</form>
@@ -87,6 +94,10 @@
 				<span style="color: blue;">Anonymous</span><br>
 			{% else %}
 	    		<span style="color: blue;">{{question.user.student_name}}</span><br>
+<<<<<<< HEAD
+=======
+
+>>>>>>> e12c8af79a85a45713fb6f0edbdfd0bcdb096318
 			{% endif %}
 	    	<span style="font-size: 0.9rem;color: grey;">{{question.date}}</span><br><br>
 
@@ -94,11 +105,13 @@
 	  
 	   <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
 	   		<br><br><!--<button type="button" id="play_button" onclick="speakQuestion()"><i class="fas fa-volume-up"></i></button>-->
+
 		   <a href="/forum/report/{{question.id}}"><i class="far fa-flag"></i></a>
 	   </div>
 
 	    <div class="container">
 			<span style="font-weight: bold;"><a href="/forum/questions/{{question.id}}/answer/">Answer this question!</a></span>
+
 		</div>
 
 	
@@ -113,12 +126,16 @@
 	    {% for answers in answers %}
 
 	    <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+
 			<form action="{% url 'forum:answer_up_vote' answers.pk question.pk %}" method="POST">
+
 				{% csrf_token %}
 				<button type="submit" name="answer_id_up" value="{{answers.id}}" class="btn"><i class="fas fa-long-arrow-alt-up up-votes"></i></button>
 			</form>
 			&nbsp;&nbsp;&nbsp;{{answers.total_upvotes}}<br><br>
+
 			<form action="{% url 'forum:answer_down_vote' answers.pk question.pk %}" method="POST">
+
 				{% csrf_token %}
 				<button type="submit" name="answer_id_down" value="{{answers.id}}" class="btn"><i class="fas fa-long-arrow-alt-down down-votes"></i></button>
 			</form>
@@ -128,13 +145,16 @@
 
 	    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 ">
 	    	<p>{{answers.answer|safe}}</p><br>
+
 	    	<span style="color: blue;">{{answers.user.student_name}}</span><br>
 	    	<span style="font-size: 0.9rem;color: grey;">{{answers.date}}</span><br><hr>
 	    </div>
 
 	    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
 	   		<br><br><!--<button type="button" id="play_button" onclick="speakQuestion()"><i class="fas fa-volume-up"></i></button>-->
+
 		   <a href="/forum/report/answer/{{answers.id}}/"><i class="far fa-flag"></i></a>
+
 	   </div>
 	    
 

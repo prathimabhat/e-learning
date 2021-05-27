@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Courspace</title>
+  <title>Patshala</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -24,7 +24,7 @@
 <body class="hold-transition login-page">
   <div class="login-box">
     <div class="login-logo">
-      <h1>Courspace</h1>
+      <h1>Patshala</h1>
     </div>
     <!-- /.login-logo -->
     <div class="card">
@@ -34,11 +34,14 @@
           <form method="POST">
             {% csrf_token %}
 
+
 			    {% for fields in form%}
 			    	{{fields.label}}<br>
 			    	{{fields}}<br><br>
 			    {% endfor %}<br>
+
 			    <input class="btn btn-primary" type="submit" value="Submit">
+
 			</form>
 		</span>
        
@@ -47,6 +50,7 @@
           <div class="col-12">
             <br>
             <a href="{% url 'password_reset' %}">Forgot Password?</a>
+
 
             <br><br>
           <div class="row" style="display: flex;justify-content: center;align-content: center;color: red;">
@@ -58,9 +62,14 @@
         </div>
 
 
+<<<<<<< HEAD
 
       </form>
 
+=======
+      </form>
+
+>>>>>>> e12c8af79a85a45713fb6f0edbdfd0bcdb096318
 
     </div>
     <!-- /.login-card-body -->
@@ -78,3 +87,4 @@
 </body>
 
 </html>
+

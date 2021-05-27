@@ -24,8 +24,7 @@ def login_request(request):
     elif request.user.user_type=='4':
         return redirect('/parent_home')
     else:
-
-        return redirect('/login/')
+        return redirect('/accounts/login/')
         
 
 def logout_request(request):

@@ -1,9 +1,44 @@
 {% extends 'staff_template/base_template.html' %}
 {% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
 View Resource
 {% endblock page_title %}
 {% block main_content %}
+
+ <section class="content" >
+      <div class="container-fluid" >
+                    <div class="row" >
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary " >
+              <div class="card-header">
+                <h3 class="card-title">View Resources</h3>
+              </div>
+              {% for resource in resources reversed %}
+            <div style="padding-left: 2%">
+                
+                <div style="position:right">
+                    Name of the Resource:   {{ resource.title }}
+                    <a href="{{ resource.file_resource.url }}" style="text-align:right">
+                        <button type="submit" class="btn btn-primary float-right" style="margin-right: 60%">Download</button>
+                    </a>
+                </div>
+                <br>
+            </div>
+            {% endfor %}
+
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+{% endblock %}
+<!--<br>
+=======
 <br>
+>>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
 <div class="container-fluid songs-container">
 
     <div class="row">
@@ -46,5 +81,8 @@ View Resource
 
         </div>
     </div>
-</div>
-{% endblock %}
+<<<<<<< HEAD
+</div>-->
+
+
+

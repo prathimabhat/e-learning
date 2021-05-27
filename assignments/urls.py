@@ -9,6 +9,7 @@ app_name="assignments"
 urlpatterns = [
 	path('',views.assignment,name='assignment'),
     path('resource/',views.resource,name='resource'),
+
     path('student_assignment/',views.student_assignment,name='student_assignment'),
     path('student_resources/',views.student_resources,name='student_resources'),
     path('view_assignments/<int:pk>/',views.view_assignments,name='view_assignments'),

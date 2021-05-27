@@ -1,69 +1,47 @@
+
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
 Assignments
 {% endblock page_title %}
 {% block main_content %}
+
 <br>
-<div class="container-fluid">
+<section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Submit Assignment</h3>
+              </div>
 
+               <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    <div class="row">
+                {% for field in form %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
 
-        <div class="col-sm-6 col-md-3">
-            <div class="panel panel-default">
-
-                <div class="panel-body">
-                    <a href="{% url 'assignments:detail' course.id %}">
-                        <!-- {% if course.course_logo %}
-                        <img src="{{ course.course_logo.url }}" class="img-responsive">
-                        {% else %}
-                        <h3>No image to display</h3>
-                        {% endif %} -->
-                    </a>
-                    <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
-                    <h2 align="center">{{ course.instructor }}</h2>
+                        <span class="text-danger small">{{ field.errors }}</span>
+                    </div>
+                    
+                <label class="control-label col-sm-5">{{ field.label_tag }}</label>
+                <div class="col-sm-5">{{ field }}</div>
                 </div>
-            </div>
-        </div>
-        <br><br><br>
-        <div class="col-sm-6">
+                {% endfor %}
 
-
-            <div class="panel-body"
-                style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px;">
-                <h3 align="center" ;
-                    style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Submit
-                    Assignment</h3>
-                {% if error_message %}
-                <p><strong>{{ error_message }}</strong></p>
-                {% endif %}
-                <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    {% for field in form %}
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <span class="text-danger small">{{ field.errors }}</span>
-                        </div>
-                        <label class="control-label col-sm-5">{{ field.label_tag }}</label>
-                        <div class="col-sm-5">{{ field }}</div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                    {% endfor %}
+                </div>
+            </form>
 
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-10">
-                            <button type="submit" class="btn btn-success">Submit</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-
-    </div>
-
-</div>
-
-
+          </div>
+          </div>
+      </div>
+    </section>
 {% endblock %}
+

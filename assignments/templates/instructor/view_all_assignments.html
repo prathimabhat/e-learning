@@ -1,24 +1,72 @@
 {% extends 'staff_template/base_template.html' %}
 {% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
 Assignments
 {% endblock page_title %}
 {% block main_content %}
+
+ <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">View Assignments</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="card-body">
+                   <div class="form-group">
+                        {% for assignment in assignments reversed %}
+                        <div >
+                            Assignment name : {{ assignment.description }}<br>
+                            Deadline for submission : {{ assignment.deadline }}<br>
+                            <div>
+                                <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
+                                    <button type="submit" class="btn btn-primary" style="margin-right: 50px">Submissions</button>
+                                </a>
+                                <a href="{% url 'assignments:view_feedback' assignment.id %}">
+                                <button type="submit" class="btn btn-primary">Feedback</button>
+                            </a><br><br>
+                            </div>
+                          
+                        </div>
+                        {% endfor %}
+                  </div>
+
+                </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+{% endblock %}
+<!--<br>
+<div class="container-fluid songs-container">
+
+    <div class="row">
+         
+=======
 
 <br>
 <div class="container-fluid songs-container">
 
     <div class="row">
-        <!-- Left Album Info -->
+         Left Album Info 
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
 
                 <div class="panel-body"">
                     <a href=" {% url 'assignments:instructor_detail' course.id %}">
-                    <!-- {% if course.course_logo %}
+                    {% if course.course_logo %}
                         <img src="{{ course.course_logo.url }}" class="img-responsive">
                         {% else %}
                         <h3>No image to display</h3>
-                        {% endif %} -->
+                        {% endif %} 
                     </a>
                     <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
                     <h2 align="center">{{ course.instructor }}</h2>
@@ -33,7 +81,9 @@ Assignments
             <h3 align="center" ; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">
                 Assignments</h3>
             {% for assignment in assignments reversed %}
+
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+
                 {{ assignment.description }}<br>
                 Deadline : {{ assignment.deadline }}<br>
                 <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
@@ -46,5 +96,6 @@ Assignments
             {% endfor %}
         </div>
 
-    </div>
-    {% endblock %}
+    </div>-->
+
+    

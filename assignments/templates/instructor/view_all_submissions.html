@@ -1,13 +1,46 @@
-{% extends 'instructor/instructor_basic_page.html' %}
-{% block course_active %}active{% endblock %}
-
-{% block body %}
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Assignments
+{% endblock page_title %}
+{% block main_content %}
 <br>
+<section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Submissions</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="card-body">
+                   <div class="form-group">
+                        {% for submission in submissions reversed %}
+                            <div>
+                                Name of student: <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">{{ submission.user.student_name }}</a><br>
+                                Time of submission: {{ submission.time_submitted }}<br><br>
+                            </div>
+                        {% endfor %}
+                      
+                  </div>
 
-<div class="container-fluid songs-container">
+                </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+{% endblock %}
+<!--<div class="container-fluid songs-container">
 
     <div class="row">
-        <!-- Left Album Info -->
+       
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
 
@@ -35,11 +68,11 @@
 
             {% for submission in submissions reversed %}
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-                <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">{{ submission.user }}</a><br>
-                Submitted at {{ submission.time_submitted }}<br>
+                <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">Name of student: {{ submission.user.student_name }}</a><br>
+                Time of submission: {{ submission.time_submitted }}<br>
             </div>
             {% endfor %}
         </div>
 
-    </div>
-    {% endblock %}
+    </div>-->
+ 

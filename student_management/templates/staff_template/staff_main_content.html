@@ -1,5 +1,6 @@
 {% extends 'staff_template/base_template.html' %}
 {% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
 Home
 {% endblock page_title %}
 {% block main_content %}
@@ -18,7 +19,8 @@ Home
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="{% url 'staff_take_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'select_class' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
             </div>
           </div>
           <!-- ./col -->
@@ -33,7 +35,7 @@ Home
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="{% url 'staff_take_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'select_class' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -63,7 +65,9 @@ Home
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
+
               <a href="#" class="small-box-footer">&nbsp;</a>
+
             </div>
           </div>
           <!-- ./col -->

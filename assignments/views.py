@@ -101,7 +101,7 @@ def add_assignment(request, course_id):
         notification.subject = course
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         notification.save()
-        return redirect('assignments:instructor_detail', course.id)
+        return redirect('assignments:view_all_assignments', course.id)
 
     return render(request, 'instructor/create_assignment.html', {'form': form, 'course': course})
 
@@ -273,6 +273,7 @@ def instructor_detail(request, course_id):
 
 
 @login_required
+
 def view_assignments(request, pk):
     course = Subjects.objects.get(id=pk)
     assignments = Assignment.objects.filter(subject=course)

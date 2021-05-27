@@ -1,10 +1,14 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
 Forum
 {% endblock page_title %}
 {% block main_content %}
 
-
+<div class="container">
+	<a class="bread-crumb" href="{% url 'forum:SubjectView' %}">Forum ></a>
+	<span class="bread-crumb">{{subject}}</span>
+</div>
 
 <br><br>
 
@@ -31,6 +35,7 @@ Forum
 	</div>
 
 
+</div>
 </div>
 
 	

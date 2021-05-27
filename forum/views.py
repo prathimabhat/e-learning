@@ -18,6 +18,7 @@ from django.contrib import messages
 # Create your views here.
 
 
+
 @login_required
 def SubjectView(request, *args, **kwargs):
 
@@ -38,18 +39,19 @@ def SubforumView(request,*args,**kwargs):
 			
 			}
 		)
-
 class QuestionView(View):
 
 	def get(self,request,*args,**kwargs):
 		question_id=kwargs['pk']
 		question=get_object_or_404(Questions,id=question_id)
 		answers=Answers.objects.filter(question=question_id)
+
 		context={
 			'question':question,
 			'answers':answers,
 			
 		}
+
 		return render(request,'forum/questions.html',context)
 
 
@@ -112,6 +114,7 @@ def QuestionDownVoteView(request,*args,**kwargs):
 
 def AnswerUpVoteView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=request.POST.get('answer_id_up'))
+
 	answer.up_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk_alt'])]))
 

@@ -1,10 +1,15 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
+<<<<<<< HEAD
 <div class="container">
 	<a class="bread-crumb" href="{% url 'forum:SubjectView' %}">Forum ></a>
 	<span class="bread-crumb">{{subject}}</span>
 </div>
 
+=======
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{subject.subject_name}}
+>>>>>>> e12c8af79a85a45713fb6f0edbdfd0bcdb096318
 {% endblock page_title %}
 {% block main_content %}
 <style type="text/css">
