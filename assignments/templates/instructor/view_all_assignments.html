@@ -3,6 +3,7 @@
 Assignments
 {% endblock page_title %}
 {% block main_content %}
+
  <section class="content">
       <div class="container-fluid">
                     <div class="row">
@@ -47,6 +48,13 @@ Assignments
 
     <div class="row">
          
+=======
+
+<br>
+<div class="container-fluid songs-container">
+
+    <div class="row">
+         Left Album Info 
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
 
@@ -71,7 +79,9 @@ Assignments
             <h3 align="center" ; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">
                 Assignments</h3>
             {% for assignment in assignments reversed %}
-            <div >
+
+            <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+
                 {{ assignment.description }}<br>
                 Deadline : {{ assignment.deadline }}<br>
                 <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
@@ -84,5 +94,6 @@ Assignments
             {% endfor %}
         </div>
 
-    </div>-->
+    </div>
+
     {% endblock %}

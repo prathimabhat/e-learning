@@ -913,6 +913,7 @@ def student_view_attendance_post(request):
     start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
     end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
 
+
     subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=request.user.id)
     stud_obj = Students.objects.get(user=user_obj)
@@ -1012,11 +1013,11 @@ def student_profile_save(request):
             student.ph_no = ph_no
             student.save()
             '''
-            messages.success(request, "Successfully Updated Password")
-            return HttpResponseRedirect(reverse("student_profile"))
+            #messages.success(request, "Successfully Updated Password")
+            return HttpResponseRedirect(reverse("login"))
         except:
-            messages.error(request, "Failed to Update Password")
-            return HttpResponseRedirect(reverse("student_profile"))
+            #messages.error(request, "Failed to Update Password")
+            return HttpResponseRedirect(reverse("login"))
 
 
 @csrf_exempt
@@ -1286,8 +1287,8 @@ def staff_feedback_save(request):
 
 
 def staff_profile(request):
-    user_ = CustomUser.objects.get(id=request.user.id)
-    staff = Staffs.objects.get(user=user_)
+    user = CustomUser.objects.get(id=request.user.id)
+    staff = Staffs.objects.get(user=user)
     return render(request, "staff_template/staff_profile.html", {"user": user, "staff": staff})
 
 
@@ -1319,11 +1320,11 @@ def staff_profile_save(request):
             staff.ph_no = ph_no
             staff.save()
             '''
-            messages.success(request, "Successfully Updated Password")
-            return HttpResponseRedirect(reverse("staff_profile"))
+            #messages.success(request, "Successfully Updated Password")
+            return HttpResponseRedirect(reverse("login"))
         except:
             messages.error(request, "Failed to Update Password")
-            return HttpResponseRedirect(reverse("staff_profile"))
+            #return HttpResponseRedirect(reverse("login"))
 
 
 @csrf_exempt
@@ -1421,7 +1422,7 @@ def edit_student_result(request, student_id):
     student = Students.objects.get(id=student_id)
     # courses = Courses.objects.all()
     # sessions = SessionYearModel.object.all()
-    results = StudentResult.objects.get(id= student_id)
+    results = StudentResult.objects.get(student_id= student_id)
     return render(request, "staff_template/edit_student_result.html",
                   {"student": student, "id": student_id,  "results": results})
 
@@ -1434,7 +1435,7 @@ def edit_student_result_save(request):
         subject_assignment_marks = request.POST.get('subject_assignment_marks')
         subject_exam_marks = request.POST.get('subject_exam_marks')
         try:
-            results = StudentResult.objects.get(id=student_id)
+            results = StudentResult.objects.get(student_id=student_id)
             results.subject_assignment_marks = subject_assignment_marks
             results.subject_exam_marks = subject_exam_marks
             results.save()

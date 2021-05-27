@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,24 +20,28 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
+
 <body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <h1>Courspace</h1>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in</p>
-      	<span style="display: flex; justify-content: center  ;align-content: center;">
-	      	<form method="POST">
-			    {% csrf_token %}
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>Courspace</h1>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in</p>
+        <span style="display: flex; justify-content: center  ;align-content: center;">
+          <form method="POST">
+            {% csrf_token %}
+
 
 			    {% for fields in form%}
 			    	{{fields.label}}<br>
 			    	{{fields}}<br><br>
 			    {% endfor %}<br>
-			    <input type="submit" value="Submit">
+
+			    <input class="btn btn-primary" type="submit" value="Submit">
+
 			</form>
 		</span>
        
@@ -45,38 +50,35 @@
           <div class="col-12">
             <br>
             <a href="{% url 'password_reset' %}">Forgot Password?</a>
-          </div>
-        </div>
 
 
-        <div class="row">
-          {% if messages %}
-         <div class="col-12">
-            {% for message in messages %}
-            {% if message.tags == 'error' %}
-            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+            <br><br>
+          <div class="row" style="display: flex;justify-content: center;align-content: center;color: red;">
+           {% if form.errors%}
+            <p>Incorrect email or password</p>
             {% endif %}
-            {% endfor %}
           </div>
-          {% endif %}
+          </div>
         </div>
+
+
       </form>
 
-    </div>
-    <!-- /.login-card-body -->
-  </div>
-</div>
-<!-- /.login-box -->
 
-<!-- jQuery -->
-<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+  </div>
+  <!-- /.login-card-body -->
+  </div>
+  </div>
+  <!-- /.login-box -->
+
+  <!-- jQuery -->
+  <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 
 </body>
+
 </html>
-
-
 

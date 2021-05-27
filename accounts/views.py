@@ -25,10 +25,13 @@ def login_request(request):
         return redirect('/parent_home')
     else:
         return redirect('/accounts/login/')
-
         
 
 def logout_request(request):
-    logout(request)
+
     messages.info(request, "Logged out successfully!")
-    return redirect('login')
+
+    return redirect('/login/')
+
+    return redirect('/login')
+

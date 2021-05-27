@@ -42,6 +42,29 @@
             </p>
           </a>
         </li>
+
+        <li class="nav-item">
+          {% url 'forum:SubjectView' as SubjectView %}
+          <a href="{{SubjectView }}" class="nav-link {% if request.path == SubjectView %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Forum
+            </p>
+          </a>
+        </li>
+
+
+        <li class="nav-item">
+          {% url 'assignments:student_resources' as student_resources %}
+          <a href="{{ student_resources}}"
+            class="nav-link {% if request.path == student_resources %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Resources
+            </p>
+          </a>
+        </li>
+
         <li class="nav-item">
           {% url 'student_view_attendance' as student_view_attendance %}
           {% url 'student_view_attendance_post' as student_view_attendance_post %}
@@ -53,7 +76,9 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+
+        <!-- <li class="nav-item">
+>>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
           {% url 'student_apply_leave' as student_apply_leave %}
           <a href="{{ student_apply_leave }}"
             class="nav-link {% if request.path == student_apply_leave %} active {% endif %}">
@@ -62,8 +87,13 @@
               Apply Leave
             </p>
           </a>
+<<<<<<< HEAD
         </li>
         <li class="nav-item">
+=======
+        </li> -->
+        <!-- <li class="nav-item">
+>>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
           {% url 'student_feedback' as student_feedback %}
           <a href="{{ student_feedback }}"
             class="nav-link {% if request.path == student_feedback %} active {% endif %}">
@@ -72,7 +102,10 @@
               Feedback
             </p>
           </a>
+<<<<<<< HEAD
         </li>
+=======
+        </li> -->
         <li class="nav-item">
           {% url 'student_view_result' as student_view_result %}
           <a href="{{ student_view_result }}"
@@ -83,7 +116,9 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+
+        <!-- <li class="nav-item">
+>>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
           {% url 'student_all_notification' as student_all_notification %}
           <a href="{% url 'student_all_notification' %}"
             class="nav-link {% if request.path == student_all_notification %} active {% endif %}">
@@ -92,7 +127,11 @@
               Notifications
             </p>
           </a>
+<<<<<<< HEAD
         </li>
+=======
+        </li> -->
+
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

@@ -24,7 +24,7 @@ Edit Result | Username : {{ student.admin.username }} |  #ID : {{ student.id }}
                   </div>
                    <div class="form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control" placeholder="Name" name="first_name" value="{{ student.admin.first_name }} {{ student.admin.last_name }}" disabled="disabled">
+                    <input type="text" class="form-control" placeholder="Name" name="first_name" value="{{ student.user.first_name }} {{ student.user.last_name }}" disabled="disabled">
                      <input type="hidden" name="student_id" value="{{ student.id }}">
                    </div>
 
