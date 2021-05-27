@@ -1,5 +1,8 @@
-{% extends 'accounts/base.html' %}
-{% block content %}
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+{{question.question_title}}
+{% endblock page_title %}
+{% block main_content %}
 
 <style type="text/css">
 	body{
@@ -39,12 +42,12 @@
 	
 
 		<div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
-			<form action="{% url 'community_forum:up_vote' question.pk %}" method="POST">
+			<form action="{% url 'forum:up_vote' question.pk %}" method="POST">
 				{% csrf_token %}
 				<button type="submit" name="question_id_up" value="{{question.id}}" class="btn"><i class="fas fa-long-arrow-alt-up up-votes"></i></button>
 			</form>
 			&nbsp;&nbsp;&nbsp;{{question.total_upvotes}}<br><br>
-			<form action="{% url 'community_forum:down_vote' question.pk %}" method="POST">
+			<form action="{% url 'forum:down_vote' question.pk %}" method="POST">
 				{% csrf_token %}
 				<button type="submit" name="question_id_down" value="{{question.id}}" class="btn"><i class="fas fa-long-arrow-alt-down down-votes"></i></button>
 			</form>
@@ -68,11 +71,11 @@
 	  
 	   <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
 	   		<br><br><!--<button type="button" id="play_button" onclick="speakQuestion()"><i class="fas fa-volume-up"></i></button>-->
-		   <a href="/community_forum/report/{{question.id}}"><i class="far fa-flag"></i></a>
+		   <a href="/forum/report/{{question.id}}"><i class="far fa-flag"></i></a>
 	   </div>
 
 	    <div class="container">
-			<span style="font-weight: bold;"><a href="/community_forum/questions/{{question.id}}/answer/">Answer this question!</a></span>
+			<span style="font-weight: bold;"><a href="/forum/questions/{{question.id}}/answer/">Answer this question!</a></span>
 		</div>
 
 	
@@ -87,12 +90,12 @@
 	    {% for answers in answers %}
 
 	    <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
-			<form action="{% url 'community_forum:answer_up_vote' answers.pk question.pk %}" method="POST">
+			<form action="{% url 'forum:answer_up_vote' answers.pk question.pk %}" method="POST">
 				{% csrf_token %}
 				<button type="submit" name="answer_id_up" value="{{answers.id}}" class="btn"><i class="fas fa-long-arrow-alt-up up-votes"></i></button>
 			</form>
 			&nbsp;&nbsp;&nbsp;{{answers.total_upvotes}}<br><br>
-			<form action="{% url 'community_forum:answer_down_vote' answers.pk question.pk %}" method="POST">
+			<form action="{% url 'forum:answer_down_vote' answers.pk question.pk %}" method="POST">
 				{% csrf_token %}
 				<button type="submit" name="answer_id_down" value="{{answers.id}}" class="btn"><i class="fas fa-long-arrow-alt-down down-votes"></i></button>
 			</form>
@@ -108,7 +111,7 @@
 
 	    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
 	   		<br><br><!--<button type="button" id="play_button" onclick="speakQuestion()"><i class="fas fa-volume-up"></i></button>-->
-		   <a href="/community_forum/report/answer/{{answers.id}}/"><i class="far fa-flag"></i></a>
+		   <a href="/forum/report/answer/{{answers.id}}/"><i class="far fa-flag"></i></a>
 	   </div>
 	    
 

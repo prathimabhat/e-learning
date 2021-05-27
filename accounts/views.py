@@ -24,11 +24,15 @@ def login_request(request):
     elif request.user.user_type=='4':
         return redirect('/parent_home')
     else:
-        return redirect('/login')
 
+        return redirect('/login/')
         
 
 def logout_request(request):
-    logout(request)
+
     messages.info(request, "Logged out successfully!")
+
+    return redirect('/login/')
+
     return redirect('/login')
+

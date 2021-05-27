@@ -21,7 +21,9 @@ from e_learning_platform import settings
 #import accounts.views as views 
 import student_management.views as views
 urlpatterns = [
+
 	
+    path('',include('django.contrib.auth.urls')), 
 	path('accounts/',include('accounts.urls')),
     path('',include('django.contrib.auth.urls')),  
     path('admin/', admin.site.urls),

@@ -42,6 +42,18 @@
             </p>
           </a>
         </li>
+
+        <li class="nav-item">
+          {% url 'forum:SubjectView' as SubjectView %}
+          <a href="{{SubjectView }}" class="nav-link {% if request.path == SubjectView %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Forum
+            </p>
+          </a>
+        </li>
+
+
         <li class="nav-item">
           {% url 'assignments:student_resources' as student_resources %}
           <a href="{{ student_resources}}"

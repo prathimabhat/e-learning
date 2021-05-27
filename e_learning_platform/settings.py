@@ -115,13 +115,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'examplemailid' #replace by original email id and pass word
-EMAIL_HOST_PASSWORD = 'examplepassword'
+EMAIL_HOST_USER = 'sharmakanksha2601@gmail.com' #replace by original email id and pass word
+EMAIL_HOST_PASSWORD = 'aka@1234'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL=False
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_REDIRECT_URL = 'accounts:login_request'
+LOGOUT_REDIRECT_URL = 'accounts:logout_request'
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
