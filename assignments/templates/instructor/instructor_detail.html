@@ -8,13 +8,13 @@
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
                 {% if course in courses %}
-                <div class="panel-body" style="background-color: #e3f0e8;border: 0px solid #66cdaa;">
+                <div class="panel-body">
                     <a href="{% url 'assignments:instructor_detail' course.id %}">
-                        {% if course.course_logo %}
+                        <!-- {% if course.course_logo %}
                         <img src="{{ course.course_logo.url }}" class="img-responsive">
                         {% else %}
                         <h3>No image to display</h3>
-                        {% endif %}
+                        {% endif %} -->
                     </a>
                     <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
                     <h2 align="center">{{ course.instructor }}</h2>
