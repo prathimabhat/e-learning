@@ -56,13 +56,36 @@
           </div>
           </div>
         </div>
+<<<<<<< HEAD
+      </div>
+      {% if form.errors %}
+
+      <p style="margin: 30px;color:red;font-family:verdana">username or password not correct!</p>
+
+      {% endif %}
+
+      <div class=" row">
+        {% if messages %}
+        <div class="col-12">
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger" style="margin-top:10px">{{ message }}<p>username or password not correct</p>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      </form>
+=======
 
 
       </form>
 
+>>>>>>> facaa0f6997829bb8b2531c9c378ce7f1ef588b8
 
-  </div>
-  <!-- /.login-card-body -->
+    </div>
+    <!-- /.login-card-body -->
   </div>
   </div>
   <!-- /.login-box -->
