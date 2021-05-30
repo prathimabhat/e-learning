@@ -38,7 +38,7 @@ class Submission(models.Model):
     CHOICES = [(i+1, i+1) for i in range(10)]
 
     ## The feedback given to the assignment by the student while uploading the submission
-    feedback = models.IntegerField(choices=CHOICES)
+    feedback = models.IntegerField(choices=CHOICES,null=True)
 
 
 ## @brief This class represents the messages displayed in the forum.

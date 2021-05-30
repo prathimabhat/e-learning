@@ -4,78 +4,113 @@
 Dashboard
 {% endblock page_title %}
 {% block main_content %}
-    <!-- Main content -->
+<!-- Main content -->
 
 
 <section class="content">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">About Me</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              <form role="form" action="{% url 'staff_profile_save' %}" method="post">
-                  {% csrf_token %}
-                <div class="card-body">
-                  <section id="student-detail-section header">
-              <div id="student-detail-section--inner">
-                <div class="container">
-                  <div class="row py-5">
-                    <div class="col-3">
-                      <img class="staff-profile-img" src="{{ staff.profile_pic }}" alt="" width="200" height="200">
-                    </div>
-                    <div class="col-8">
-                        <h4>Name : {{ user.first_name }} {{ user.last_name }}</h4>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">About Me</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form role="form" action="{% url 'staff_profile_save' %}" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+              <section id="student-detail-section header">
+                <div id="student-detail-section--inner">
+                  <div class="container">
+                    <div class="row py-5">
+                      <div class="col-3">
+                        <img class="staff-profile-img" src="{{ staff.profile_pic }}" alt="" width="200" height="200"
+                          style="border-radius: 50%;
+                      box-shadow: 0 1px 30px rgb(0 0 0 / 50%);">
+                      </div>
+                      <div class="col-8">
+                        <!-- <h4>Name : {{ user.first_name }} {{ user.last_name }}</h4>
                         <h4>Username : {{ user.username }}</h4>
                         <h4>Staff ID : {{ staff.teacher_roll_number }}</h4>
-                         <h4>Gender : {{ staff.gender }}</h4>
+                        <h4>Gender : {{ staff.gender }}</h4>
                         <h4>Date Of Birth : {{ staff.dob | date:'d-m-Y' }}</h4>
                         <h4>Qualification : {{ staff.qualification }}</h4>
                         <h4>Blood Group : {{ staff.blood_group }}</h4>
                         <h4>Email ID : {{ user.email }}</h4>
                         <h4>Contact Number : {{ staff.ph_no }}</h4>
-                        <h4>Address : {{ staff.address }}</h4>
+                        <h4>Address : {{ staff.address }}</h4> -->
+                        <ul style="list-style-type: none;">
+                          <li>
+                            Name : <span class="data">{{ user.first_name }} {{ user.last_name }}</span>
+                          </li>
+                          <li>
+                            Username : <span class="data">{{ user.username }}</span>
+                          </li>
+                          <li>
+                            Staff ID : <span class="data">{{ staff.teacher_roll_number }}</span>
+                          </li>
+                          <li>
+                            Gender : <span class="data">{{ staff.gender }}</span>
+                          </li>
+                          <li>
+                            Date Of Birth : <span class="data">{{ staff.dob | date:'d-m-Y' }}</span>
+                          </li>
+                          <li>
+                            Qualification : <span class="data">{{ staff.qualification }}</span>
+                          </li>
+                          <li>
+                            Blood Group : <span class="data">{{ staff.blood_group }}</span>
+                          </li>
+                          <li>
+                            Email ID : <span class="data">{{ user.email }}</span>
+                          </li>
+                          <li>
+                            Contact Number : <span class="data">{{ staff.ph_no }}</span>
+                          </li>
+                          <li>
+                            Address : <span class="data">{{ staff.address }}</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </section>
+              <div class="form-group">
+                <label>Change Password?</label>
+                <input type="password" class="form-control" name="password"
+                  placeholder="Fill only if you want to change password">
               </div>
-            </section>
-                   <div class="form-group">
-                    <label>Change Password?</label>
-                    <input type="password" class="form-control" name="password" placeholder="Fill only if you want to change password">
-                  </div>
-                   <div class="form-group">
-                      {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% if message.tags == 'success' %}
-                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% endfor %}
-                      {% endif %}
-                    </div>
+              <div class="form-group">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+              </div>
 
-                </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Update Password</button>
-                </div>
-              </form>
             </div>
-            <!-- /.card -->
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Update Password</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
 
 
 
-          </div>
-          </div>
       </div>
-    </section>
-    <!-- /.content -->
+    </div>
+  </div>
+</section>
+<!-- /.content -->
 {% endblock main_content %}

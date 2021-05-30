@@ -1105,13 +1105,18 @@ def staff_home(request):
         student_list.append(student.user.username)
         student_list_attendance_present.append(attendance_present_count)
         student_list_attendance_absent.append(attendance_absent_count)
-
+    user_ = CustomUser.objects.get(id=request.user.id)
+    staff_ = Staffs.objects.get(user=user_)
     return render(request, "staff_template/staff_main_content.html",
                   {"students_count": students_count, "attendance_count": attendance_count, "leave_count": leave_count,
                    "subject_count": subject_count, "subject_list": subject_list, "attendance_list": attendance_list,
                    "student_list": student_list, "present_list": student_list_attendance_present,
-                   "absent_list": student_list_attendance_absent})
+                   "absent_list": student_list_attendance_absent, "user": user_, "staff": staff_})
 
+def staff_profile(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    staff = Staffs.objects.get(user=user)
+    return render(request, "staff_template/staff_profile.html", {"user": user, "staff": staff})
 
 def staff_take_attendance(request):
     # print(request.user.id)
@@ -1286,10 +1291,7 @@ def staff_feedback_save(request):
             return HttpResponseRedirect(reverse("staff_feedback"))
 
 
-def staff_profile(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    staff = Staffs.objects.get(user=user)
-    return render(request, "staff_template/staff_profile.html", {"user": user, "staff": staff})
+
 
 
 def staff_profile_save(request):

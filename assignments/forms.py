@@ -19,7 +19,7 @@ class SubmissionForm(forms.ModelForm):
 
     class Meta:
         model = Submission
-        fields = ['file_submitted', 'feedback']
+        fields = ['file_submitted']
 
 from .models import Assignment,Notification, Resources
 
@@ -34,6 +34,7 @@ class NotificationForm(forms.ModelForm):
 ## @brief This class represents the form to add an assignment.
 class AssignmentForm(forms.ModelForm):
 
+    deadline = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     class Meta:
         model = Assignment
         fields = ['description', 'file', 'deadline']

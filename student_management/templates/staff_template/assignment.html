@@ -4,44 +4,44 @@
 Assignment
 {% endblock page_title %}
 {% block main_content %}
-    <!-- Main content -->
+<!-- Main content -->
 
-      <br>
-      <section class="content">
-          <form role="form" action="/assignments/get_subject/" method="POST">
-               {% csrf_token %}
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-md-4">
+<br>
+<section class="content">
+  <form role="form" action="/assignments/get_subject/" method="POST">
+    {% csrf_token %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
 
 
-                <h4>Select subject </h4>
-                <select  class="form-control" name="subject">
-                  {% for subject in subjects %}
-                  <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
-                  {% endfor %}
-                </select>
-                <br><br><br>
-                <h4>Select action</h4>
-                <select  class="form-control" name="action">
-                  
-                  <option value="view_assignment">View Assignment</option>
-                  <option value="create_assignment">Create Assignment</option>
-                  
-                </select>
-              </div>
-          </div>
+          <h4>Select subject </h4>
+          <select class="form-control" name="subject">
+            {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+            {% endfor %}
+          </select>
+          <br><br><br>
+          <h4>Select action</h4>
+          <select class="form-control" name="action">
+
+            <option value="create_assignment">Create Assignment</option>
+            <option value="view_assignment">View Assignment</option>
+
+          </select>
+        </div>
       </div>
-        <br><br><br><br><br><br>
-      <div>
+    </div>
+    <br><br><br><br><br><br>
+    <div>
 
-        <button class="btn btn-primary" id="fetch_assignments">Go</button>
-      </div>
-          </form>
-      
-    </section>
+      <button class="btn btn-primary" id="fetch_assignments">Go</button>
+    </div>
+  </form>
+
+</section>
 
 
 
-    <!-- /.content -->
+<!-- /.content -->
 {% endblock main_content %}

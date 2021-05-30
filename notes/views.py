@@ -12,7 +12,7 @@ import datetime
 
 @login_required
 def home(request):
-	subjects=Subjects.objects.all()
+	subjects=Subjects.objects.filter(course_id=request.user.students.course_id.id)
 	context={
 		'subjects':subjects
 	}

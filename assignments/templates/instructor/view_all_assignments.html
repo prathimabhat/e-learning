@@ -5,45 +5,46 @@ Assignments
 {% endblock page_title %}
 {% block main_content %}
 
- <section class="content">
-      <div class="container-fluid">
-                    <div class="row">
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">View Assignments</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-                <div class="card-body">
-                   <div class="form-group">
-                        {% for assignment in assignments reversed %}
-                        <div >
-                            Assignment name : {{ assignment.description }}<br>
-                            Deadline for submission : {{ assignment.deadline }}<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Assignments</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            {% for assignment in assignments reversed %}
                             <div>
-                                <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
-                                    <button type="submit" class="btn btn-primary" style="margin-right: 50px">Submissions</button>
-                                </a>
-                                <a href="{% url 'assignments:view_feedback' assignment.id %}">
-                                <button type="submit" class="btn btn-primary">Feedback</button>
-                            </a><br><br>
+                                Assignment name : {{ assignment.description }}<br>
+                                Deadline for submission : {{ assignment.deadline }}<br>
+                                <div>
+                                    <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-right: 50px">Submissions</button>
+                                    </a>
+                                    <a href="{% url 'assignments:view_feedback' assignment.id %}">
+                                        <!-- <button type="submit" class="btn btn-primary">Feedback</button> -->
+                                    </a><br><br>
+                                </div>
+
                             </div>
-                          
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                  </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
 
                 </div>
-            <!-- /.card -->
-
-
-
-          </div>
-          </div>
-      </div>
-    </section>
+            </div>
+        </div>
+</section>
 {% endblock %}
 <!--<br>
 <div class="container-fluid songs-container">
@@ -97,5 +98,3 @@ Assignments
         </div>
 
     </div>-->
-
-    
