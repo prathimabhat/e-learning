@@ -14,6 +14,7 @@ class Subjects(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=255)
     course_id = models.ForeignKey(Courses, on_delete=models.CASCADE, default=1)
+    student_id= models.ManyToManyField(Students, related_name="student")
     staff_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -69,10 +70,10 @@ class NotificationStudent(models.Model):
 
 class StudentResult(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
-    subject_id = models.ForeignKey(Subjects, on_delete=models.CASCADE)
-    subject_exam_marks = models.FloatField(default=0)
-    subject_assignment_marks = models.FloatField(default=0)
+    student_id = models.ForeignKey(Students,related_name="student_result" ,on_delete=models.CASCADE,null=True)
+    subject_id = models.ForeignKey(Subjects, related_name="student_result" ,on_delete=models.CASCADE,null=True)
+    subject_exam_marks = models.FloatField(null=True)
+    subject_assignment_marks = models.FloatField(null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now_add=True)
     objects = models.Manager()

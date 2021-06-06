@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 import datetime
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -917,12 +917,22 @@ def student_view_attendance_post(request):
     subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=request.user.id)
     stud_obj = Students.objects.get(user=user_obj)
-
+    attendance_ = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),subject_id=subject_id)
+    attendance_present = AttendanceReport.objects.filter(attendance_id__in=attendance_, status=True,
+                                                                   student_id=stud_obj.id).count()
+    attendance_absent = AttendanceReport.objects.filter(attendance_id__in=attendance_, status=False,
+                                                                  student_id=stud_obj.id).count()
     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
                                            subject_id=subject_obj)
     attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
-
-    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports})
+    total_attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj).count()
+    try:
+        perc = attendance_present * 100 / total_attendance_reports
+    except ZeroDivisionError:
+        perc = 0
+    
+    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports, "attendance_present": attendance_present,
+        "attendance_absent":attendance_absent,"total_attendance_reports":total_attendance_reports,"perc":perc})
 
 
 def student_apply_leave(request):
@@ -1130,12 +1140,37 @@ def staff_take_attendance(request):
                   {"subjects": subjects, "session_years": session_years})
 
 
+def select_session_year(request):
+    session_years = SessionYearModel.objects.all()
+    return render(request, "staff_template/select_class_result.html",
+                  {"session_years": session_years})
 def select_class(request):
     courses = Courses.objects.all()
     return render(request, "staff_template/select_class_template.html",
                   {"courses": courses})
+@csrf_exempt
+def get_class(request):
+    session_year = request.POST.get("session_year")
+    session_model = SessionYearModel.objects.get(id=session_year)
+    courses = Courses.objects.filter(session_year_id=session_model)
+    list_data = []
 
+    for course in courses:
+        data_small = {"id": course.id, "name": course.course_name}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
+@csrf_exempt
+def get_subject(request):
+    course = request.POST.get("course")
+    course_model = Courses.objects.get(id=course)
+    subjects = Subjects.objects.filter(course_id=course_model)
+    list_data = []
+
+    for subject in subjects:
+        data_small = {"id": subject.id, "name": subject.subject_name}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 def edit_select_class(request):
     courses = Courses.objects.all()
@@ -1350,44 +1385,86 @@ def staff_all_notification(request):
 def staff_add_result(request):
     # course = request.POST.get("course")
     # subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
-    subjects = Subjects.objects.filter(staff_id=request.user.id)
-    courses = Courses.objects.all()
-    session_years = SessionYearModel.objects.all()
+    
+    course_ = request.POST.get("class_list")
+    print(course_)
+    course_obj = Courses.objects.get(id=course_)
+    subjects = Subjects.objects.filter(staff_id=request.user.id).filter(course_id=course_obj.id)
     return render(request, "staff_template/staff_add_result.html",
-                  {"subjects": subjects, "courses": courses, "session_years": session_years})
+                  {"subjects": subjects, "course": course_})
 
+def staff_add_result_save(request,student_id,subject_id):
+    student_obj=Students.objects.get(id=student_id)
+    subject_=Subjects.objects.get(id=subject_id)
+    return render(request,"staff_template/staff_add_result_save.html",{"student_obj":student_obj, "subject":subject_})
 
-def save_student_result(request):
-    subject = request.POST.get("subject")
-    print(subject)
-    if request.method != 'POST':
-        return HttpResponseRedirect('staff_add_result')
-    student_user_id = request.POST.get('student_list')
-    assignment_marks = request.POST.get('assignment_marks')
-    exam_marks = request.POST.get('exam_marks')
-    subject_id = request.POST.get('subject')
-
-    student_obj = Students.objects.get(user=student_user_id)
-    subject_obj = Subjects.objects.get(id=subject_id)
-
-    try:
-        check_exist = StudentResult.objects.filter(subject_id=subject_obj, student_id=student_obj).exists()
-        if check_exist:
-            result = StudentResult.objects.get(subject_id=subject_obj, student_id=student_obj)
-            result.subject_assignment_marks = assignment_marks
-            result.subject_exam_marks = exam_marks
-            result.save()
-            messages.success(request, "Successfully Updated Result")
-            return HttpResponseRedirect(reverse("staff_add_result"))
-        else:
+    '''if request.method!="POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        assignment_marks = request.POST.get('assignment_marks')
+        exam_marks = request.POST.get('exam_marks')
+        subject_id = request.POST.get('subject')
+        student_user_id = request.POST.get('student_list')
+        student_obj = Students.objects.get(user=student_user_id)
+        subject_obj = Subjects.objects.get(id=subject_id)
+        try:
             result = StudentResult(student_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks,
                                    subject_assignment_marks=assignment_marks)
             result.save()
             messages.success(request, "Successfully Added Result")
             return HttpResponseRedirect(reverse("staff_add_result"))
-    except:
-        messages.error(request, "Failed to Add Result")
-        return HttpResponseRedirect(reverse("staff_add_result"))
+        except:
+            messages.error(request, "Failed to Add Result")
+            return HttpResponseRedirect(reverse("staff_add_result"))'''
+
+def staff_manage_result(request):
+    #course = request.POST.get("course")
+    #print(course)
+    subject=request.POST.get("subject")
+    print(subject)
+    subject_=Subjects.objects.get(id=subject)
+   
+    #course_=Courses.objects.get(id=subject_.course_id.id)
+    #session_year= SessionYearModel.objects.get(id=course_.session_year_id.id)
+    stu=[]
+    for x in subject_.student_id.all():
+        stu.append(x.id)
+    print(stu)
+    students = Students.objects.filter(pk__in=stu)
+    print(students)
+    results = StudentResult.objects.filter(subject_id=subject_).filter(student_id__in=stu)
+    print(results)
+    stud_=[]
+    for y in results:
+        stud_.append(y.student_id.id)
+    
+    print(stud_)
+    students_=Students.objects.filter(pk__in=stud_)
+    return render(request,"staff_template/staff_add_result_student_list.html",{"subject":subject_, "results":results,
+        "students":students,"students_":students_})
+
+def save_student_result(request, student_id, subject_id):
+    student_obj = Students.objects.get(id=student_id)
+    subject_obj = Subjects.objects.get(id=subject_id)
+    student_obj_id = student_obj.id
+    subject_obj_id = subject_obj.id
+    if request.method != 'POST':
+        return render(request,"staff_template/staff_add_result_save.html")
+    else:
+        assignment_marks = request.POST.get('subject_assignment_marks')
+        exam_marks = request.POST.get('subject_exam_marks')
+        try:
+            
+           
+            result = StudentResult(student_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks,
+                               subject_assignment_marks=assignment_marks)
+            result.save()
+            
+            messages.success(request, "Successfully Updated Results")
+            return redirect("save_student_result",student_obj_id,subject_obj_id)
+        except:
+            messages.error(request, "Failed to Update Results")
+            return redirect("save_student_result",student_obj_id,subject_obj_id)
 
 
 @csrf_exempt
@@ -1420,32 +1497,34 @@ def manage_student_result_list_display(request):
     return render(request, "staff_template/manage_student_result_list_display.html", {"students": students, "results": results})
 
 
-def edit_student_result(request, student_id):
+def edit_student_result(request, student_id,subject_id):
     student = Students.objects.get(id=student_id)
+    subject = Subjects.objects.get(id=subject_id)
     # courses = Courses.objects.all()
     # sessions = SessionYearModel.object.all()
-    results = StudentResult.objects.get(student_id= student_id)
+    results = StudentResult.objects.get(student_id= student,subject_id=subject)
     return render(request, "staff_template/edit_student_result.html",
-                  {"student": student, "id": student_id,  "results": results})
+                  {"student": student, "id": student_id,  "results": results,"subject":subject})
 
 
-def edit_student_result_save(request):
-    student_id = request.POST.get("student_id")
+def edit_student_result_save(request,student_id,subject_id):
+    student_id_ = Students.objects.get(id=student_id)
+    subject_id_ =Subjects.objects.get(id=subject_id)
     if request.method != 'POST':
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
         subject_assignment_marks = request.POST.get('subject_assignment_marks')
         subject_exam_marks = request.POST.get('subject_exam_marks')
         try:
-            results = StudentResult.objects.get(student_id=student_id)
+            results = StudentResult.objects.get(student_id=student_id_,subject_id=subject_id_)
             results.subject_assignment_marks = subject_assignment_marks
             results.subject_exam_marks = subject_exam_marks
             results.save()
             messages.success(request, "Successfully Updated Results")
-            return HttpResponseRedirect(reverse("edit_student_result", kwargs={"student_id": student_id}))
+            return HttpResponseRedirect(reverse("edit_student_result", kwargs={"student_id": student_id, "subject_id":subject_id}))
         except:
             messages.error(request, "Failed to Update Results")
-            return HttpResponseRedirect(reverse("edit_student_result", kwargs={"student_id": student_id}))
+            return HttpResponseRedirect(reverse("edit_student_result", kwargs={"student_id": student_id,"subject_id":subject_id}))
 
 
 

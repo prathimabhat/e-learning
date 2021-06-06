@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from .managers import CustomUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+#from student_management.models import Subjects
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
@@ -76,6 +76,7 @@ class Staffs(models.Model):
 class Courses(models.Model):
 	id = models.AutoField(primary_key=True)
 	course_name = models.CharField(max_length=255)
+	session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,related_name='course',null=True,blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now_add=True)
 	objects = models.Manager()
@@ -96,6 +97,7 @@ class Students(models.Model):
 	dob = models.DateField(null=True)
 	fcm_token = models.TextField(default="")
 	address = models.TextField()
+	#subject_id= models.ManyToManyField(Subjects,related_name="subject",null=True)
 	course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING,null=True,blank=True)
 	session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,related_name='student',null=True,blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
