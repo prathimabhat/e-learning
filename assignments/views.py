@@ -6,6 +6,7 @@ from accounts.models import Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import AssignmentForm, NotificationForm, ResourceForm,MessageForm,SubmissionForm
 import datetime
+from datetime import date, time
 # Create your views here.
 
 @login_required
@@ -276,10 +277,12 @@ def instructor_detail(request, course_id):
 
 def view_assignments(request, pk):
     course = Subjects.objects.get(id=pk)
+    today_=date.today().strftime("%Y-%m-%d")
     assignments = Assignment.objects.filter(subject=course)
     context = {
         'course' : course,
         'assignments' : assignments,
+        'today':today_
     }
     return render(request,'course/view_assignments.html',context)
 

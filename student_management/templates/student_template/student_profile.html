@@ -22,13 +22,13 @@ Dashboard
               <section id="student-detail-section header">
                 <div id="student-detail-section--inner">
                   <div class="container">
-                    <div class="row py-5">
+                    <div class="row py-2">
                       <div class="col-3">
                         <img class="student-profile-img" src="{{ student.profile_pic }}" alt="" width="200" height="200"
                           style="border-radius: 50%;
                       box-shadow: -1px 4px 13px -6px rgb(94, 92, 92);">
                       </div>
-                      <div class="col-8 d-flex">
+                      <div class="col-9 d-flex">
                         <ul class="student_profile_data p-0" style="list-style-type: none;">
                           <li>
                             Name : <span class="data">{{ user.first_name }} {{ user.last_name }}</span>
@@ -40,7 +40,7 @@ Dashboard
                             Roll Number : <span class="data">{{ student.roll_number }}</span>
                           </li>
                           <li>
-                            Username : <span class="data">{{ user.username }}</span>
+                            Contact Number : <span class="data">{{ student.ph_no }}</span>
                           </li>
                           <li>
                             Date Of Birth : <span class="data">{{ student.dob | date:'d-m-Y' }}</span>
@@ -52,17 +52,17 @@ Dashboard
                             Blood Group : <span class="data">{{ student.blood_group }}</span>
                           </li>
                           <li>
-                            Session : <span class="data">{{ student.session_year_id.session_start_year }} TO
-                              {{ student.session_year_id.session_end_year }}</span>
+                            Session : <span class="data">{{ student.session_year_id.session_start_year }} to
+                              {{student.session_year_id.session_end_year }}</span>
                           </li>
                           <li>
                             Email ID : <span class="data">{{ user.email }}</span>
                           </li>
                         </ul>
                         <ul class="p-0  ml-5" style="list-style-type: none;">
-                          <li>
+                          <!-- <li>
                             Contact Number : <span class="data">{{ student.ph_no }}</span>
-                          </li>
+                          </li> -->
                           <li>
                             Address : <span class="data">{{ student.address }}</span>
                           </li>
@@ -70,13 +70,13 @@ Dashboard
                             Parent Email ID : <span class="data">{{ user2.email }}</span>
                           </li>
                           <li>
-                            Father's Name : <span class="data">{{ parent.first_name }}</span>
+                            Father's Name : <span class="data">{{ parent.father_name }}</span>
                           </li>
                           <li>
                             Father's Occupation : <span class="data">{{ parent.father_occupation }}</span>
                           </li>
                           <li>
-                            Mother's Name : <span class="data">{{ user2.last_name }}</span>
+                            Mother's Name : <span class="data">{{ parent.mother_name }}</span>
                           </li>
                           <li>
                             Mother's Occupation : <span class="data">{{ parent.mother_occupation }}</span>

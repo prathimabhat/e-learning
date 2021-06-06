@@ -9,30 +9,40 @@ My Notes
 
 	<div class="row">
 
-			{% for subject in subjects%}
-			<div class="card card-primary mb-3 ml-3 mr-3">
-				<div class="card-title mb-3 ml-3 mr-3">
-					<span style="font-weight: bolder;"><br>{{subject.subject_name|safe}}<br></span>
-					
-				</div>
-				<div class="card-body">
-					<strong><a href="/notes/{{subject.id}}/">View notes</a></strong>
-					<br>
-					<strong><a href="{% url 'notes:upload_notes' subject.id %}">
-					Upload notes</a></strong>
-					<br>
-					<strong><a href="{% url 'notes:write_notes' subject.id %}">Write notes</a></strong>
-            
-            
-				</div>
+
+		{% for subject in subjects%}
+
+		<div class="card card-primary mb-3 ml-3 mr-3  bg-dark">
+			<div class="card-title mb-3 ml-3 mr-3">
+				<span style="font-weight: bolder;text-align: centers;font-size: 150%;">
+					<br>{{subject.subject_name| capfirst|safe}}<br>
+				</span>
+
 			</div>
-			{% endfor %}
-			<br>
-		
+			<div class="card-body ">
+				<p>{{selectedSubjectId}}</p>
+				<strong><a href="/notes/{{subject.id}}/" id="viewNotes" class="link-primary w-100">View
+						notes</a></strong>
+				<br>
+				<br>
+				<strong><a href="{%url 'notes:upload_notes' subject.id%}" id="uploadNotes"
+						class="link-secondary  w-100">
+						Upload notes</a></strong>
+				<br>
+				<br>
+				<strong><a href="{%url 'notes:write_notes' subject.id%}" id="writeNotes"
+						class="link-warning w-100">Write
+						notes</a></strong>
+
+
+			</div>
+		</div>
+		{% endfor %}
+		<br>
+
 	</div>
 
 </div>
-
 
 
 {% endblock %}

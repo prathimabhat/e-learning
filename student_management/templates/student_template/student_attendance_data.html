@@ -46,12 +46,11 @@ Attendance Data
               <!-- /.card-header -->
               <!-- form start -->
                 <div class="card-body">
-                    Total Class Taken: {{total_attendance_reports}}<br>
+                  Total Class Taken: {{total_attendance_reports}}<br>
                     Total Class Attended: {{ attendance_present }}<br>
                     Total Class Absent: {{ attendance_absent }}<br>
                     Percentage of Attendance: {{ perc|stringformat:"d%%" }} <br>
                     <div class="row">
-
                     {% if attendance_reports %}
                     {% for attendance_report in attendance_reports %}
                        {% if attendance_report.status == True %}
