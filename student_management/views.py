@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import datetime
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from accounts.models import Students,CustomUser , SessionYearModel,Parents,Staffs,AdminHOD
 from student_management.models import Courses, Subjects,  Attendance, AttendanceReport,FeedBackStudent, LeaveReportStudent, NotificationStudent, StudentResult
 
-
+from datetime import date
 #AdminHod views 
     
 
@@ -877,7 +877,11 @@ def student_home(request):
     attendance_absent = AttendanceReport.objects.filter(student_id=student_obj, status=False).count()
     course = Courses.objects.get(id=student_obj.course_id.id)
     subjects = Subjects.objects.filter(course_id=course).count()
-
+    user = CustomUser.objects.get(id=request.user.id)
+    student = Students.objects.get(user=user)
+    user1 = int(request.user.id) + 1
+    user2 = CustomUser.objects.get(id=str(user1))
+    parent = Parents.objects.get(user=user2)
     subject_name = []
     data_present = []
     data_absent = []
@@ -895,7 +899,7 @@ def student_home(request):
     return render(request, "student_template/student_main_content.html",
                   {"total_attendance": attendance_total, "attendance_absent": attendance_absent,
                    "attendance_present": attendance_present, "subjects": subjects, "data_name": subject_name,
-                   "data1": data_present, "data2": data_absent})
+                   "data1": data_present, "data2": data_absent,"user": user, "user2": user2, "student": student, "parent": parent})
 
 
 def student_view_attendance(request):
@@ -910,19 +914,33 @@ def student_view_attendance_post(request):
     start_date = request.POST.get("start_date")
     end_date = request.POST.get("end_date")
 
-    start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
-    end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
-
-
+    # start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
+    
+    # end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
+    end_date_parse=date.today()
+    
     subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=request.user.id)
     stud_obj = Students.objects.get(user=user_obj)
-
+    start_date_parse=stud_obj.session_year_id.session_start_year
+    subject_name=subject_obj.subject_name
     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
                                            subject_id=subject_obj)
     attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
+    present_=0
+    absent_=0
+    for attendance_report in attendance_reports:
+        if attendance_report.status == True:
+            present_+=1
+        else:
+            absent_+=1
+    try:
+        percentage_attendence=round(((present_/(absent_+present_))*100),2)
+    except:
+        messages.error(request, "No Attendence Data")
+        return HttpResponseRedirect(reverse("student_view_attendance"))
 
-    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports})
+    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports,"percentage_attendence":percentage_attendence,"present_":present_,"absent_":absent_,"subject_name":subject_name})
 
 
 def student_apply_leave(request):

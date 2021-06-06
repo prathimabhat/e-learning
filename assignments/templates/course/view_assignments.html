@@ -6,45 +6,49 @@ Assignments
 {% block main_content %}
 <br>
 <section class="content">
-      <div class="container-fluid">
-                    <div class="row">
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">View Assignments</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-                <div class="card-body">
-                   <div class="form-group">
-                        {% for assignment in assignments reversed %}
-                        <div >
-                            Assignment name : {{ assignment.description }}<br>
-                            Post Time: {{ assignment.post_time }}<br>
-                            Deadline for submission : {{ assignment.deadline }}<br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Assignments</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            {% for assignment in assignments reversed %}
                             <div>
-                               <a href="{{ assignment.file.url }}">
-                    <button type="submit" class="btn btn-primary" style="margin-right: 20px">Download Assignment</button></a>
-                                <a href="{% url 'assignments:view_feedback' assignment.id %}">
-                                <a href="{% url 'assignments:upload_submission' assignment.id %}">
-                    <button type="submit" class="btn btn-primary">Upload Submission</button></a>
-                            <br><br>
+                                Assignment name : {{ assignment.description }}<br>
+                                Post Time: {{ assignment.post_time }}<br>
+                                Deadline for submission : {{ assignment.deadline|date:"Y-m-d"}}<br>
+                                <div>
+                                    <a href="{{ assignment.file.url }}">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-right: 20px">Download Assignment</button></a>
+                                    {% if today <= assignment.deadline %} <a
+                                        href="{% url 'assignments:view_feedback' assignment.id %}">
+
+                                        <a href="{% url 'assignments:upload_submission' assignment.id %}">
+                                            <button type="submit" class="btn btn-primary">Upload Submission</button></a>
+                                        {% endif%}
+                                        <br><br>
+                                </div>
+
                             </div>
-                          
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                  </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
 
                 </div>
-            <!-- /.card -->
-
-
-
-          </div>
-          </div>
-      </div>
-    </section>
+            </div>
+        </div>
+</section>
 {% endblock %}
 <!--<div class="container-fluid songs-container"
 

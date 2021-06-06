@@ -7,128 +7,130 @@ Add Staff
 <!-- Main content -->
 
 <style>
-  .invalid:before {
+  .invalid::before,
+  .valid::before {
+    font-size: 14px;
+  }
+
+  .invalid::before {
     position: relative;
-    left: -35px;
+    left: -5px;
     content: "\274C";
   }
 
-  .valid:before {
+  .valid::before {
     position: relative;
-    left: -35px;
+    left: -5px;
     content: "\2714";
   }
 </style>
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
+      <div class="card card-primary w-100">
         <!-- general form elements -->
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Add Staff</h3>
-          </div>
-          <!-- /.card-header -->
-          <!-- form start -->
-          <form role="form" action="/add_staff_save" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="card-body">
-              <div class="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control" name="email" placeholder="Enter email" id="id_email"
-                  pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b"
-                  title="Please enter valid email id" autocomplete="off">
-              </div>
-              <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" placeholder="Password" id="password"
-                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                  title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-                  required name="password">
-              </div>
-              <div id="message">
-                <h6>Password must contain the following:</h6>
-                <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-                <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-                <p id="number" class="invalid">A <b>number</b></p>
-                <p id="length" class="invalid">Minimum <b>8 characters</b></p>
-              </div>
-              <div class="form-group">
-                <label>First Name</label>
-                <input type="text" class="form-control" placeholder="First Name" name="first_name">
-              </div>
-              <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" class="form-control" placeholder="Last Name" name="last_name">
-              </div>
-
-              <div class="form-group">
-                <label>Staff ID</label>
-                <input type="text" class="form-control" placeholder="Enter Staff ID" name="teacher_roll_number"
-                  id="id_teacher_roll_number" autocomplete="off" required>
-              </div>
-              <div class="form-group">
-                <label>Date Of Birth</label>
-                <input type="date" class="form-control" placeholder="Date Of Birth" name="dob" required>
-              </div>
-              <div class="form-group">
-                <label>Gender</label>
-                <select class="form-control" name="gender" required>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Blood Group</label>
-                <input type="text" class="form-control" placeholder="Blood Group" name="blood_group" required>
-              </div>
-              <div class="form-group">
-                <label>Qualification</label>
-                <input type="text" class="form-control" placeholder="Qualification" name="qualification" required>
-              </div>
-              <div class="form-group">
-                <label>Profile Picture</label>
-                <input type="file" class="form-control" placeholder="Upload Your Picture" name="profile_pic" required>
-              </div>
-
-              <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" id="phone_num" class="form-control" placeholder="Phone Number" name="ph_no" required>
-              </div>
-              <div class="form-group">
-                <label>Address</label>
-                <input type="text" class="form-control" placeholder="Address" name="address" required>
-              </div>
-              <div class="form-group">
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == 'error' %}
-                <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                {% endif %}
-                {% if message.tags == 'success' %}
-                <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-              </div>
-
-            </div>
-            <!-- /.card-body -->
-
-            <div class="card-footer">
-              <button type="submit" class="btn btn-primary">Add Staff</button>
-              <button type="reset" class="btn btn-primary float-right">Reset</button>
-            </div>
-          </form>
+        <div class="card-header">
+          <h3 class="card-title">Add Staff</h3>
         </div>
-        <!-- /.card -->
-
-
-
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form role="form" action="/add_staff_save" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Email address</label>
+                  <input type="email" class="form-control" name="email" placeholder="Enter email" id="id_email"
+                    pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b"
+                    title="Please enter valid email id" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" class="form-control" placeholder="Password" id="password"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                    required name="password">
+                </div>
+                <div id="message" class="pass_validity">
+                  <h6>Password must contain the following:</h6>
+                  <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                  <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                  <p id="number" class="invalid">A <b>number</b></p>
+                  <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                </div>
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" class="form-control" placeholder="First Name" name="first_name">
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" placeholder="Last Name" name="last_name">
+                </div>
+                <div class="form-group">
+                  <label>Date Of Birth</label>
+                  <input type="date" class="form-control" placeholder="Date Of Birth" name="dob" required>
+                </div>
+                <div class="form-group">
+                  <label>Staff ID</label>
+                  <input type="text" class="form-control" placeholder="Enter Staff ID" name="teacher_roll_number"
+                    id="id_teacher_roll_number" autocomplete="off" required>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Gender</label>
+                  <select class="form-control" name="gender" required>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Blood Group</label>
+                  <input type="text" class="form-control" placeholder="Blood Group" name="blood_group" required>
+                </div>
+                <div class="form-group">
+                  <label>Qualification</label>
+                  <input type="text" class="form-control" placeholder="Qualification" name="qualification" required>
+                </div>
+                <div class="form-group">
+                  <label>Profile Picture</label>
+                  <input type="file" class="form-control" placeholder="Upload Your Picture"
+                    accept="image/png, image/jpeg" name="profile_pic" required>
+                </div>
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="tel" id="phone_num" class="form-control" placeholder="Phone Number" pattern="/^\d{10}$/"
+                    title="Enter a valid 10 digit number" name="ph_no" required>
+                </div>
+                <div class="form-group">
+                  <label>Address</label>
+                  <input type="text" class="form-control" placeholder="Address" name="address" required>
+                </div>
+                <div class="form-group">
+                  {% if messages %}
+                  {% for message in messages %}
+                  {% if message.tags == 'error' %}
+                  <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                  {% endif %}
+                  {% if message.tags == 'success' %}
+                  <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                  {% endif %}
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer col-12">
+                <button type="submit" class="btn btn-primary">Add Staff</button>
+                <button type="reset" class="btn btn-danger float-right">Reset</button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
-
   </div>
 </section>
 <!-- /.content -->
@@ -182,7 +184,7 @@ Add Staff
             console.log(response);
             if (response == "True") {
               $(".teacher_roll_number_error").remove();
-              $("<span class='teacher_roll_number_error' style='padding: 5px;color: red;font-weight: bold;'>ID Already exits</span>").insertAfter("#id_teacher_roll_number");
+              $("<span class='teacher_roll_number_error' style='padding: 5px;color: red;font-weight: bold;'> ID Already exits  </span>").insertAfter("#id_teacher_roll_number");
             }
             else {
               $(".teacher_roll_number_error").remove();

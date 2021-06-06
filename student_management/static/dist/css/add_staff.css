@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 /* input {
   width: 100%;
   padding: 12px;
@@ -15,6 +16,10 @@
 }
 
 Style the container for inputs */
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
 .container {
   background-color: #f1f1f1;
   padding: 20px;
@@ -23,16 +28,22 @@ Style the container for inputs */
 /* The message box is shown when the user clicks on the password field */
 #message {
   display: none;
-  background: #f1f1f1;
   color: #000;
   position: relative;
-  padding: 20px;
-  margin-top: 10px;
+  padding: 10px;
+  /* height: 200px; */
+}
+
+#message h6 {
+  font-size: 14px;
 }
 
 #message p {
-  padding: 10px 35px;
-  font-size: 18px;
+  /* padding: 10px 35px;
+  font-size: 18px; */
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
 }
 
 /* Add a green text color and a checkmark when the requirements are right */

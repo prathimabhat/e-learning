@@ -24,30 +24,20 @@ Dashboard
               <section id="student-detail-section header">
                 <div id="student-detail-section--inner">
                   <div class="container">
-                    <div class="row py-5">
+                    <div class="row py-4">
                       <div class="col-3">
                         <img class="staff-profile-img" src="{{ staff.profile_pic }}" alt="" width="200" height="200"
                           style="border-radius: 50%;
                       box-shadow: 0 1px 30px rgb(0 0 0 / 50%);">
                       </div>
                       <div class="col-8">
-                        <!-- <h4>Name : {{ user.first_name }} {{ user.last_name }}</h4>
-                        <h4>Username : {{ user.username }}</h4>
-                        <h4>Staff ID : {{ staff.teacher_roll_number }}</h4>
-                        <h4>Gender : {{ staff.gender }}</h4>
-                        <h4>Date Of Birth : {{ staff.dob | date:'d-m-Y' }}</h4>
-                        <h4>Qualification : {{ staff.qualification }}</h4>
-                        <h4>Blood Group : {{ staff.blood_group }}</h4>
-                        <h4>Email ID : {{ user.email }}</h4>
-                        <h4>Contact Number : {{ staff.ph_no }}</h4>
-                        <h4>Address : {{ staff.address }}</h4> -->
                         <ul style="list-style-type: none;">
                           <li>
                             Name : <span class="data">{{ user.first_name }} {{ user.last_name }}</span>
                           </li>
-                          <li>
+                          <!-- <li>
                             Username : <span class="data">{{ user.username }}</span>
-                          </li>
+                          </li> -->
                           <li>
                             Staff ID : <span class="data">{{ staff.teacher_roll_number }}</span>
                           </li>
