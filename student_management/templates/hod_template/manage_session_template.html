@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 {% block page_title %}
 <input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
-Add Session Year
+Add Semester
 {% endblock page_title %}
 {% block main_content %}
     <!-- Main content -->
@@ -12,7 +12,7 @@ Add Session Year
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Session Year</h3>
+                <h3 class="card-title">Add Semester</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -20,13 +20,18 @@ Add Session Year
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                    <label>Session Start Year </label>
-                    <input type="date" class="form-control" name="session_start" placeholder="Enter Session Start Year">
+                    <label>Semester name </label>
+                    <input type="text" class="form-control" name="semester_name" placeholder="Enter semester name">
+                  </div>
+                  <div class="form-group">
+
+                    <label>Semester start date </label>
+                    <input type="date" class="form-control" name="session_start" placeholder="Enter semester start date">
                   </div>
 
                  <div class="form-group">
-                    <label>Session End Year </label>
-                    <input type="date" class="form-control" name="session_end" placeholder="Enter Session End Year">
+                    <label>Semester end date </label>
+                    <input type="date" class="form-control" name="session_end" placeholder="Enter semester end date">
                   </div>
 
 
@@ -47,7 +52,7 @@ Add Session Year
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Session Year</button>
+                  <button type="submit" class="btn btn-primary">Add Semester</button>
                     <button type="reset" class="btn btn-primary float-right"> Reset </button>
                 </div>
               </form>

@@ -1,0 +1,67 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{subject.subject_name}}
+
+{% endblock page_title %}
+{% block main_content %}
+<style type="text/css">
+	body{
+		background-color: #EEEEE0;
+	}
+	.bread-crumb{
+		font-size: 1rem;
+
+	}
+	.cats{
+		background-color: white;
+	}
+</style>
+{% if subject %}
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+			<h3>{{subject}}</h3>
+		</div>
+		
+	</div>
+	<hr><br>
+</div>
+
+<br><br>
+
+<div class="container cats">
+	<br>
+	
+	<div class="row">
+		{% for question in subject_questions %}
+			<br>
+
+			<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+				<a href="/forum/staff/questions/{{question.id}}/">{{question.question_title}}</a><br><br>
+			</div>
+			
+			<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<span style="color: blue;">{{question.user.student_name}}</span><br>
+				<span style="font-size: 0.9rem;color: grey;">{{question.date}}</span><br>	
+			</div>
+			
+			
+			{% empty %}
+			<div class="container" style="text-align: center;">
+				<p>Sorry! There are no questions for you!</p>
+			</div>
+
+		{% endfor %}
+
+		</div>
+	</div>
+			
+{% else %}
+Sorry this page does not exist
+{% endif %}
+
+{% endblock %}

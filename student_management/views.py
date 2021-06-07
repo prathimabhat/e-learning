@@ -128,7 +128,11 @@ def add_staff_save(request):
 
 
 def add_course(request):
-    return render(request, "hod_template/add_course_template.html")
+    semesters=SessionYearModel.objects.all()
+    context={
+        'semesters':semesters
+    }
+    return render(request, "hod_template/add_course_template.html",context)
 
 
 def add_course_save(request):
@@ -136,8 +140,10 @@ def add_course_save(request):
         return HttpResponse("Method Not Allowed")
     else:
         course = request.POST.get("course")
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
-            course_model = Courses(course_name=course)
+            course_model = Courses(course_name=course,session_year_id=sem)
             course_model.save()
             messages.success(request, "Successfully Added Course")
             return HttpResponseRedirect(reverse("add_course"))
@@ -228,7 +234,7 @@ def add_student_save(request):
 
 def add_subject(request):
     courses = Courses.objects.all()
-    staffs = CustomUser.objects.filter(user_type=2)
+    staffs = Staffs.objects.all()
     return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses})
 
 
@@ -240,7 +246,7 @@ def add_subject_save(request):
         course_id = request.POST.get("course")
         course = Courses.objects.get(id=course_id)
         staff_id = request.POST.get("staff")
-        staff = CustomUser.objects.get(id=staff_id)
+        staff = Staffs.objects.get(id=staff_id)
         try:
             subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff)
             subject.save()
@@ -425,7 +431,7 @@ def edit_student_save(request):
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     courses = Courses.objects.all()
-    staffs = CustomUser.objects.filter(user_type=2)
+    staffs = Staffs.objects.all()
     return render(request, "hod_template/edit_subject_template.html",
                   {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id})
 
@@ -441,7 +447,7 @@ def edit_subject_save(request):
         try:
             subject = Subjects.objects.get(id=subject_id)
             subject.subject_name = subject_name
-            staff = CustomUser.objects.get(id=staff_id)
+            staff = Staffs.objects.get(id=staff_id)
             subject.staff_id = staff
             course = Courses.objects.get(id=course_id)
             subject.course_id = course
@@ -455,7 +461,12 @@ def edit_subject_save(request):
 
 def edit_course(request, course_id):
     course = Courses.objects.get(id=course_id)
-    return render(request, "hod_template/edit_course_template.html", {"course": course, "id": course_id})
+    semesters=SessionYearModel.objects.all()
+    context={"course": course, 
+    "id": course_id,
+    "semesters":semesters
+    }
+    return render(request, "hod_template/edit_course_template.html",context)
 
 
 def edit_course_save(request):
@@ -464,14 +475,17 @@ def edit_course_save(request):
     else:
         course_id = request.POST.get("course_id")
         course_name = request.POST.get("course")
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
             course = Courses.objects.get(id=course_id)
             course.course_name = course_name
+            course.session_year_id=sem
             course.save()
-            messages.success(request, "Successfully Updated Course Details")
+            messages.success(request, "Successfully Updated Class Details")
             return HttpResponseRedirect(reverse("edit_course", kwargs={"course_id": course_id}))
         except:
-            messages.error(request, "Failed to Edit Course Details")
+            messages.error(request, "Failed to Edit Class Details")
             return HttpResponseRedirect(reverse("edit_course", kwargs={"course_id": course_id}))
 
 
@@ -483,16 +497,17 @@ def add_session_save(request):
     if request.method != "POST":
         return HttpResponseRedirect(reverse("manage_session"))
     else:
+        semester_name=request.POST.get("semester_name")
         session_start_year = request.POST.get("session_start")
         session_end_year = request.POST.get("session_end")
 
         try:
-            sessionyear = SessionYearModel(session_start_year=session_start_year, session_end_year=session_end_year)
+            sessionyear = SessionYearModel(name=semester_name,session_start_year=session_start_year, session_end_year=session_end_year)
             sessionyear.save()
-            messages.success(request, "Successfully Added Session")
+            messages.success(request, "Successfully Added Semester")
             return HttpResponseRedirect(reverse("manage_session"))
         except:
-            messages.error(request, "Failed to Add Session")
+            messages.error(request, "Failed to Add Semester")
             return HttpResponseRedirect(reverse("manage_session"))
 
 

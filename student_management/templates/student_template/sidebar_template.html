@@ -54,6 +54,16 @@
         </li>
 
         <li class="nav-item">
+          {% url 'forum:contact_instructor' as contact_instructor %}
+          <a href="{{contact_instructor}}" class="nav-link {% if request.path == contact_instructor %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Contact Instructor
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
           {% url 'forum:my_questions' as my_questions %}
           <a href="{{my_questions}}" class="nav-link {% if request.path == my_questions %} active {% endif %}">
             <i class="nav-icon fas fa-th"></i>

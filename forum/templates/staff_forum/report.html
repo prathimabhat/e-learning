@@ -1,0 +1,42 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Report
+{% endblock page_title %}
+{% block main_content %}
+
+<style type="text/css">
+    body{
+    background-color:#EEEEE0;
+    }
+</style>
+
+<br><br>
+<div class="container" >
+    <div class="row" style="background-color:white;">
+
+        <div class="col-lg-6 col-md-6 col-xs-12 offset-lg-4 offset-md-4" >
+              <br><br>
+            <form method="POST" id="offensive_content_type">
+                {% csrf_token%}
+                <input type="radio" value="Sexual content" name="reason" >
+                <label for="Sexual content">Sexual content</label><br>
+                <input type="radio" value="Violent or repulsive content" name="reason" >
+                <label for="Violent or repulsive content">Violent or repulsive content</label><br>
+                <input type="radio" value="Hateful or abusive content" name="reason" >
+                <label for="Hateful or abusive content">Hateful or abusive content</label><br>
+                <input type="radio" value="Harmful or dangerous content" name="reason">
+                <label for="Harmful or dangerous content">Harmful or dangerous content</label><br>
+                <input type="radio" value="Spam or misleading" name="reason" >
+                <label for="Spam or misleading">Spam or misleading</label><br>
+                <a href="/forum/questions/{{question.id}}/">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input class="btn btn-danger" type="submit" value="report">
+
+
+            </form>
+            <br><br>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

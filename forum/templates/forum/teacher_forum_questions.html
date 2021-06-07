@@ -1,0 +1,161 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{question.question_title}}
+
+{% endblock page_title %}
+{% block main_content %}
+
+<style type="text/css">
+	body{
+		background-color: #EEEEE0;
+	}
+	.bread-crumb{
+		font-size: 1rem;
+
+	}
+	.up-votes{
+		font-size: 2rem;
+	}
+	.down-votes{
+		font-size: 2rem;
+	}
+	.btn{
+		background-color: none;
+		border:none;
+	}
+	.up-votes:hover{
+		color: green;
+	}
+	.down-votes:hover{
+		color: red;
+	}
+	#play_button{
+		background-color: white;
+		border:none;
+
+	}
+
+
+</style>
+
+
+<div class="container">
+	{% if messages %}
+		{% for message in messages %}
+			{% if message.tags == 'error' %}
+			<div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+</div>
+
+<div class="container" style="background-color: #F2F3F4;">
+	<div class="row">
+		<div class="col-lg-3 offset-lg-9">
+			<button type="submit" class="btn btn-primary"><a href="{% url 'forum:teacher_forum_new_question' subject.id %}" style="color: white;">+ New question</a></button>
+		</div>
+	</div>
+</div>
+
+<div class="container" style="background-color:white;">
+	<div class="row">
+	
+		
+	
+			{% for question in questions %}
+		
+		    <div class="col-lg-9 col-xs-12" style="background-color: #F2F3F4;">
+		    	<span style="font-weight: bolder;"><input type="text" id="titleText" hidden="True">{{question.question_title|safe}}</input></span><br><br>
+		    	{{question.question_detail|safe}}<br>
+				{% if question.anonymous is True%}
+					<span style="color: blue;">Anonymous</span><br>
+				{% else %}
+		    		<span style="color: blue;">{{question.user.student_name}}</span><br>
+
+				{% endif %}
+		    	<span style="font-size: 0.9rem;color: grey;">{{question.date}}</span><br><br>
+
+		    </div>
+		    <div class="col-lg-3 col-xs-12" style="background-color: #F2F3F4;">
+		    	<a href="{% url 'forum:my_questions' %}" style="font-weight: bold;">Edit or delete</a></button>
+		    </div>
+	
+
+	    <br>
+	</div>
+	<hr>
+	<br>
+	<div class="row">
+	   
+	    {% for answers in answers %}
+	    	{% if answers.question == question %}
+			    <div class="col-lg-10  col-xs-12 ">
+			    	<p>{{answers.answer|safe}}</p><br>
+
+			    	<span style="color: blue;">{{answers.user.student_name}}</span><br>
+			    	<span style="font-size: 0.9rem;color: grey;">{{answers.date}}</span><br><hr>
+			    </div>
+
+			    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+			   		<br><br><!--<button type="button" id="play_button" onclick="speakQuestion()"><i class="fas fa-volume-up"></i></button>-->
+
+				   <a href="/forum/report/answer/{{answers.id}}/"><i class="far fa-flag"></i></a><br><br>
+
+					
+	   			</div>
+	   		
+	   		{% endif %}
+	    
+  {% endfor %}
+	    
+	    {% endfor %}
+	   
+	</div>
+</div>
+
+<br>
+<script type="text/javascript">
+	//var msgText=CKEDITOR.instance.id_question_detail.getData();
+	
+	function speakQuestion(){
+		let titleText=document.getElementById("title_text").value;
+		var msg = new SpeechSynthesisUtterance();
+		//var voices = window.speechSynthesis.getVoices();
+		//msg.voice = voices[1]; 
+		//msg.voiceURI = 'native';
+		msg.volume = 1; // 0 to 1
+		msg.rate = 1; // 0.1 to 10
+		msg.pitch = 1; //0 to 2
+		msg.lang = 'en-IN';
+		
+		msg.text = titleText
+
+		msg.onend = function(e) {
+  			console.log('Finished in ' + event.elapsedTime + ' seconds.');
+		};
+		window.speechSynthesis.speak(msg);
+	}
+
+	function speakAnswer(){
+		var msg = new SpeechSynthesisUtterance();
+		//var voices = window.speechSynthesis.getVoices();
+		//msg.voice = voices[1]; 
+		//msg.voiceURI = 'native';
+		msg.volume = 1; // 0 to 1
+		msg.rate = 1; // 0.1 to 10
+		msg.pitch = 1; //0 to 2
+		msg.lang = 'en-US';
+		var msgText=document.getElementById("id_answer");
+		msg.text = msgText;
+
+		msg.onend = function(e) {
+  			console.log('Finished in ' + event.elapsedTime + ' seconds.');
+		};
+		window.speechSynthesis.speak(msg);
+	}
+                
+</script>
+
+
+{% endblock %}

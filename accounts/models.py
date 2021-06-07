@@ -27,9 +27,10 @@ class SessionYearModel(models.Model):
 	id = models.AutoField(primary_key=True)
 	session_start_year = models.DateField()
 	session_end_year = models.DateField()
+	name=models.CharField(max_length=500,blank=True)
 	objects=models.Manager()
 	def __str__(self):
-		return f"{self.session_start_year} to {self.session_end_year}"
+		return f"{self.name} -> {self.session_start_year} to {self.session_end_year}"
 
 
 class AdminHOD(models.Model):

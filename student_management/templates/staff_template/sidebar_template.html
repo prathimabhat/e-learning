@@ -50,6 +50,16 @@
         </li>
 
         <li class="nav-item">
+          {% url 'forum:staff_subject_view' as staff_forum %}
+          <a href="{{staff_forum}}" class="nav-link {% if request.path == staff_forum %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Forum
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
           {% url 'select_class' as select_class %}
           {% url 'staff_take_attendance' as staff_take_attendance %}
           <a href="{{ select_class }}"

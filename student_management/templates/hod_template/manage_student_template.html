@@ -21,7 +21,6 @@ Manage Students
                   <th>Roll Number</th>
                   <th>First Name</th>
                   <th>Last Name</th>
-                  <th>Class</th>
                   <th>Email</th>
                   <th>Gender</th>
                   <th>Date Of Birth</th>
@@ -29,7 +28,8 @@ Manage Students
                   <th>Phone Number</th>
                   <th>Address</th>
                   <th>Profile Pic</th>
-                  <th>Session Year</th>
+                  <th>Semester</th>
+                  <th>Class</th>
                   <th>Parent's Email</th>
                   <th>Father's Name</th>
                   <th>Mother's Name</th>
@@ -46,7 +46,6 @@ Manage Students
                   <td>{{ student.roll_number }}</td>
                   <td>{{ student.user.first_name }}</td>
                   <td>{{ student.user.last_name }}</td>
-                  <td>{{ student.course_id.course_name }}</td>
                   <td>{{ student.user.email }}</td>
                   <td>{{ student.gender }}</td>
                   <td>{{ student.dob }}</td>
@@ -54,8 +53,9 @@ Manage Students
                   <td>{{ student.ph_no }}</td>
                   <td>{{ student.address }}</td>
                   <td><img src="{{ student.profile_pic }}" style="width:100px" /></td>
-                  <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}
+                  <td>{{student.session_year_id.name}}->{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}
                   </td>
+                  <td>{{ student.course_id.course_name }}</td>
 
                   {% for parent in parents %}
                   {% if student.id == parent.parent_of.id %}

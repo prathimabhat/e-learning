@@ -7,26 +7,30 @@ class AnswerForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(AnswerForm, self).__init__(*args, **kwargs)
 		self.fields['anonymous'].required = False
+		self.fields['teachers_forum'].required=False
 
 	answer=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
 	anonymous = forms.BooleanField()
+	teachers_forum=forms.BooleanField()
 	class Meta:
 		model=Answers
-		fields=['answer','anonymous']
+		fields=['answer','anonymous','teachers_forum']
 		
    
 class QuestionForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(QuestionForm, self).__init__(*args, **kwargs)
 		self.fields['anonymous'].required = False
+		self.fields['teachers_forum'].required=False
 
 
 	question_title=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Give a title to your question','size':'20'}))
 	question_detail=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
 	anonymous=forms.BooleanField()
+	teachers_forum=forms.BooleanField()
 	class Meta:
 		model=Questions
-		fields=['question_title','question_detail','anonymous']
+		fields=['question_title','question_detail','anonymous','teachers_forum']
 
 class AnswerUpdateForm(forms.ModelForm):
 	answer=forms.CharField(widget=CKEditorWidget(attrs={'class':'form-control','placeholder':'Type here'}))
@@ -48,4 +52,30 @@ class AnswerUpdateForm(forms.ModelForm):
 	class Meta:
 		model=Answers
 		fields=['answer']
+
+
+class StaffAnswerForm(forms.ModelForm):
+
+	answer=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
+	class Meta:
+		model=Answers
+		fields=['answer']
+
+class StaffAnswerUpdateForm(forms.ModelForm):
+	answer=forms.CharField(widget=CKEditorWidget(attrs={'class':'form-control','placeholder':'Type here'}))
+	class Meta:
+		model=Answers
+		fields=['answer']
+
+class TeacherQuestionForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(TeacherQuestionForm, self).__init__(*args, **kwargs)
+		self.fields['anonymous'].required = False
+
+	question_title=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Give a title to your question','size':'20'}))
+	question_detail=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
+	anonymous=forms.BooleanField()
+	class Meta:
+		model=Questions
+		fields=['question_title','question_detail','anonymous']
 
