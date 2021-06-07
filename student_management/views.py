@@ -900,9 +900,48 @@ def student_home(request):
                   {"total_attendance": attendance_total, "attendance_absent": attendance_absent,
                    "attendance_present": attendance_present, "subjects": subjects, "data_name": subject_name,
                    "data1": data_present, "data2": data_absent,"user": user, "user2": user2, "student": student, "parent": parent})
-
-
 def student_view_attendance(request):
+    student = Students.objects.get(user=request.user.id)
+    course = student.course_id
+    subjects = Subjects.objects.filter(course_id=course)
+    return render(request, "student_template/student_view_attendance.html", {"subjects": subjects})
+
+
+def student_view_attendance_post(request):
+    subject_id = request.POST.get("subject")
+    start_date = request.POST.get("start_date")
+    end_date = request.POST.get("end_date")
+
+    # start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
+    
+    # end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
+    end_date_parse=date.today()
+    
+    subject_obj = Subjects.objects.get(id=subject_id)
+    user_obj = CustomUser.objects.get(id=request.user.id)
+    stud_obj = Students.objects.get(user=user_obj)
+    start_date_parse=stud_obj.session_year_id.session_start_year
+    subject_name=subject_obj.subject_name
+    attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
+                                           subject_id=subject_obj)
+    attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
+    present_=0
+    absent_=0
+    for attendance_report in attendance_reports:
+        if attendance_report.status == True:
+            present_+=1
+        else:
+            absent_+=1
+    try:
+        percentage_attendence=round(((present_/(absent_+present_))*100),2)
+    except:
+        messages.error(request, "No Attendence Data")
+        return HttpResponseRedirect(reverse("student_view_attendance"))
+
+    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports,"percentage_attendence":percentage_attendence,"present_":present_,"absent_":absent_,"subject_name":subject_name})
+
+
+'''def student_view_attendance(request):
     student = Students.objects.get(user=request.user.id)
     course = student.course_id
     subjects = Subjects.objects.filter(course_id=course)
@@ -937,7 +976,7 @@ def student_view_attendance_post(request):
         perc = 0
     
     return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports, "attendance_present": attendance_present,
-        "attendance_absent":attendance_absent,"total_attendance_reports":total_attendance_reports,"perc":perc})
+        "attendance_absent":attendance_absent,"total_attendance_reports":total_attendance_reports,"perc":perc})'''
    
 
 
