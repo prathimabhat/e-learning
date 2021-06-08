@@ -19,7 +19,8 @@ Assignment
                 {% endif %}
                 <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-
+                    {{ form.text | safe }}
+                    {{ form.media }}
                     {% for field in form %}
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">

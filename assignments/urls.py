@@ -31,4 +31,8 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/view_all_assignments/$', views.view_all_assignments, name='view_all_assignments'),
     url(r'^(?P<assignment_id>[0-9]+)/view_all_submissions/$', views.view_all_submissions, name='view_all_submissions'),
     url(r'^(?P<assignment_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
+
+    path('class_links/',views.get_class_links_staff,name="class_links"),
+    path('class_links/new/',views.post_class_links,name="new_class_link"),
+    path('students/class_links/',views.get_class_links_student,name="class_links_student")
 ]

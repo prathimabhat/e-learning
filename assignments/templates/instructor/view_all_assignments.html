@@ -21,6 +21,14 @@ Assignments
                             {% for assignment in assignments reversed %}
                             <div>
                                 Assignment name : {{ assignment.description }}<br>
+                                {% if assignment.file %}
+                                    File : {{assignment.file}}<br>
+                                {% endif %}
+                                {% if assignment.text_assignment %}
+                                    Assignment : {{assignment.text_assignment|safe}}
+                                    <br>
+                               
+                                {% endif %}
                                 Deadline for submission : {{ assignment.deadline }}<br>
                                 <div>
                                     <a href="{% url 'assignments:view_all_submissions' assignment.id %}">

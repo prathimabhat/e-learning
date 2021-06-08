@@ -18,10 +18,22 @@ View Resource
             <div style="padding-left: 2%">
                 
                 <div style="position:right">
-                    Name of the Resource:   {{ resource.title }}
-                    <a href="{{ resource.file_resource.url }}" style="text-align:right">
-                        <button type="submit" class="btn btn-primary float-right" style="margin-right: 60%">Download</button>
-                    </a>
+                    Name of the Resource:   {{ resource.title }}<br>
+                    {% if resource.file_resource %}
+                    <br>
+                    File:
+                        <a href="{{ resource.file_resource.url }}" style="text-align:right">
+
+                        <button type="submit" class="btn btn-primary">Download</button>
+                        </a><br><br>
+                    {% endif %}
+                    {% if resource.text_resource %}
+                        {{resource.text_resource|safe}}<br><br>
+                    {% endif %}
+                    {% if resource.link %}
+                        URL : <a href="{{resource.link}}">{{resource.link}}</a><br>
+                    {% endif %}
+                    
                 </div>
                 <br>
             </div>

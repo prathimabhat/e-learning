@@ -132,7 +132,7 @@ LOGOUT_REDIRECT_URL = 'accounts:logout_request'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

@@ -23,6 +23,12 @@ Resource
             {% endfor %}
           </select>
           <br><br><br>
+          <select class="form-control" name="action">
+
+            <option value="create_resource">Create resource</option>
+            <option value="view_resource">View resource</option>
+
+          </select>
 
         </div>
       </div>
@@ -30,7 +36,7 @@ Resource
     <br><br><br><br><br><br>
     <div>
 
-      <button class="btn btn-primary" id="fetch_resources">Add Resource</button>
+      <button class="btn btn-primary" id="fetch_resources">Go</button>
     </div>
   </form>
 

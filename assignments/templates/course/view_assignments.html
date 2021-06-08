@@ -21,18 +21,31 @@ Assignments
                             {% for assignment in assignments reversed %}
                             <div>
                                 Assignment name : {{ assignment.description }}<br>
+
                                 Post Time: {{ assignment.post_time }}<br>
-                                Deadline for submission : {{ assignment.deadline|date:"Y-m-d"}}<br>
+                                Deadline for submission : {{ assignment.deadline}}<br>
                                 <div>
-                                    <a href="{{ assignment.file.url }}">
-                                        <button type="submit" class="btn btn-primary"
-                                            style="margin-right: 20px">Download Assignment</button></a>
-                                    {% if today <= assignment.deadline %} <a
-                                        href="{% url 'assignments:view_feedback' assignment.id %}">
+                                    {% if assignment.file %}
+                                        <a href="{{ assignment.file.url }}">
+                                            <button type="submit" class="btn btn-primary"
+                                                style="margin-right: 20px">Download Assignment</button></a><br>
+                                    {% endif %}
+                                    {% if assignment.link %}
+                                        <a href="{{assignment.link}}">{{assignment.link}}</a><br>
+                                    {% endif %}
+                                    {% if assignment.text_assignment %}
+                                        {{assignment.text_assignment|safe}}<br>
+                                    {% endif %}
+
+                                    {% if today <= assignment.deadline %} 
+
+                                       <a href="{% url 'assignments:view_feedback' assignment.id %}">
 
                                         <a href="{% url 'assignments:upload_submission' assignment.id %}">
                                             <button type="submit" class="btn btn-primary">Upload Submission</button></a>
-                                        {% endif%}
+                                    {% else %}
+                                        <p style="color: red;font-weight: bolder;">Oops! It's past the deadline.</p>
+                                    {% endif%}
                                         <br><br>
                                 </div>
 

@@ -75,6 +75,7 @@ urlpatterns = [
     path('edit_subject_save', views.edit_subject_save, name="edit_subject_save"),
     path('edit_course/<str:course_id>', views.edit_course, name="edit_course"),
     path('edit_course_save', views.edit_course_save, name="edit_course_save"),
+    path('display_semesters',views.display_semesters,name="display_semesters"),
     path('manage_session', views.manage_session, name="manage_session"),
     path('add_session_save', views.add_session_save, name="add_session_save"),
     path('check_email_exist', views.check_email_exist, name="check_email_exist"),

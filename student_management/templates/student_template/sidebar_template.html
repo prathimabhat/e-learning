@@ -94,6 +94,17 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          {% url 'assignments:class_links_student' as get_links_students %}
+          <a href="{{ get_links_students}}"
+            class="nav-link {% if request.path == get_links_students %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Lecture URLs
+            </p>
+          </a>
+        </li>
+
 
         <li class="nav-item">
           {% url 'notes:home' as notes_home %}

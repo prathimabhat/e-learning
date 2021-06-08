@@ -488,6 +488,12 @@ def edit_course_save(request):
             messages.error(request, "Failed to Edit Class Details")
             return HttpResponseRedirect(reverse("edit_course", kwargs={"course_id": course_id}))
 
+def display_semesters(request):
+    semesters=SessionYearModel.objects.all()
+    context={
+        'semesters':semesters
+    }
+    return render(request,"hod_template/display_semesters.html",context)
 
 def manage_session(request):
     return render(request, "hod_template/manage_session_template.html")

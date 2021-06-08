@@ -84,17 +84,17 @@
           </a>
         </li>
         <li class="nav-item">
-          {% url 'manage_session' as manage_session %}
-          <a href="{% url 'manage_session' %}"
-            class="nav-link {% if request.path == manage_session %} active {% endif %} ">
+          {% url 'display_semesters' as display_semesters %}
+          <a href="{% url 'display_semesters' %}"
+            class="nav-link {% if request.path == display_semesters %} active {% endif %} ">
             <i class="nav-icon fas fa-th"></i>
             <p>
-              Manage Session Year
+              Manage Semesters
             </p>
           </a>
         </li>
 
-        <li class="nav-item">
+       <!--  <li class="nav-item">
           {% url 'select_attendance_class' as select_attendance_class %}
           {% url 'admin_view_attendance' as admin_view_attendance %}
           <a href="{% url 'select_attendance_class' %}"
@@ -105,7 +105,7 @@
             </p>
           </a>
         </li>
-        <!-- <li class="nav-item">
+        <li class="nav-item">
           {% url 'student_leave_view' as student_leave_view %}
           <a href="{% url 'student_leave_view' %}"
             class="nav-link {% if request.path == student_leave_view %} active {% endif %}">

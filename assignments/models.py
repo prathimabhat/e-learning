@@ -1,12 +1,16 @@
 from django.db import models
 from accounts.models import Students,CustomUser
 from student_management.models import Subjects
-
+from ckeditor.fields import RichTextField
+from django.utils import timezone
 # Create your models here.
 class Assignment(models.Model):
     ## The description of the assignment
     description = models.CharField(max_length=1000, default='')
 
+    
+
+    text_assignment=RichTextField(blank=True,null=True)
     ## The file containing the problems for the assignment
     file = models.FileField(default='')
 
@@ -14,10 +18,10 @@ class Assignment(models.Model):
     subject = models.ForeignKey(Subjects,on_delete=models.CASCADE,related_name='assignment',null=True)
 
     ## The date,time of posting the assignment
-    post_time = models.CharField(max_length=100)
+    post_time = models.DateTimeField(auto_now_add=True)
 
     ## The deadline to complete the assignment for the students
-    deadline = models.CharField(max_length=100)
+    deadline = models.DateTimeField(default=timezone.now)
 
 
 ## @brief This class represents the submissions for an assignment.
@@ -72,10 +76,22 @@ class Notification(models.Model):
 class Resources(models.Model):
     ## The resource file 
     file_resource = models.FileField(default='')
+    text_resource=RichTextField(blank=True,null=True)
 
+    link=models.URLField(max_length=300,blank=True)
     ## The title for the resource
     title = models.CharField(max_length=100)
 
     ## The course associated with the resource
     subject = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="resources")
 
+    def __str__(self):
+        return f"{self.id} ->{self.title}"
+
+class LectureLinks(models.Model):
+    link=models.URLField(max_length=300,blank=True)
+    description=models.CharField(max_length=1000)
+    subject = models.ForeignKey(Subjects, default=1, on_delete=models.CASCADE,related_name="lecturelinks")
+
+    def __str__(self):
+        return f"{self.id} -> {self.description}"

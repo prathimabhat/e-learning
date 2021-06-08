@@ -1,17 +1,18 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import  Submission, Assignment,Message,Notification,Resources
+from .models import  Submission, Assignment,Message,Notification,Resources,LectureLinks
 from student_management.models import Subjects
 from accounts.models import Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import AssignmentForm, NotificationForm, ResourceForm,MessageForm,SubmissionForm
+from .forms import AssignmentForm, NotificationForm, ResourceForm,\
+MessageForm,SubmissionForm,LecturelinksForm
 import datetime
 from datetime import date, time
 # Create your views here.
 
 @login_required
 def assignment(request):
-    subjects=Subjects.objects.filter(staff_id=request.user.id)
+    subjects=Subjects.objects.filter(staff_id=request.user.staffs)
     context={
         'subjects':subjects
     }
@@ -19,7 +20,7 @@ def assignment(request):
 
 @login_required
 def resource(request):
-    subjects=Subjects.objects.filter(staff_id=request.user.id)
+    subjects=Subjects.objects.filter(staff_id=request.user.staffs)
     context={
         'subjects':subjects
     }
@@ -83,9 +84,13 @@ def get_subject_student_resources(request):
 @login_required
 def get_subject_resource(request):
     sub=request.POST.get("subject")
+    action=request.POST.get("action")
     subject=Subjects.objects.get(id=sub)
     sub_=subject.id
-    return redirect('assignments:add_resource',sub_)
+    if action=="view_resource":
+        return redirect('assignments:view_resources_staff', sub_)
+    else:
+        return redirect('assignments:add_resource',sub_)
 
 @login_required
 def add_assignment(request, course_id):
@@ -93,8 +98,9 @@ def add_assignment(request, course_id):
     course = Subjects.objects.get(id=course_id)
     if form.is_valid():
         assignment = form.save(commit=False)
-        assignment.file = request.FILES['file']
-        assignment.post_time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        if(request.FILES):
+            assignment.file = request.FILES['file']
+        assignment.post_time = datetime.datetime.now()
         assignment.subject = course
         assignment.save()
         notification = Notification()
@@ -118,7 +124,8 @@ def add_resource(request, course_id):
     course = Subjects.objects.get(id=course_id)
     if form.is_valid():
         resource = form.save(commit=False)
-        resource.file_resource = request.FILES['file_resource']
+        if(request.FILES):
+            resource.file_resource = request.FILES['file_resource']
         resource.subject = course
         resource.save()
         notification = Notification()
@@ -272,12 +279,13 @@ def instructor_detail(request, course_id):
 
         return render(request, 'instructor/instructor_detail.html', context)
 
-
+from django.utils import timezone
 @login_required
 
 def view_assignments(request, pk):
     course = Subjects.objects.get(id=pk)
-    today_=date.today().strftime("%Y-%m-%d")
+    today_=timezone.localtime(timezone.now())
+    print(today_)
     assignments = Assignment.objects.filter(subject=course)
     context = {
         'course' : course,
@@ -360,3 +368,43 @@ def detail(request, course_id):
         }
 
         return render(request, 'course/detail.html', context)
+
+
+@login_required
+def post_class_links(request,*args,**kwargs):
+    form=LecturelinksForm(user=request.user.staffs)
+    if request.method=="POST":
+        form=LecturelinksForm(request.POST ,user=request.user.staffs)
+        if form.is_valid():
+            form.save()
+            return redirect('assignments:class_links')
+        else:
+            form=LecturelinksForm(user=request.user.staffs)
+    else:
+        form=LecturelinksForm(user=request.user.staffs)
+
+    return render(request,'course/post_links.html',{'form':form})
+
+@login_required
+def get_class_links_staff(request):
+    sub_=Subjects.objects.filter(staff_id=request.user.staffs)
+    link_=LectureLinks.objects.filter(subject__in=sub_)
+    context={
+        'subject':sub_,
+        'links':link_
+    }
+    return render(request,'course/get_links_staff.html',context)
+
+@login_required
+def get_class_links_student(request):
+    
+
+    sub=Subjects.objects.filter(course_id=request.user.students.course_id)
+    print(sub)
+    links=LectureLinks.objects.filter(subject__in=sub)
+
+    context={
+        'subject':sub,
+        'links':links
+    }
+    return render(request,'course/get_links_students.html',context)

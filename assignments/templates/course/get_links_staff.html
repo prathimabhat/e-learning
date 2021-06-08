@@ -1,0 +1,40 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Lecture URLs
+{% endblock page_title %}
+{% block main_content %}
+	<br>
+	<button type="submit" class="btn btn-primary float-right" style="margin-right: 1rem;"><a href="{% url 'assignments:new_class_link' %}" style="color: white;">+New</a></button><br><br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Lecture URLs</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            {% for link in links reversed %}
+                            <div>
+                              {{link.description}}<br>
+                              <a href="{{link.link}}">{{link.link}}</a><br>
+                              {{link.subject.subject_name}}
+                             </div><br>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}
