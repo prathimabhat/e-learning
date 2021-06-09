@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Someone Answered</title>
+</head>
+<body>
+Hello!<br>
+New answer has been posted in {{ subjects.subject_name }} forum for the question {{ question.question_title }} by {{ students.student_name }} .
+<button type="submit" class="btn btn-primary"><a href="http://{{ domain }}/forum/questions/{{question.id }}/">View Answer</a></button>
+<br>
+
+
+</body>
+</html>

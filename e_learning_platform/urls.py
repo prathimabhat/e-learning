@@ -110,7 +110,7 @@ urlpatterns = [
     path('delete_staff/<str:staff_id>', views.delete_staff, name="delete_staff"),
     path('delete_course/<str:course_id>', views.delete_course, name="delete_course"),
     path('delete_subject/<str:subject_id>', views.delete_subject, name="delete_subject"),
-
+    path('select_class_result', views.select_class_result, name="select_class_result"),
 
 
     #Staff url path

@@ -8,7 +8,7 @@ class Assignment(models.Model):
     ## The description of the assignment
     description = models.CharField(max_length=1000, default='')
 
-    
+    max_marks= models.PositiveIntegerField(null=True)
 
     text_assignment=RichTextField(blank=True,null=True)
     ## The file containing the problems for the assignment
@@ -24,10 +24,13 @@ class Assignment(models.Model):
     deadline = models.DateTimeField(default=timezone.now)
 
 
+
 ## @brief This class represents the submissions for an assignment.
 class Submission(models.Model):
     ## The file submitted by student
     file_submitted = models.FileField(default='')
+
+    marks = models.PositiveIntegerField(null=True)
 
     ## The date,time of uploading the submission
     time_submitted = models.CharField(max_length=100)

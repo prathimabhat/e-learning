@@ -4,13 +4,18 @@ from .models import  Submission, Assignment,Message,Notification,Resources,Lectu
 from student_management.models import Subjects
 from accounts.models import Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
+from accounts.decorators import staff_login_required,admin_login_required,student_login_required
 from .forms import AssignmentForm, NotificationForm, ResourceForm,\
 MessageForm,SubmissionForm,LecturelinksForm
 import datetime
 from datetime import date, time
+from django.conf import settings
+from django.core.mail import send_mail,EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template.loader import render_to_string
 # Create your views here.
 
-@login_required
+@staff_login_required
 def assignment(request):
     subjects=Subjects.objects.filter(staff_id=request.user.staffs)
     context={
@@ -18,7 +23,7 @@ def assignment(request):
     }
     return render(request,'staff_template/assignment.html',context)
 
-@login_required
+@staff_login_required
 def resource(request):
     subjects=Subjects.objects.filter(staff_id=request.user.staffs)
     context={
@@ -26,7 +31,7 @@ def resource(request):
     }
     return render(request,'staff_template/resource.html',context)
 
-@login_required
+@student_login_required
 def student_assignment(request):
     # subjects=Subjects.objects.filter(staff_id=request.user.id)
     
@@ -38,7 +43,7 @@ def student_assignment(request):
     }
     return render(request,'student_template/student_assignment.html',context)
 
-@login_required
+@student_login_required
 def student_resources(request):
     # subjects=Subjects.objects.filter(staff_id=request.user.id)
     
@@ -49,7 +54,7 @@ def student_resources(request):
         'subjects':subjects
     }
     return render(request,'student_template/student_resources.html',context)
-@login_required
+@staff_login_required
 def get_subject(request):
     sub=request.POST.get("subject")
     action=request.POST.get("action")
@@ -62,7 +67,7 @@ def get_subject(request):
         
         return redirect('assignments:add_assignment',sub_)
 
-@login_required
+@student_login_required
 def get_subject_student(request):
     sub=request.POST.get("subject")
     action=request.POST.get("action")
@@ -73,7 +78,7 @@ def get_subject_student(request):
         
     #     return redirect('assignments:upload_submission',sub_)
 
-@login_required
+@student_login_required
 def get_subject_student_resources(request):
     sub=request.POST.get("subject")
     action=request.POST.get("action")
@@ -81,7 +86,7 @@ def get_subject_student_resources(request):
     sub_=subject.id
     return redirect('assignments:view_resources',sub_)
     
-@login_required
+@staff_login_required
 def get_subject_resource(request):
     sub=request.POST.get("subject")
     action=request.POST.get("action")
@@ -92,10 +97,27 @@ def get_subject_resource(request):
     else:
         return redirect('assignments:add_resource',sub_)
 
-@login_required
+from django.template.loader import render_to_string, get_template
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail,EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core import mail
+
+@staff_login_required
 def add_assignment(request, course_id):
     form = AssignmentForm(request.POST or None, request.FILES or None)
+    domain=request.get_host()
+
+    print(domain)
+    print(request)
     course = Subjects.objects.get(id=course_id)
+    stud=[]
+    for i in course.student_id.all():
+        stud.append(i)
+    print(stud)
     if form.is_valid():
         assignment = form.save(commit=False)
         if(request.FILES):
@@ -103,6 +125,20 @@ def add_assignment(request, course_id):
         assignment.post_time = datetime.datetime.now()
         assignment.subject = course
         assignment.save()
+        from_email = settings.EMAIL_HOST_USER
+        ctx={
+            "subjects":course,
+            "domain":domain
+        }
+        html_message = render_to_string('course/send_email_assignment.html',ctx,request=request)
+        plain_message = strip_tags(html_message)
+        to_email=[]
+        subject="New Assignment"
+        for j in stud:
+            print(j.user.email)
+            to_email.append(j.user.email)
+            print(to_email)
+        mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
         notification = Notification()
         notification.content = "New Assignment Uploaded"
         notification.subject = course
@@ -117,17 +153,38 @@ def add_assignment(request, course_id):
 #
 # This view is called by <course_id>/add_resource url.\n
 # It returns the webpage containing a form to add a resource and redirects to the course's detail page again after the form is submitted.
-@login_required
+@staff_login_required
 def add_resource(request, course_id):
     form = ResourceForm(request.POST or None, request.FILES or None)
     instructor = Staffs.objects.get(user=request.user.id)
     course = Subjects.objects.get(id=course_id)
+    domain=request.get_host()
+
+    print(domain)
+    stud=[]
+    for i in course.student_id.all():
+        stud.append(i)
+    print(stud)
     if form.is_valid():
         resource = form.save(commit=False)
         if(request.FILES):
             resource.file_resource = request.FILES['file_resource']
         resource.subject = course
         resource.save()
+        from_email = settings.EMAIL_HOST_USER
+        ctx={
+            "subjects":course,
+            "domain":domain
+        }
+        html_message = render_to_string('course/send_email_resources.html',ctx,request=request)
+        plain_message = strip_tags(html_message)
+        to_email=[]
+        subject="New Resource"
+        for j in stud:
+            print(j.user.email)
+            to_email.append(j.user.email)
+            print(to_email)
+        mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
         notification = Notification()
         notification.content = "New Resource Added - " + resource.title
         notification.subject = course
@@ -138,7 +195,21 @@ def add_resource(request, course_id):
 
     return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})
 
-@login_required
+
+
+@staff_login_required
+def gradeview(request,pk):
+    if request.method == 'POST':
+        submission = Submission.objects.get(id=pk)
+        submission.marks=request.POST.get('marks')
+        assignment_id= submission.assignment.id
+        submission.save()
+        return redirect('assignments: view_all_submissions')
+    else:
+        return render(request,'instructor/view_all_submissions.html')
+
+
+@staff_login_required
 def view_resources_staff(request, pk):
     course = Subjects.objects.get(id=pk)
     resources = Resources.objects.filter(subject=course)
@@ -152,7 +223,7 @@ def view_resources_staff(request, pk):
 #
 # This view is called by <course_id>/view_all_assignments url.\n
 # It returns the webpage containing all the assignments of the course and links to their submissions and feedbacks given by the students.
-@login_required
+@staff_login_required
 def view_all_assignments(request, course_id):
     course = Subjects.objects.get(id=course_id)
     assignments = Assignment.objects.filter(subject=course)
@@ -163,7 +234,7 @@ def view_all_assignments(request, course_id):
 #
 # This view is called by <assignment_id>/view_all_submissions url.\n
 # It returns the webpage containing links to all the submissions of an assignment.
-@login_required
+@staff_login_required
 def view_all_submissions(request,assignment_id):
     assignment = Assignment.objects.get(id=assignment_id)
     submissions = Submission.objects.filter(assignment=assignment)
@@ -175,7 +246,7 @@ def view_all_submissions(request,assignment_id):
 #
 # This view is called by <assignment_id>/view_feedback url.\n
 # It returns a webpage containing the feedback received by the students organized in the form of histogram.
-@login_required
+@staff_login_required
 def view_feedback(request,assignment_id):
     import matplotlib.pyplot as plt
     import numpy as np
@@ -211,7 +282,7 @@ def view_feedback(request,assignment_id):
     return response
 
 
-@login_required
+@staff_login_required
 def add_notification(request, course_id):
     form = NotificationForm(request.POST or None)
     course = Subjects.objects.get(id=course_id)
@@ -224,7 +295,7 @@ def add_notification(request, course_id):
 
     return render(request, 'instructor/add_notification.html', {'course': course, 'form': form})
 
-@login_required
+@staff_login_required
 def instructor_index(request):
     user = request.user
     instructor = Staffs.objects.get(user=request.user.id)
@@ -242,7 +313,7 @@ def instructor_index(request):
 # This view is called by <course_id>/instructor_detail url.\n
 # It returns the course's detail page containing forum and links to add assignment,resource,notifications
 # and view all the assignments and their submissions.
-@login_required
+@staff_login_required
 def instructor_detail(request, course_id):
     user = request.user
     instructor = Staffs.objects.get(user=request.user)
@@ -280,7 +351,7 @@ def instructor_detail(request, course_id):
         return render(request, 'instructor/instructor_detail.html', context)
 
 from django.utils import timezone
-@login_required
+@student_login_required
 
 def view_assignments(request, pk):
     course = Subjects.objects.get(id=pk)
@@ -299,7 +370,7 @@ def view_assignments(request, pk):
 #
 # This view is called by <course_id>/view_resources url.\n
 # It returns the webpage containing all the resources of the course and links to download them.
-@login_required
+@student_login_required
 def view_resources(request, course_id):
     course = Subjects.objects.get(id=course_id)
     resources = Resources.objects.filter(subject=course)
@@ -314,23 +385,41 @@ def view_resources(request, course_id):
 #
 # This view is called by <assignment_id>/upload_submission url.\n
 # It returns the webpage containing a form to upload submission and redirects to the assignments page again after the form is submitted.
-@login_required
+@student_login_required
 def upload_submission(request, assignment_id):
     form = SubmissionForm(request.POST or None, request.FILES or None)
     assignment = Assignment.objects.get(id=assignment_id)
     course_id = assignment.subject.id
+    domain=request.get_host()
     course = Subjects.objects.get(id=course_id)
     if form.is_valid():
         submission = form.save(commit=False)
         submission.user = request.user.students
+        student=request.user.students
+        student_=Students.objects.get(id=student.id)
         submission.assignment = assignment
         submission.time_submitted = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         submission.save()
+        from_email = settings.EMAIL_HOST_USER
+        ctx={
+            "subjects":course,
+            "assignment":assignment,
+            "students":student_,
+            "domain":domain
+        }
+        html_message = render_to_string('instructor/send_email_submission.html',ctx,request=request)
+        plain_message = strip_tags(html_message)
+        subject="New Submission"
+        to_email=[]
+        to_email.append(course.staff_id.user.email)
+        print(to_email)
+        mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+
         return view_assignments(request, course_id)
 
     return render(request, 'course/upload_submission.html', {'form': form,'course': course})
 
-@login_required
+@student_login_required
 def detail(request, course_id):
     user = request.user
     student = Student.objects.get(user=request.user)
@@ -370,13 +459,34 @@ def detail(request, course_id):
         return render(request, 'course/detail.html', context)
 
 
-@login_required
+@staff_login_required
 def post_class_links(request,*args,**kwargs):
     form=LecturelinksForm(user=request.user.staffs)
+    domain=request.get_host()
     if request.method=="POST":
         form=LecturelinksForm(request.POST ,user=request.user.staffs)
         if form.is_valid():
+            sub=request.POST.get('subject')
+            subject_= Subjects.objects.get(id=sub)
             form.save()
+            stud=[]
+            for i in subject_.student_id.all():
+                stud.append(i)
+            print(stud)
+            from_email = settings.EMAIL_HOST_USER
+            ctx={
+                "subjects":subject_,
+                "domain":domain
+            }
+            html_message = render_to_string('course/send_email_link.html',ctx,request=request)
+            plain_message = strip_tags(html_message)
+            to_email=[]
+            subject="New Lecture URL"
+            for j in stud:
+                print(j.user.email)
+                to_email.append(j.user.email)
+                print(to_email)
+            mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
             return redirect('assignments:class_links')
         else:
             form=LecturelinksForm(user=request.user.staffs)
@@ -385,7 +495,7 @@ def post_class_links(request,*args,**kwargs):
 
     return render(request,'course/post_links.html',{'form':form})
 
-@login_required
+@staff_login_required
 def get_class_links_staff(request):
     sub_=Subjects.objects.filter(staff_id=request.user.staffs)
     link_=LectureLinks.objects.filter(subject__in=sub_)
@@ -395,7 +505,7 @@ def get_class_links_staff(request):
     }
     return render(request,'course/get_links_staff.html',context)
 
-@login_required
+@student_login_required
 def get_class_links_student(request):
     
 

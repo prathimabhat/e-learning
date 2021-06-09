@@ -22,11 +22,9 @@ Add Results
                    <div class="form-group">
                     <label>Class and Subject </label>
                     <select class="form-control" name="subject">
-                        {% for subject in subjects %}
-                                
-                                <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
-                                
-                        {% endfor %}
+                    {% for subject in subjects %}
+                      <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                    {% endfor %}
                     </select>
 
                   </div>
