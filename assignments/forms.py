@@ -46,9 +46,10 @@ class AssignmentForm(forms.ModelForm):
     
     deadline = forms.DateTimeField( input_formats = ['%Y-%m-%dT%H:%M'],widget=forms.DateTimeInput(attrs={'type':'datetime-local','class': 'form-control'},
             format='%Y-%m-%dT%H:%M'))
+
     class Meta:
         model = Assignment
-        fields = ['description', 'text_assignment','file', 'deadline']
+        fields = ['description', 'text_assignment','file', 'deadline','max_marks']
 
 
 ## @brief This class represents the form to add a resource.

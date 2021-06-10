@@ -6,11 +6,12 @@ from student_management.models import Subjects
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from .models import notes
+from accounts.decorators import student_login_required
 from .forms import NotesForm,WriteNotesForm,EditForm
 import datetime
 # Create your views here.
 
-@login_required
+@student_login_required
 def home(request):
 	subjects=Subjects.objects.filter(course_id=request.user.students.course_id.id)
 	context={
@@ -18,7 +19,7 @@ def home(request):
 	}
 	return render(request,'notes/home.html',context)
 
-@login_required
+@student_login_required
 def detail(request,*args,**kwargs):
 	sub=kwargs['subject']
 	subject=get_object_or_404(Subjects,id=sub)
@@ -30,7 +31,7 @@ def detail(request,*args,**kwargs):
 	return render(request,'notes/detail.html',context)
 
 
-@login_required
+@student_login_required
 def upload_notes(request,*args,**kwargs):
 	form=NotesForm()
 	sub=kwargs['subject']
@@ -55,7 +56,7 @@ def upload_notes(request,*args,**kwargs):
 	'subject':sub
 	}
 	return render(request,'notes/upload_notes.html',context)
-
+@student_login_required
 def write_notes(request,*args,**kwargs):
 	form=WriteNotesForm()
 	sub=kwargs['subject']
@@ -81,6 +82,7 @@ def write_notes(request,*args,**kwargs):
 	}
 	return render(request,'notes/write_notes.html',context)
 
+@student_login_required
 def view_written_notes(request,*args,**kwargs):
 	id_=kwargs['pk']
 	notes_=get_object_or_404(notes,id=id_)
@@ -89,7 +91,7 @@ def view_written_notes(request,*args,**kwargs):
 	}
 	return render(request,'notes/notes_detail.html',context)
 
-
+@student_login_required
 def edit_notes(request,*args,**kwargs):
 	id_=kwargs['pk']
 	context={}
@@ -102,7 +104,7 @@ def edit_notes(request,*args,**kwargs):
 	return render(request,'notes/edit_notes.html',context)
 
 
-
+@student_login_required
 def delete_upload(request,*args,**kwargs):
 	id_=kwargs['pk']
 

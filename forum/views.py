@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from accounts.decorators import staff_login_required,admin_login_required,student_login_required
 from django.shortcuts import get_object_or_404
 from .forms import AnswerForm,QuestionForm,\
 QuestionUpdateForm,AnswerUpdateForm,StaffAnswerForm,\
@@ -15,14 +16,14 @@ from forum.models import Questions,Answers
 from django.urls import reverse
 from django.core.mail import send_mail,EmailMultiAlternatives
 from django.conf import settings
-from django.template.loader import get_template
+
 from django.contrib import messages
 import datetime
 # Create your views here.
 
 
 
-@login_required
+@student_login_required
 def SubjectView(request, *args, **kwargs):
 
 	subjects=Subjects.objects.filter(course_id=request.user.students.course_id).order_by('subject_name')
@@ -31,6 +32,7 @@ def SubjectView(request, *args, **kwargs):
 	}
 	return render(request,'forum/SubjectView.html',context)
 
+@student_login_required
 def SubforumView(request,*args,**kwargs):
 	subject=kwargs['subject']
 	subject_=get_object_or_404(Subjects,subject_name=subject)
@@ -42,6 +44,7 @@ def SubforumView(request,*args,**kwargs):
 			
 			}
 		)
+
 class QuestionView(View):
 
 	def get(self,request,*args,**kwargs):
@@ -59,9 +62,10 @@ class QuestionView(View):
 		return render(request,'forum/questions.html',context)
 
 
-		
+@student_login_required		
 def AnswerView(request,*args,**kwargs):
 	form=AnswerForm
+	domain=request.get_host()
 	if request.method=='POST':
 		form=AnswerForm(request.POST)
 		if form.is_valid():
@@ -69,10 +73,25 @@ def AnswerView(request,*args,**kwargs):
 			subject_=get_object_or_404(Subjects,subject_name=question_.subject.subject_name)
 			obj=form.save(commit=False)
 			obj.user=request.user.students
+			student_=Students.objects.get(id=request.user.students.id)
 			obj.subject=subject_
 			obj.question=question_
 			obj.date=datetime.datetime.now()
 			obj.save()
+			from_email = settings.EMAIL_HOST_USER
+			ctx={
+			    "subjects":subject_,
+			    "question":question_,
+			    "students":student_,
+			    "domain":domain
+			}
+			html_message = render_to_string('forum/send_email_answer_student.html',ctx,request=request)
+			plain_message = strip_tags(html_message)
+			subject="Someone Answered"
+			to_email=[]
+			to_email.append(question_.user.user.email)
+			print(to_email)
+			mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 			pk=kwargs['pk']
 
 			
@@ -90,14 +109,13 @@ def AnswerView(request,*args,**kwargs):
 
 
 
-@login_required
+@student_login_required
 def NewQuestionView(request,*args,**kwargs):
 	form=QuestionForm
+	domain=request.get_host()
 	if request.method=='POST':
 		form=QuestionForm(request.POST)
 		if form.is_valid():
-	
-			
 			subject_=get_object_or_404(Subjects,subject_name=kwargs['subjects'])
 			obj=form.save(commit=False)
 			obj.user=request.user.students
@@ -105,8 +123,25 @@ def NewQuestionView(request,*args,**kwargs):
 			obj.date=datetime.datetime.now()	
 			staff_id=subject_.staff_id.id
 			teacher_=get_object_or_404(Staffs,id=staff_id)
+			student_= request.user.students.id
+			student = Students.objects.get(id=student_)
 			obj.teacher=teacher_
 			obj.save()
+			print(request.POST.get('teachers_forum'))
+			if request.POST.get('teachers_forum') == 'on':
+				from_email = settings.EMAIL_HOST_USER
+				ctx={
+				    "subjects":subject_,
+				    "students":student,
+				    "domain":domain
+				}
+				html_message = render_to_string('staff_forum/send_email_question.html',ctx,request=request)
+				plain_message = strip_tags(html_message)
+				subject="New Submission"
+				to_email=[]
+				to_email.append(teacher_.user.email)
+				print(to_email)
+				mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 			return redirect('forum:my_questions')
 		else:
 			form=QuestionForm()
@@ -118,23 +153,26 @@ def NewQuestionView(request,*args,**kwargs):
 		
 	return render(request,'forum/questions_form.html',context)
 
+@student_login_required
 def QuestionUpVoteView(request,*args,**kwargs):
 	question=get_object_or_404(Questions,id=request.POST.get('question_id_up'))
 	question.up_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk'])]))
 
+@student_login_required
 def QuestionDownVoteView(request,*args,**kwargs):
 	question=get_object_or_404(Questions,id=request.POST.get('question_id_down'))
 	question.down_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk'])]))
 
-
+@student_login_required
 def AnswerUpVoteView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=request.POST.get('answer_id_up'))
 
 	answer.up_votes.add(request.user.students)
 	return HttpResponseRedirect(reverse('forum:question-detail',args=[int(kwargs['pk_alt'])]))
 
+@student_login_required
 def AnswerDownVoteView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=request.POST.get('answer_id_down'))
 	answer.down_votes.add(request.user.students)
@@ -192,7 +230,7 @@ def ReportView(request,*args,**kwargs):
 	if(request.user.user_type == '2'):
 		return render(request,"staff_forum/report.html",context)
 
-@login_required
+@student_login_required
 def ReportAnswerView(request,*args,**kwargs):
 	answer=get_object_or_404(Answers,id=kwargs['pk'])
 	question=get_object_or_404(Questions,id=answer.question.id)
@@ -232,6 +270,7 @@ class MyQuestionsView(LoginRequiredMixin,View):
 		}
 		return render(request,'forum/my_questions.html',context)
 
+
 class MyAnswersView(LoginRequiredMixin,View):
 	def get(self,request,*args,**kwargs):
 
@@ -243,7 +282,7 @@ class MyAnswersView(LoginRequiredMixin,View):
 		return render(request,'forum/my_answers.html',context)
 
 
-@login_required
+@student_login_required
 def QuestionUpdateView(request,*args,**kwargs):
 	context={}
 	question_id=kwargs['pk']
@@ -256,7 +295,7 @@ def QuestionUpdateView(request,*args,**kwargs):
 	context["form"]=form
 	return render(request,'forum/question_update.html',context)
 
-@login_required
+@student_login_required
 def AnswerUpdateView(request,*args,**kwargs):
 	context={}
 	answer_id=kwargs['pk']
@@ -269,7 +308,7 @@ def AnswerUpdateView(request,*args,**kwargs):
 	context["form"]=form
 	return render(request,'forum/answer_update.html',context)
 
-@login_required
+@student_login_required
 def QuestionDeleteView(request,pk):
 	obj=get_object_or_404(Questions,id=pk)
 	if request.method=='POST':
@@ -277,6 +316,7 @@ def QuestionDeleteView(request,pk):
 		return redirect('/forum/my_questions/')
 	return render(request,'forum/delete_question.html')
 
+@login_required
 def AnswerDeleteView(request,pk):
 	
 	obj=get_object_or_404(Answers,id=pk)
@@ -297,7 +337,7 @@ def AnswerDeleteView(request,pk):
 
 
 
-@login_required
+@staff_login_required
 def StaffSubjectView(request, *args, **kwargs):
 
 	subjects=Subjects.objects.filter(staff_id=request.user.staffs.id).order_by('subject_name')
@@ -306,6 +346,7 @@ def StaffSubjectView(request, *args, **kwargs):
 	}
 	return render(request,'staff_forum/StaffSubjectView.html',context)
 
+@staff_login_required
 def StaffSubforumView(request,*args,**kwargs):
 	subject=kwargs['subject']
 	subject_=get_object_or_404(Subjects,subject_name=subject)
@@ -334,12 +375,17 @@ class StaffQuestionView(View):
 
 		return render(request,'staff_forum/staff_questions.html',context)
 
+@staff_login_required
 def StaffAnswerView(request,*args,**kwargs):
 	form=AnswerForm
+	domain=request.get_host()
 	if request.method=='POST':
 		form=StaffAnswerForm(request.POST)
 		if form.is_valid():
+			pk=kwargs['pk']
 			question_=get_object_or_404(Questions,pk=kwargs['pk'])
+			student=question_.user.id
+			student_= Students.objects.get(id=student)
 			subject_=get_object_or_404(Subjects,subject_name=question_.subject.subject_name)
 			obj=form.save(commit=False)
 			obj.teacher=request.user.staffs
@@ -347,7 +393,20 @@ def StaffAnswerView(request,*args,**kwargs):
 			obj.question=question_
 			obj.date=datetime.datetime.now()
 			obj.save()
-			pk=kwargs['pk']
+			from_email = settings.EMAIL_HOST_USER
+			ctx={
+				"subjects":subject_,
+				"question":question_,
+				"domain":domain
+			}
+			html_message = render_to_string('staff_forum/send_email_answer.html',ctx,request=request)
+			plain_message = strip_tags(html_message)
+			subject="There is a Reply"
+			to_email=[]
+			to_email.append(student_.user.email)
+			print(to_email)
+			mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+
 
 			
 			return redirect('forum:staff_question_detail',pk)
@@ -361,7 +420,7 @@ def StaffAnswerView(request,*args,**kwargs):
 		
 	return render(request,'staff_forum/staff_answers_form.html',context)
 
-@login_required
+@staff_login_required
 def StaffAnswerUpdateView(request,*args,**kwargs):
 	context={}
 	answer_id=kwargs['pk']
@@ -375,7 +434,7 @@ def StaffAnswerUpdateView(request,*args,**kwargs):
 	context["form"]=form
 	return render(request,'staff_forum/staff_answer_update.html',context)
 
-@login_required
+@student_login_required
 def teacher_forum(request,*args,**kwargs):
 	subjects=Subjects.objects.filter(course_id=request.user.students.course_id).order_by('subject_name')
 	context={
@@ -383,7 +442,8 @@ def teacher_forum(request,*args,**kwargs):
 	}
 	return render(request,'forum/teacher_forum.html',context)
 
-@login_required
+
+@student_login_required
 def teacher_forum_questions(request,*args,**kwargs):
 	sub=kwargs['pk']
 	subject=get_object_or_404(Subjects,id=sub)
@@ -398,17 +458,19 @@ def teacher_forum_questions(request,*args,**kwargs):
 	}
 	return render(request,'forum/teacher_forum_questions.html',context)
 	
-@login_required
+
+@student_login_required
 def teacher_forum_new_question(request,*args,**kwargs):
 	form=TeacherQuestionForm
+	domain=request.get_host()
 	if request.method=='POST':
 		form=TeacherQuestionForm(request.POST)
 		if form.is_valid():
-	
-			
 			subject_=get_object_or_404(Subjects,id=kwargs['pk'])
 			obj=form.save(commit=False)
 			obj.user=request.user.students
+			student_=request.user.students.id
+			student=Students.objects.get(id=student_)
 			obj.subject=subject_
 			obj.date=datetime.datetime.now()	
 			staff_id=subject_.staff_id.id
@@ -416,6 +478,20 @@ def teacher_forum_new_question(request,*args,**kwargs):
 			obj.teacher=teacher_
 			obj.teachers_forum=True
 			obj.save()
+			from_email = settings.EMAIL_HOST_USER
+			ctx={
+			    "subjects":subject_,
+			    "students":student,
+			    "domain":domain
+			}
+			html_message = render_to_string('staff_forum/send_email_question.html',ctx,request=request)
+			plain_message = strip_tags(html_message)
+			subject="New Question"
+			to_email=[]
+			to_email.append(subject_.staff_id.user.email)
+			print(to_email)
+			mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+
 			pk=kwargs['pk']
 			return redirect('forum:teacher_forum_questions',pk)
 		else:

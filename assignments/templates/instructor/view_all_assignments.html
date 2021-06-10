@@ -29,7 +29,9 @@ Assignments
                                     <br>
                                
                                 {% endif %}
-                                Deadline for submission : {{ assignment.deadline }}<br>
+                                Deadline for submission : {{ assignment.deadline }}
+                                <br>
+                                Maximum marks : {{ assignment.max_marks }}<br>
                                 <div>
                                     <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
                                         <button type="submit" class="btn btn-primary"
