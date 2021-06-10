@@ -235,7 +235,10 @@ def add_student_save(request):
 def add_subject(request):
     courses = Courses.objects.all()
     staffs = Staffs.objects.all()
-    return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses})
+    semesters=SessionYearModel.objects.all()
+
+    
+    return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses, 'semesters':semesters})
 
 
 def add_subject_save(request):
@@ -247,8 +250,10 @@ def add_subject_save(request):
         course = Courses.objects.get(id=course_id)
         staff_id = request.POST.get("staff")
         staff = Staffs.objects.get(id=staff_id)
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
-            subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff)
+            subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff,session_year_id=sem)
             subject.save()
             messages.success(request, "Successfully Added Subject")
             return HttpResponseRedirect(reverse("add_subject"))
@@ -343,7 +348,7 @@ def edit_student(request, student_id):
     parents = Parents.objects.get(user=str(x))
     print(student_id, x)
     return render(request, "hod_template/edit_student_template.html",
-                  {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents})
+                  {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents,})
 
 
 def edit_student_save(request):
@@ -380,30 +385,51 @@ def edit_student_save(request):
             profile_pic_url = None
 
         try:
-            x = int(student_id) + 1
-            user = CustomUser.objects.get(id=student_id)
+            # user = CustomUser.objects.get(id=request.user.id)
+            # student = Students.objects.get(user=user)
+            # user1 = int(request.user.id) + 1
+            # user2 = CustomUser.objects.get(id=str(user1))
+            # parent = Parents.objects.get(user=user2)
+            x = int(request.user.id) + 1
+            user = CustomUser.objects.get(id=request.user.id)
             user1 = CustomUser.objects.get(id=str(x))
-
+            
+            
+            # user2 = CustomUser.objects.get(id=str(user1))
             user.first_name = first_name
             user.last_name = last_name
-            user.username = username
+            # user.username = username
             user.email = email
             user.save()
 
-            user1.first_name = father_name
-            user1.last_name = mother_name
-            user1.username = parent_username
-            user1.email = parent_email
-            user1.save()
+            # user1.first_name = father_name
+            # user1.last_name = mother_name
+            # user1.parents.username = parent_username
+            user1.parents.email = parent_email
+            # user1.save()
 
-            student = Students.objects.get(user=student_id)
+            student = Students.objects.get(user=request.user.id)
             parent = Parents.objects.get(user=str(x))
 
-            parent.parent_address = parent_address
-            parent.ph_no = parent_ph_no
-            parent.father_occupation = father_occupation
-            parent.mother_occupation = mother_occupation
-            parent.save()
+            # parent.parent_address = parent_address
+            # parent.ph_no = parent_ph_no
+            # parent.father_occupation = father_occupation
+            # parent.mother_occupation = mother_occupation
+            # parent.save()
+
+
+        # comment
+
+        #  user1.refresh_from_db()
+            user1.parents.father_name=father_name
+            user1.parents.mother_name=mother_name
+            user1.parents.parent_ph_no = parent_ph_no
+            user1.parents.father_occupation = father_occupation
+            user1.parents.mother_occupation = mother_occupation
+            user1.parents.parent_address = parent_address
+            # user1.parents.parent_of=stu_id  
+            user1.parents.save()
+        # 
 
             student.address = address
             session_year = SessionYearModel.objects.get(id=session_year_id)
@@ -432,8 +458,9 @@ def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     courses = Courses.objects.all()
     staffs = Staffs.objects.all()
+    semesters=SessionYearModel.objects.all()
     return render(request, "hod_template/edit_subject_template.html",
-                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id})
+                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id,"semesters":semesters})
 
 
 def edit_subject_save(request):
@@ -444,14 +471,18 @@ def edit_subject_save(request):
         subject_name = request.POST.get("subject_name")
         staff_id = request.POST.get("staff")
         course_id = request.POST.get("course")
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
             subject = Subjects.objects.get(id=subject_id)
             subject.subject_name = subject_name
             staff = Staffs.objects.get(id=staff_id)
             subject.staff_id = staff
+            subject.session_year_id=sem
             course = Courses.objects.get(id=course_id)
             subject.course_id = course
             subject.save()
+            
             messages.success(request, "Successfully Updated Subject Details")
             return HttpResponseRedirect(reverse("edit_subject", kwargs={"subject_id": subject_id}))
         except:
@@ -1200,10 +1231,12 @@ def staff_take_attendance(request):
     # print(course)
     # subject1 = Subjects.objects.get(course_id=course)
     # subject2 = Subjects.objects.get(staff_id=request.user.id)
+    semesters=SessionYearModel.objects.all()
+    
     subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
-    session_years = SessionYearModel.objects.all()
+    # session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
-                  {"subjects": subjects, "session_years": session_years})
+                  {"subjects": subjects,"semesters":semesters})
 
 
 def select_session_year(request):

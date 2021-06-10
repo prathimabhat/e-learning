@@ -134,6 +134,7 @@ def add_resource(request, course_id):
         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         notification.save()
         course_=course.id
+        
         return redirect('assignments:view_resources_staff', course_)
 
     return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})

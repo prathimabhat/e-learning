@@ -19,9 +19,25 @@ Resources
                 
                 <div style="position:right">
                     Name of the Resource:   {{ resource.title }}
-                    <a href="{{ resource.file_resource.url }}" style="text-align:right">
-                        <button type="submit" class="btn btn-primary float-right" style="margin-right: 60%">Download</button>
-                    </a>
+                    <br>
+                    {% if resource.file_resource %}
+                    <br>
+                    File:
+                        <a href="{{ resource.file_resource.url }}" style="text-align:right">
+
+                        <button type="submit" class="btn btn-primary">Download</button>
+                        </a><br><br>
+                    <!-- {% endif %} -->
+                    {% if resource.text_resource %}
+                        {{resource.text_resource|safe}}<br><br>
+                    {% endif %}
+                    {% if resource.link %}
+                        URL : <br><a href="{{resource.link}}">{{resource.link}}</a><br>
+                    {% else %}
+                        No Resources yet!
+                    {% endif %}
+                    
+                    
                 </div>
                 <br>
             </div>

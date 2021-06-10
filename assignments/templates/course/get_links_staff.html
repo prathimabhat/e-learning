@@ -4,8 +4,9 @@
 Lecture URLs
 {% endblock page_title %}
 {% block main_content %}
-	<br>
-	<button type="submit" class="btn btn-primary float-right" style="margin-right: 1rem;"><a href="{% url 'assignments:new_class_link' %}" style="color: white;">+New</a></button><br><br>
+<br>
+<button type="submit" class="btn btn-primary float-right" style="margin-right: 1rem;"><a
+        href="{% url 'assignments:new_class_link' %}" style="color: white;">+New</a></button><br><br>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -21,10 +22,10 @@ Lecture URLs
                         <div class="form-group">
                             {% for link in links reversed %}
                             <div>
-                              {{link.description}}<br>
-                              <a href="{{link.link}}">{{link.link}}</a><br>
-                              {{link.subject.subject_name}}
-                             </div><br>
+                                {{link.description}}<br>
+                                <a href="{{link.link}}" target="_blank">{{link.link}}</a><br>
+                                {{link.subject.subject_name}}
+                            </div><br>
                             {% endfor %}
                         </div>
 

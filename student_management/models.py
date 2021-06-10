@@ -18,6 +18,7 @@ class Subjects(models.Model):
     staff_id = models.ForeignKey(Staffs,related_name="subject", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE,null=True,blank=True)
     objects = models.Manager()
 
     def __str__(self):
