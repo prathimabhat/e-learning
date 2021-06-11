@@ -45,11 +45,11 @@
 
         <li class="nav-item">
           {% url 'manage_student' as manage_student %}
-          {% url 'select_student_class' as select_student_class %}
+          {% url 'select_semester_student' as select_semester_student %}
           {% url 'edit_student' student_id=id as edit_student %}
           {% url 'add_student' as add_student %}
-          <a href="{% url 'select_student_class' %}"
-            class="nav-link {% if request.path == select_student_class %} active {% endif %} {% if request.path == manage_student %} active {% endif %}  {% if request.path == edit_student %} active {% endif %} {% if request.path == add_student %} active {% endif %}">
+          <a href="{% url 'select_semester_student' %}"
+            class="nav-link {% if request.path == select_semester_student %} active {% endif %} {% if request.path == manage_student %} active {% endif %}  {% if request.path == edit_student %} active {% endif %} {% if request.path == add_student %} active {% endif %}">
             <i class="nav-icon fas fa-th"></i>
             <p>
               Manage Students
@@ -72,11 +72,11 @@
 
         <li class="nav-item">
           {% url 'manage_subject' as manage_subject %}
-          {% url 'select_subject' as select_subject %}
+          {% url 'select_semester_subject' as select_semester_subject %}
           {% url 'edit_subject' subject_id=id as edit_subject %}
           {% url 'add_subject' as add_subject %}
-          <a href="{% url 'select_subject' %}"
-            class="nav-link {% if request.path == select_subject %} active {% endif %}  {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}{% if request.path == add_subject %} active {% endif %}">
+          <a href="{% url 'select_semester_subject' %}"
+            class="nav-link {% if request.path == select_semester_subject %} active {% endif %}  {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}{% if request.path == add_subject %} active {% endif %}">
             <i class="nav-icon fas fa-th"></i>
             <p>
               Manage Subjects

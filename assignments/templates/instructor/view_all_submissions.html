@@ -21,8 +21,21 @@ Assignments
                         {% for submission in submissions reversed %}
                             <div>
                                 Name of student: <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">{{ submission.user.student_name }}</a><br>
-                                Time of submission: {{ submission.time_submitted }}<br><br>
-                            </div>
+                                Time of submission: {{ submission.time_submitted }}<br>
+                                Maximum marks : {{ submission.assignment.max_marks }}<br>
+                                {% if submission.marks %}
+                                Marks obtained : {{ submission.marks }}<br>
+                                <br>
+                                {% else %}
+
+                                  
+                                  <form method="POST" class="float-right" action="/assignments/grade_view/{{submission.id}}/" style="margin-right: 1rem;">{%csrf_token%}
+                                    <input type="number" min='0' name="marks" placeholder="Enter Marks" value="{{ marks }}">
+                                &nbsp; &nbsp; 
+                                <input class="btn btn-primary" type="submit" value="Grade">
+                                </form><br><br>
+                                {% endif %}
+                            </div><br><hr>
                         {% endfor %}
                       
                   </div>

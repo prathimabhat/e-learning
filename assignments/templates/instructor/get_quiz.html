@@ -1,0 +1,84 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{quiz.quiz_name}}
+{% endblock page_title %}
+{% block main_content %}
+
+<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:create_quiz' %}">Edit questions</a></button>
+<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:view_quiz_submissions' quiz.id %}">View submissions</a>
+</button>
+
+
+<br><br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">{{quiz.quiz_name}}</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            
+                            <div>
+                               
+
+                                Questions <br>
+                                <ol>
+                                {% for qtn in questions %}
+                                
+                                    <li>
+                                    <div>
+                                        {% if qtn.question_type == "subjective" %}
+                                            {{qtn.question_text|safe}}<br>
+                                            <span style="font-size: 1rem;">
+                                            Marks: {{qtn.question_marks}}</span><br>
+
+                                        {% elif qtn.question_type == "objective" %}
+                                            {{qtn.question_text|safe}}<br>
+                                            <span style="font-size: 1rem;">Marks :{{qtn.question_marks}}</span><br>
+                                            {% for choice in choices %}
+
+                                                {% if choice.question.id == qtn.id %}
+                                                    Options: <br>
+                                                    1.{{choice.choice1}}<br>
+                                                    2.{{choice.choice2}}<br>
+                                                    3.{{choice.choice3}}<br>
+                                                    4.{{choice.choice4}}<br>
+                                                {% endif %}<br>
+                                            {% endfor %}
+                                            <hr>
+                                            
+                                            {%if qtn.choices %}
+                                            {% else %}
+                                            <button class="btn btn-primary" type="submit"><a href="{% url 'assignments:add_choices' qtn.id %}" style="color: white;">+Add choices</a></button>
+                                            {% endif %}
+                                        {% endif %}
+
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ol>
+                                <div>
+                                   
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}

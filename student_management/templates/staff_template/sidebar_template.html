@@ -60,6 +60,17 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          {% url 'assignments:all_quizzes' as all_quizzes %}
+          <a href="{{ all_quizzes }}"
+            class="nav-link {% if request.path == all_quizzes %} active {% endif %}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+              Quiz
+            </p>
+          </a>
+        </li>
+
 
         <li class="nav-item">
           {% url 'forum:staff_subject_view' as staff_forum %}
@@ -72,10 +83,10 @@
         </li>
 
         <li class="nav-item">
-          {% url 'select_class' as select_class %}
+          {% url 'select_semester' as select_semester %}
           {% url 'staff_take_attendance' as staff_take_attendance %}
-          <a href="{{ select_class }}"
-            class="nav-link {% if request.path == select_class %} active {% endif %} {% if request.path == staff_take_attendance %} active {% endif %}">
+          <a href="{{ select_semester }}"
+            class="nav-link {% if request.path == select_semester %} active {% endif %} {% if request.path == staff_take_attendance %} active {% endif %}">
             <i class="nav-icon fas fa-th"></i>
             <p>
               Take Attendance

@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser,SessionYearModel,AdminHOD,Parents,Staffs,Students,Courses
 from student_management.models import Subjects,Attendance,AttendanceReport,FeedBackStudent,FeedBackStaffs,FeedBackParent,NotificationStudent,NotificationStaffs,NotificationParent,StudentResult,LeaveReportStudent,LeaveReportStaff
 from forum.models import Questions,Answers
-from assignments.models import Assignment,Submission
+from assignments.models import Assignment,Submission,Quiz,QuizQuestions,QuizAnswers,QuizChoice
 from notes.models import notes
 # Register your models here.
 
@@ -48,3 +48,7 @@ admin.site.register(Answers)
 admin.site.register(Assignment)
 admin.site.register(Submission)
 admin.site.register(notes)
+admin.site.register(Quiz)
+admin.site.register(QuizQuestions)
+admin.site.register(QuizAnswers)
+admin.site.register(QuizChoice)

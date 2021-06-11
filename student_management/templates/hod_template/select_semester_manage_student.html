@@ -1,0 +1,39 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Add Semester
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+
+      <br>
+      <section class="content">
+          <form role="form" action="/select_student_class" method="POST">
+               {% csrf_token %}
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-4">
+
+
+                <h4>Select Semester </h4>
+                <select  class="form-control" name="session_year">
+                  {% for session_year in session_years %}
+                  <option value="{{ session_year.id }}" id="session_year">{{ session_year.name }}->{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+          </div>
+      </div>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
+      <div>
+
+        <button class="btn btn-primary" id="fetch_class" type="Submit">Submit</button>
+      </div>
+       <div id="class_data" class="card-footer">
+
+                </div>
+          </form>
+    </section>
+
+{% endblock %}
+

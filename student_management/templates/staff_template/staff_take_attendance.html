@@ -25,14 +25,7 @@ Take Attendance
                         {% endfor %}
                     </select>
                   </div>
-                  <div class="form-group">
-                    <label>Session Year</label>
-                    <select class="form-control" name="session_year" id="session_year">
-                        {% for session_year in session_years %}
-                          <option value="{{ session_year.id }}">{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
+                  
                    <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
@@ -71,12 +64,12 @@ Take Attendance
     $(document).ready(function(){
         $("#fetch_student").click(function(){
             var subject=$("#subject").val()
-            var session_year=$("#session_year").val()
+            //var session_year=$("#session_year").val()
 
             $.ajax({
                 url:'{% url 'get_students' %}',
                 type:'POST',
-                data:{subject:subject,session_year:session_year},
+                data:{subject:subject},
             })
             .done(function(response){
                 var json_data=JSON.parse(response);
@@ -113,14 +106,14 @@ Take Attendance
                  }).get()
                 var attendance_date=$("#attendance_date").val();
                 var subject_id=$("#subject").val();
-                var session_year_id=$("#session_year").val();
+                
                 console.log(student_data)
                 student_data=JSON.stringify(student_data)
 
                 $.ajax({
                         url:'{% url 'save_attendance_data' %}',
                         type:'POST',
-                        data:{student_ids:student_data,attendance_date:attendance_date,subject_id:subject_id,session_year_id:session_year_id},
+                        data:{student_ids:student_data,attendance_date:attendance_date,subject_id:subject_id},
                     })
                     .done(function(response){
 

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 {% block page_title %}
 <input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
-Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin.id }}
+Edit Student | Name : {{ student.student_name }} |  #ID : {{ student.roll_number }}
 {% endblock page_title %}
 {% block main_content %}
     <!-- Main content -->
@@ -16,7 +16,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="/edit_student_save" method="post" enctype="multipart/form-data">
+              <form role="form" action="/edit_student_save/{{student.user.id}}/" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
@@ -32,10 +32,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                     <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ student.user.last_name }}" >
                     <input type="hidden" name="student_id" value="{{ student.admin.id }}">
                    </div>
-                   <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ student.user.username }}">
-                  </div>
+                   
                     <div class="form-group">
                     <label>Gender</label>
                     <select class="form-control" name="gender">
@@ -97,12 +94,9 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                <div class="card-body">
                 <div class="form-group">
                <label>Email address</label>
-              <input type="email" class="form-control" name="parent_email" placeholder="Enter email" autocomplete="off" id="parent_id_email" value="{{ parents.admin.email }}">
+              <input type="email" class="form-control" name="parent_email" placeholder="Enter email" autocomplete="off" id="parent_id_email" value="{{ parents.user.email }}">
                 </div>
-                <div class="form-group">
-                   <label>Username</label>
-                   <input type="text" class="form-control" placeholder="Username" name="parent_username" autocomplete="off" id="parent_id_username" value="{{ parents.admin.username }}">
-                </div>
+                
                    <!--
                  <div class="form-group">
                <label>Parent ID</label>
@@ -111,7 +105,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                 -->
                 <div class="form-group">
                <label>Father's Name</label>
-              <input type="text" class="form-control" placeholder="Father's Name" name="father_name" value="{{ parents.user.first_name }}">
+              <input type="text" class="form-control" placeholder="Father's Name" name="father_name" value="{{ parents.father_name }}">
                </div>
                 <div class="form-group">
                <label>Father's Occupation</label>
@@ -119,7 +113,7 @@ Edit Student | Username : {{ student.admin.username }} |  #ID : {{ student.admin
                </div>
                    <div class="form-group">
                <label>Mother's Name</label>
-              <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name" value="{{ parents.user.last_name }}">
+              <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name" value="{{ parents.mother_name}}">
                </div>
                 <div class="form-group">
               <label>Mother's Occupation</label>

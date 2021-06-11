@@ -1,0 +1,89 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+{{quiz.quiz_name}}
+{% endblock page_title %}
+{% block main_content %}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">{{quiz.quiz_name}}</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                          
+                             <form method="POST" action="{% url 'assignments:quiz_answer_save' quiz.id question.id %}">
+                            {% csrf_token %}
+
+                        <br>
+                        {{question.question_text|safe}}
+                        <span class="float-right"style="font-size: 0.8rem;">
+                        Marks: {{question.question_marks}}</span><br>
+
+                         {% if question.question_type == "subjective" %}
+                              <textarea name="answer" placeholder="Type your answer here..." cols="70" rows="5"></textarea><br>
+                         {% elif question.question_type == "objective" %}
+                      
+                             
+                             <input name="answer" type="radio" value="{{choice.choice1}}" id="choice1">
+                             <label for="choice1">{{choice.choice1}}</label><br>
+                             <input name="answer" type="radio" value="{{choice.choice2}}" id="choice2">
+                             <label for="choice2">{{choice.choice2}}</label><br>
+
+                            <input name="answer" type="radio" value="{{choice.choice3}}" id="choice3">
+                             <label for="choice3">{{choice.choice3}}</label><br>
+
+                            <input name="answer" type="radio" value="{{choice.choice4}}" id="choice4">
+                             <label for="choice4">{{choice.choice4}}</label><br>
+        
+                           {% endif %}      
+                            <div>
+
+
+                            <div>
+                                
+                            </div>
+                            {% if status is True %}
+                            <p style="font-weight:bolder; color: green;">Answer saved.</p>
+                            
+                            {% else %}
+                            
+                            <input type="submit" class="btn btn-primary" value="Save">
+                            <br>
+                            <small>Once you click Save you cannot change your answers</small>
+                            {% endif %}
+                            </form>
+                        
+                        <div>
+                           
+                                </div>
+                            
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+                   
+                    
+
+                </div>
+                {% for x in list %} 
+
+                        
+                        <button type="submit" class="btn btn-primary" style="width:2px;"><a href="{% url 'assignments:quiz_question_detail' quiz.id x.0.id %}" style="color:white;">{{x.1}}</a></button>
+                       
+                   
+                    {% endfor %}
+            </div>
+        </div>
+</section>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 {% block page_title %}
 <input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
-Result
+Add Result
 {% endblock page_title %}
 {% block main_content %}
     <!-- Main content -->
@@ -15,10 +15,10 @@ Result
               <div class="col-md-4">
 
 
-                <h4>Select Semester </h4>
-                <select  class="form-control" name="session_year">
-                  {% for session_year in session_years %}
-                  <option value="{{ session_year.id }}">{{session_year.name}} -> {{session_year.session_start_year}} to {{session_year.session_end_year}}</option>
+                <h4>Select Class </h4>
+                <select  class="form-control" name="course">
+                  {% for course in courses %}
+                  <option value="{{ course.id }}" id="course">{{ course.course_name }} </option>
                   {% endfor %}
                 </select>
               </div>
@@ -27,7 +27,7 @@ Result
         <br><br><br><br><br><br><br><br><br><br><br><br>
       <div>
 
-        <button class="btn btn-primary" id="fetch_class" type="button">Submit</button>
+        <button class="btn btn-primary" id="fetch_class" type="Submit">Submit</button>
       </div>
        <div id="class_data" class="card-footer">
 
@@ -35,48 +35,5 @@ Result
           </form>
     </section>
 
+{% endblock %}
 
-
-    <!-- /.content -->
-{% endblock main_content %}
-{% block custom_js %}
-<script>
-    $(document).ready(function(){
-        $("#fetch_class").click(function(){
-            var session_year=$("#session_year").val()
-
-            $.ajax({
-                url:'{% url 'get_class' %}',
-                type:'POST',
-                data:{session_year:session_year},
-            })
-            .done(function(response){
-                var json_data=JSON.parse(response);
-                console.log(json_data)
-                var div_data="<div class='form-group'><label>Select Class</label><select class='class_list form-control' name='class_list'>";
-                for(key in json_data)
-                {
-                    
-                    div_data+="<option value='"+json_data[key]['id']+"' name='class_name'> "+json_data[key]['name']+"</option>";
-                }
-                div_data+="</select>";
-                div_data+="</div>";
-                div_data+="<div class='form-group'><div class='row'>"
-                div_data+="<div class='col-lg-6'>";
-
-                div_data+="<div class='form-group'>";
-                div_data+="<button id='get_subject' class='btn btn-success btn-block' type='submit'>submit</button>";
-                div_data+="</div>";
-
-                $("#class_data").html(div_data);
-
-            })
-            .fail(function(){
-                alert("Error in Fetching Class")
-            });
-            
-        });
-    })
-
-</script>
-{% endblock custom_js %}
