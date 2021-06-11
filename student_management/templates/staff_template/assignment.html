@@ -16,14 +16,14 @@ Assignment
 
 
           <h4>Select subject </h4>
-          <select class="form-control" name="subject">
+          <select class="form-control btn btn-secondary dropdown-toggle" name="subject" >
             {% for subject in subjects %}
             <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
             {% endfor %}
           </select>
           <br><br><br>
           <h4>Select action</h4>
-          <select class="form-control" name="action">
+          <select class="form-control btn btn-secondary dropdown-toggle" name="action">
 
             <option value="create_assignment">Create Assignment</option>
             <option value="view_assignment">View Assignment</option>

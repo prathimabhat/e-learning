@@ -32,6 +32,15 @@ Add Subject
                 </select>
               </div>
               <div class="form-group">
+                <label>Select semster</label>
+                <select class="form-control" name="semester">
+                  {% for sem in semesters %}
+                  <option value="{{sem.id}}">{{ sem.name}} -> {{sem.session_start_year}} to {{sem.session_end_year}}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
                 <label>Staff</label>
                 <select class="form-control" name="staff">
                   {% for staff in staffs %}

@@ -4,7 +4,7 @@
 Lecture URLs
 {% endblock page_title %}
 {% block main_content %}
-	
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -20,10 +20,10 @@ Lecture URLs
                         <div class="form-group">
                             {% for link in links reversed %}
                             <div>
-                              {{link.description}}<br>
-                              <a href="{{link.link}}">{{link.link}}</a><br>
-                              {{link.subject.subject_name}}
-                             </div><br>
+                                {{link.description}}<br>
+                                <a href="{{link.link}}" target="_blank">{{link.link}}</a><br>
+                                {{link.subject.subject_name}}
+                            </div><br>
                             {% endfor %}
                         </div>
 

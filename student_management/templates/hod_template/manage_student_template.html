@@ -53,7 +53,8 @@ Manage Students
                   <td>{{ student.ph_no }}</td>
                   <td>{{ student.address }}</td>
                   <td><img src="{{ student.profile_pic }}" style="width:100px" /></td>
-                  <td>{{student.session_year_id.name}}->{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}
+                  <td>{{student.session_year_id.name}}->{{ student.session_year_id.session_start_year }} TO 
+                    {{ student.session_year_id.session_end_year }}
                   </td>
                   <td>{{ student.course_id.course_name }}</td>
 
@@ -69,7 +70,10 @@ Manage Students
                   {% endif %}
                   {% endfor %}
                   <td>
-                    <a href="{% url 'edit_student' student_id=student.user.id %}" class="btn btn-success">Edit</a> 
+
+                    
+                    <a href="/edit_student/{{ student.user.id }}" class="btn btn-success">Edit</a>
+
                     <a href="/delete_student/{{ student.user.id }}" class="btn btn-danger">Delete</a>
                   </td>
                 </tr>

@@ -235,7 +235,10 @@ def add_student_save(request):
 def add_subject(request):
     courses = Courses.objects.all()
     staffs = Staffs.objects.all()
-    return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses})
+    semesters=SessionYearModel.objects.all()
+
+    
+    return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses, 'semesters':semesters})
 
 @admin_login_required
 def add_subject_save(request):
@@ -248,8 +251,10 @@ def add_subject_save(request):
         students= Students.objects.filter(course_id=course)
         staff_id = request.POST.get("staff")
         staff = Staffs.objects.get(id=staff_id)
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
-            subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff)
+            subject = Subjects(subject_name=subject_name, course_id=course, staff_id=staff,session_year_id=sem)
             subject.save()
             for i in students:
                 subject.student_id.add(i)
@@ -347,7 +352,7 @@ def edit_student(request, student_id):
     parents = Parents.objects.get(parent_of=student)
     print(student_id, x)
     return render(request, "hod_template/edit_student_template.html",
-                  {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents})
+                  {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents,})
 
 @admin_login_required
 def edit_student_save(request,student_id):
@@ -410,6 +415,7 @@ def edit_student_save(request,student_id):
             parent.mother_occupation = mother_occupation
             parent.save()
 
+
             student.address = address
             session_year = SessionYearModel.objects.get(id=session_year_id)
             student.session_year_id = session_year
@@ -437,8 +443,9 @@ def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     courses = Courses.objects.all()
     staffs = Staffs.objects.all()
+    semesters=SessionYearModel.objects.all()
     return render(request, "hod_template/edit_subject_template.html",
-                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id})
+                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id,"semesters":semesters})
 
 @admin_login_required
 def edit_subject_save(request):
@@ -450,11 +457,14 @@ def edit_subject_save(request):
         students= Students.objects.filter(course_id=course)
         staff_id = request.POST.get("staff")
         course_id = request.POST.get("course")
+        semester=request.POST.get("semester")
+        sem=SessionYearModel.objects.get(id=semester)
         try:
             subject = Subjects.objects.get(id=subject_id)
             subject.subject_name = subject_name
             staff = Staffs.objects.get(id=staff_id)
             subject.staff_id = staff
+            subject.session_year_id=sem
             course = Courses.objects.get(id=course_id)
             subject.course_id = course
             subject.save()
@@ -1235,10 +1245,14 @@ def staff_take_attendance(request):
     # print(course)
     # subject1 = Subjects.objects.get(course_id=course)
     # subject2 = Subjects.objects.get(staff_id=request.user.id)
-    subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.staffs.id)
-    #session_years = SessionYearModel.objects.all()
+
+    semesters=SessionYearModel.objects.all()
+    
+    subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
+    # session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
-                  {"subjects": subjects,} )
+                  {"subjects": subjects,"semesters":semesters})
+
 
 @staff_login_required
 def select_session_year(request):

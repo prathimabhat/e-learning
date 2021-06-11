@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'dist/css/add_staff.css' %}">
 </head>
 
 <body class="hold-transition login-page">
@@ -38,9 +39,13 @@
 			    {% for fields in form%}
 			    	{{fields.label}}<br>
 			    	{{fields}}<br><br>
-			    {% endfor %}<br>
+			    {% endfor %}
 
 			    <input class="btn btn-primary" type="submit" value="Submit">
+          <br>
+          <br>
+          
+            <a href="{% url 'password_reset' %}" style="text-align: center;">Forgot Password?</a>
 
 			</form>
 		</span>
@@ -48,14 +53,14 @@
    
 
           <div class="col-12">
+            
+
             <br>
-            <a href="{% url 'password_reset' %}">Forgot Password?</a>
-
-
-            <br><br>
+            <!-- <br> -->
           <div class="row" style="display: flex;justify-content: center;align-content: center;color: red;">
            {% if form.errors%}
-            <p>Incorrect email or password</p>
+           <div class="alert alert-danger alert-dismissible fade show" ><button type="button" class="close" data-dismiss="alert">&times;</button>Incorrect email or password !
+            </div>
             {% endif %}
           </div>
           </div>
@@ -75,7 +80,9 @@
   <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <!-- AdminLTE App -->
   <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-
+<script>
+  $().alert('close')
+</script>
 </body>
 
 </html>
