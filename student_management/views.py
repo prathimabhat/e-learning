@@ -232,10 +232,23 @@ def add_student_save(request):
             return HttpResponseRedirect(reverse("add_student"))
 
 @admin_login_required
-def add_subject(request):
-    courses = Courses.objects.all()
+def select_action_subject(request,session_year):
+    if request.method == "POST":
+        course_=request.POST.get('course')
+        action=request.POST.get('action')
+        if action == "fetch_subject":
+            return redirect('manage_subject',course_)
+        if action == "add_subject":
+            return redirect('add_subject',session_year,course_)
+    else:
+        return render(request,'select_subject_template.html')
+
+@admin_login_required
+def add_subject(request,session_year,course):
+    
+    courses = Courses.objects.filter(id=course)
     staffs = Staffs.objects.all()
-    semesters=SessionYearModel.objects.all()
+    semesters=SessionYearModel.objects.filter(id=session_year)
 
     
     return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses, 'semesters':semesters})
@@ -259,11 +272,10 @@ def add_subject_save(request):
             for i in students:
                 subject.student_id.add(i)
             messages.success(request, "Successfully Added Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
+            return redirect('add_subject',sem.id,course.id)
         except:
             messages.error(request, "Failed to Add Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
-
+            return redirect('add_subject',sem.id,course.id)
 @admin_login_required
 def manage_staff(request):
     staffs = Staffs.objects.all()
@@ -282,10 +294,57 @@ def manage_course(request):
     return render(request, "hod_template/manage_course_template.html", {"courses": courses})
 
 @admin_login_required
-def manage_subject(request):
-    course = request.POST.get("course")
+def manage_subject(request,course):
+    
     subjects = Subjects.objects.filter(course_id=course)
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
+
+@admin_login_required
+def add_students_subject(request,subject_id):
+    subject=Subjects.objects.get(id=subject_id)
+    if request.method =="POST":
+        student=request.POST.get('student')
+        subject.student_id.add(student)
+        subject.save()
+        messages.success(request, "Successfully added student ")
+        return redirect('add_students_subject',subject_id)
+
+    else:
+        stu=[]
+        for x in subject.student_id.all():
+            stu.append(x.id)
+
+        students_=Students.objects.filter(id__in=stu)
+        students=Students.objects.exclude(id__in=stu)
+
+        context={
+            'students':students,
+            'students_':students_,
+            'subject':subject
+        }
+    return render(request,"hod_template/add_students_subject.html",context)
+
+@admin_login_required
+def remove_students_subject(request,subject_id):
+    subject=Subjects.objects.get(id=subject_id)
+    if request.method =="POST":
+        student=request.POST.get('student')
+        subject.student_id.remove(student)
+        subject.save()
+        messages.success(request, "Successfully removed student ")
+        return redirect('remove_students_subject',subject_id)
+    else:
+        stu=[]
+        for x in subject.student_id.all():
+            stu.append(x.id)
+        students=Students.objects.filter(id__in=stu)
+
+        context={
+            'students':students,
+            'subject':subject
+        }
+    return render(request,"hod_template/remove_students_subject.html",context)
+
 
 @admin_login_required
 def edit_staff(request, staff_id):
@@ -441,11 +500,11 @@ def edit_student_save(request,student_id):
 @admin_login_required
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
-    courses = Courses.objects.all()
+    #courses = Courses.objects.all()
     staffs = Staffs.objects.all()
-    semesters=SessionYearModel.objects.all()
+    #semesters=SessionYearModel.objects.all()
     return render(request, "hod_template/edit_subject_template.html",
-                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id,"semesters":semesters})
+                  {"subject": subject, "staffs": staffs, "id": subject_id})
 
 @admin_login_required
 def edit_subject_save(request):
@@ -454,19 +513,20 @@ def edit_subject_save(request):
     else:
         subject_id = request.POST.get("subject_id")
         subject_name = request.POST.get("subject_name")
-        students= Students.objects.filter(course_id=course)
+        
         staff_id = request.POST.get("staff")
-        course_id = request.POST.get("course")
-        semester=request.POST.get("semester")
-        sem=SessionYearModel.objects.get(id=semester)
+        #course_id = request.POST.get("course")
+        #semester=request.POST.get("semester")
+        #sem=SessionYearModel.objects.get(id=semester)
         try:
             subject = Subjects.objects.get(id=subject_id)
+            students= Students.objects.filter(course_id=subject.course_id)
             subject.subject_name = subject_name
             staff = Staffs.objects.get(id=staff_id)
             subject.staff_id = staff
-            subject.session_year_id=sem
-            course = Courses.objects.get(id=course_id)
-            subject.course_id = course
+            #subject.session_year_id=sem
+            #course = Courses.objects.get(id=course_id)
+            #subject.course_id = course
             subject.save()
             for i in students:
                 subject.student_id.add(i)
@@ -801,7 +861,8 @@ def select_semester_subject(request):
 def select_subject(request):
     session_year=request.POST.get('session_year')
     courses = Courses.objects.filter(session_year_id=session_year)
-    return render(request, "hod_template/select_subject_template.html", {"courses": courses})
+    #session=SessionYearModel.objects.filter(id=session_year)
+    return render(request, "hod_template/select_subject_template.html", {"courses": courses,"session_year":session_year})
 
 @admin_login_required
 def admin_send_notification_student(request):
@@ -921,9 +982,10 @@ def delete_course(request, course_id):
 
 @admin_login_required
 def delete_subject(request, subject_id):
-    user = Subjects.objects.get(id=subject_id)
-    user.delete()
-    return HttpResponseRedirect("/select_subject")
+    sub = Subjects.objects.get(id=subject_id)
+    course=Courses.objects.get(id=sub.course_id.id)
+    sub.delete()
+    return redirect("manage_subject",course.id)
 
 
 
