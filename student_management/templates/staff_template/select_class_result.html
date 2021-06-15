@@ -12,11 +12,11 @@ Add Result
                {% csrf_token %}
       <div class="container-fluid">
           <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-8">
 
 
                 <h4>Select Class </h4>
-                <select  class="form-control" name="course">
+                <select  class="form-control  btn btn-secondary dropdown-toggle" name="course">
                   {% for course in courses %}
                   <option value="{{ course.id }}" id="course">{{ course.course_name }} </option>
                   {% endfor %}

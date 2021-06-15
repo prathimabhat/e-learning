@@ -16,7 +16,7 @@ Take Attendance
 
 
                 <h4>Select Class </h4>
-                <select  class="form-control" name="course">
+                <select  class="form-control  btn btn-secondary dropdown-toggle" name="course">
                   {% for course in courses %}
                   <option value="{{ course.id }}">{{ course.course_name }}</option>
                   {% endfor %}
