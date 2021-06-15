@@ -70,8 +70,10 @@ Manage Students
                   {% endif %}
                   {% endfor %}
                   <td>
+
                     
                     <a href="/edit_student/{{ student.user.id }}" class="btn btn-success">Edit</a>
+
                     <a href="/delete_student/{{ student.user.id }}" class="btn btn-danger">Delete</a>
                   </td>
                 </tr>

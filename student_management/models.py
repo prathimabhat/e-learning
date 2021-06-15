@@ -29,7 +29,7 @@ class Attendance(models.Model):
     subject_id = models.ForeignKey(Subjects, on_delete=models.DO_NOTHING)
     attendance_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
-    session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
+    #session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
 

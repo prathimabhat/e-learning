@@ -1,0 +1,65 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Quiz
+{% endblock page_title %}
+{% block main_content %}
+
+<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:create_quiz' %}">+New quiz</a></button>
+<br><br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Quizzes</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            {% for quiz in quizzes reversed %}
+                            <div class="row">
+                                <div class="col-lg-6 col-xs-12">
+                                   <a href="{% url 'assignments:get_quiz' quiz.id %}"><span style="font-weight: bolder;"> Quiz name : {{ quiz.quiz_name }}</span></a><br>
+                                    <span style="color:green; font-weight: bold;">Subject : {{quiz.subject}}</span><br>
+                                    Date : {{quiz.quiz_date}}<br>
+
+                                    Maximum marks : {{ quiz.total_marks }}<br>
+                                    Minimum marks to pass : {{quiz.min_marks}}<br>
+
+                                    Time : {{quiz.time_for_quiz}}<br>
+                                </div>
+                                <div class="col-lg-3 col-xs-6">
+
+                                    <button type="submit" class="btn btn-primary"><a href="{% url 'assignments:select_question_type' quiz.id %}" style="color: white;">Add questions</a></button>
+                                </div>
+
+                                {% if quiz.enable == False %}
+
+                                <div class="col-lg-2 col-xs-6">
+                                   <button type ="submit" class="btn btn-success"><a href="{% url 'assignments:enable_quiz' quiz.id %}" style="color: white;">Enable Quiz</a></button>
+                                </div>
+                                {% else %}
+                                <div class="col-lg-3 col-xs-6">
+                                    <span style="color: green;font-weight: bold;"> Quiz enabled</span>
+                                </div>
+
+                                {% endif %}
+
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}

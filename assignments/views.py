@@ -1,19 +1,23 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import  Submission, Assignment,Message,Notification,Resources,LectureLinks
+from .models import  Submission, Assignment,Message,Notification,\
+Resources,LectureLinks,Quiz,QuizQuestions,QuizChoice,QuizAnswers
 from student_management.models import Subjects
 from accounts.models import Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
 from accounts.decorators import staff_login_required,admin_login_required,student_login_required
 from .forms import AssignmentForm, NotificationForm, ResourceForm,\
-MessageForm,SubmissionForm,LecturelinksForm
+MessageForm,SubmissionForm,LecturelinksForm,QuizForm,QuizQuestionsForm,MCQForm
 import datetime
 from datetime import date, time
 from django.conf import settings
 from django.core.mail import send_mail,EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template.loader import render_to_string
+from django.contrib import messages
+
 # Create your views here.
+
 
 @staff_login_required
 def assignment(request):
@@ -200,13 +204,32 @@ def add_resource(request, course_id):
 
 @staff_login_required
 def gradeview(request,pk):
+    domain=request.get_host()
     if request.method == 'POST':
         submission = Submission.objects.get(id=pk)
         submission.marks=request.POST.get('marks')
+        
         assignment_id= submission.assignment.id
         submission.save()
-        return redirect('assignments: view_all_submissions')
+        assignment=Assignment.objects.get(id=assignment_id)
+        student=Students.objects.get(id=submission.user.id)
+        from_email = settings.EMAIL_HOST_USER
+        ctx={
+            
+            "domain":domain,
+            "assignment":assignment,
+            "submission":submission
+        }
+        html_message = render_to_string('course/send_email_assignment_grade.html',ctx,request=request)
+        plain_message = strip_tags(html_message)
+        to_email=[]
+        subject="Assignment graded"
+        to_email.append(student.user.email)
+        mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+
+        return redirect('assignments:view_all_submissions',assignment_id)
     else:
+        print("hey")
         return render(request,'instructor/view_all_submissions.html')
 
 
@@ -519,3 +542,237 @@ def get_class_links_student(request):
         'links':links
     }
     return render(request,'course/get_links_students.html',context)
+
+
+@staff_login_required
+def all_quizzes(request):
+    quizzes=Quiz.objects.filter(staff=request.user.staffs)
+    context={
+    'quizzes':quizzes
+    }
+    return render(request,'instructor/all_quizzes.html',context)
+
+
+@staff_login_required
+def create_quiz(request):
+    form=QuizForm(user=request.user.staffs)
+    staff_=Staffs.objects.get(id=request.user.staffs.id)
+    if request.method=="POST":
+        form=QuizForm(request.POST,user=request.user.staffs)
+        if form.is_valid():
+            quiz = form.save(commit=False)
+            sub=request.POST.get('subject')
+            subject_= Subjects.objects.get(id=sub)
+            quiz.subject=subject_
+            quiz.staff=staff_
+            quiz.save()
+            
+            return redirect('assignments:all_quizzes')
+        else:
+            form=QuizForm(user=request.user.staffs)
+    else:
+        form=QuizForm(user=request.user.staffs)
+
+    return render(request,'instructor/create_quiz.html',{'form':form})
+
+@staff_login_required
+def select_question_type(request,pk):
+    context={
+        'quiz':pk
+    }
+    if request.method=="POST":
+        type_=request.POST.get('qtn_type')
+        if type_ =="subjective":
+            return redirect('assignments:add_quiz_questions',pk)
+        else:
+            return redirect('assignments:add_mcq_questions',pk)
+    return render(request,"instructor/select_question_type.html",context)
+
+
+@staff_login_required
+def get_quiz(request,pk):
+    quiz_=Quiz.objects.get(id=pk)
+    questions_=QuizQuestions.objects.filter(quiz=quiz_)
+    choices=QuizChoice.objects.filter(question__in=questions_)
+    context={
+        'quiz':quiz_,
+        'questions':questions_,
+        'choices':choices
+    }
+    return render(request,'instructor/get_quiz.html',context)
+'''
+@staff_login_required
+def edit_quiz(request,pk):
+    form=EditQuizForm(obj=)
+'''
+@staff_login_required
+def add_quiz_questions(request,pk):
+    form=QuizQuestionsForm()
+    quiz_=Quiz.objects.get(id=pk)
+    if request.method=="POST":
+        form=QuizQuestionsForm(request.POST)
+        if form.is_valid():
+            quizquestions = form.save(commit=False)
+            quizquestions.quiz=quiz_
+            quizquestions.question_type="subjective"
+            quizquestions.save()
+           
+            return redirect('assignments:get_quiz',pk)
+        else:
+            form=QuizQuestionsForm()
+    else:
+        form=QuizQuestionsForm()
+
+    return render(request,'instructor/create_quiz_questions.html',{'form':form})
+
+@staff_login_required
+def add_mcq_questions(request,pk):
+    form=QuizQuestionsForm()
+    quiz_=Quiz.objects.get(id=pk)
+    if request.method=="POST":
+        form=QuizQuestionsForm(request.POST)
+        if form.is_valid():
+            quizquestions = form.save(commit=False)
+            quizquestions.quiz=quiz_
+            quizquestions.question_type="objective"
+            quizquestions.save()
+            
+            return redirect('assignments:get_quiz',pk)
+        else:
+            form=QuizQuestionsForm()
+    else:
+        form=QuizQuestionsForm()
+
+    return render(request,'instructor/create_quiz_questions.html',{'form':form})
+
+@staff_login_required
+def add_choices(request,pk):
+    qtn=QuizQuestions.objects.get(id=pk)
+    form=MCQForm()
+    if request.method =="POST":
+        form=MCQForm(request.POST)
+        if form.is_valid():
+            choice=form.save(commit=False)
+            choice.question=qtn
+            choice.save()
+            id_=qtn.quiz.id
+            return redirect('assignments:get_quiz',id_)
+        else:
+            form=MCQForm()
+    else:
+        form=MCQForm()
+
+    return render(request,'instructor/create_mcqs.html',{'form':form})
+
+@staff_login_required
+def enable_quiz(request,pk):
+    quiz_=Quiz.objects.get(id=pk)
+    quiz_.enable=True
+    quiz_.save()
+    return redirect('assignments:all_quizzes')
+
+@student_login_required
+def all_quizzes_students(request):
+    sub=Subjects.objects.filter(course_id=request.user.students.course_id)
+    quizzes=Quiz.objects.filter(subject__in=sub)
+    context={
+        'quizzes':quizzes
+    }
+    return render(request,'course/all_quizzes_students.html',context)
+
+
+
+@student_login_required
+def get_quiz_students(request,pk):
+    quiz_=Quiz.objects.get(id=pk)
+    questions=QuizQuestions.objects.filter(quiz=quiz_)
+    choices=QuizChoice.objects.filter(question__in=questions)
+    
+
+    context={
+        'quiz':quiz_,
+        'questions':questions,
+        'choices':choices,
+        }
+
+    return render(request,'course/get_quiz_students.html',context)
+
+@student_login_required
+def quiz_question_detail(request,quiz_id,question_id):
+    quiz=Quiz.objects.get(id=quiz_id)
+    qtn=QuizQuestions.objects.get(id=question_id)
+    all_questions=QuizQuestions.objects.filter(quiz=quiz)
+    number_of_questions=all_questions.count()+1
+    range_=range(1,number_of_questions)
+    list_=zip(all_questions,range_)
+    if(QuizAnswers.objects.filter(question=qtn,student=request.user.students).exists()):
+   
+        status=True
+    else:
+        status=False
+
+    if(qtn.question_type == "objective"):
+        choice=QuizChoice.objects.get(question=qtn)
+        context={
+            'quiz':quiz,
+            'question':qtn,
+            'choice':choice,
+            'status':status,
+            'list':list_
+        }
+    else:
+        context={
+            'quiz':quiz,
+            'question':qtn,
+            'status':status,
+            'all_questions':all_questions,
+            'range':range_
+            }
+
+    return render(request,'course/quiz_question_detail.html',context)
+
+
+@student_login_required
+def quiz_answer_save(request,quiz_id,question_id):
+    if request.method=="POST":
+        quiz_=Quiz.objects.get(id=quiz_id)
+        qtn=QuizQuestions.objects.get(id=question_id)
+        student_=Students.objects.get(id=request.user.students.id)
+        answer_=request.POST.get('answer')
+        try:
+            ans=QuizAnswers(quiz=quiz_,student=student_,answer_text=answer_,question=qtn)
+            ans.save()
+          
+            
+            return redirect('assignments:quiz_question_detail',quiz_id,question_id)
+        except:
+            messages.error(request, "Failed to submit answer")
+            
+            return redirect('assignments:quiz_question_detail',quiz_id,question_id)
+    
+    return render(request,'course/get_quiz_students.html')
+
+@staff_login_required
+def view_quiz_submissions(request,quiz_id):
+    quiz_=Quiz.objects.get(id=quiz_id)
+    submissions=QuizAnswers.objects.filter(quiz=quiz_)
+    students=set()
+    for x in submissions:
+        students.add(x.student)
+
+    context={
+        'quiz':quiz_,
+        'students':students
+        
+    }
+    return render(request,'instructor/view_quiz_submissions.html',context)
+
+@staff_login_required
+def get_submission_detail(request,quiz_id,student_id):
+    quiz_=Quiz.objects.get(id=quiz_id)
+    stu=Students.objects.get(id=student_id)
+    submission=QuizAnswers.objects.filter(quiz=quiz_).filter(student=stu)
+    context={
+    'submission':submission
+    }
+    return render(request,'instructor/get_submission_detail.html',context)

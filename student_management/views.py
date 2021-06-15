@@ -232,10 +232,23 @@ def add_student_save(request):
             return HttpResponseRedirect(reverse("add_student"))
 
 @admin_login_required
-def add_subject(request):
-    courses = Courses.objects.all()
+def select_action_subject(request,session_year):
+    if request.method == "POST":
+        course_=request.POST.get('course')
+        action=request.POST.get('action')
+        if action == "fetch_subject":
+            return redirect('manage_subject',course_)
+        if action == "add_subject":
+            return redirect('add_subject',session_year,course_)
+    else:
+        return render(request,'select_subject_template.html')
+
+@admin_login_required
+def add_subject(request,session_year,course):
+    
+    courses = Courses.objects.filter(id=course)
     staffs = Staffs.objects.all()
-    semesters=SessionYearModel.objects.all()
+    semesters=SessionYearModel.objects.filter(id=session_year)
 
     
     return render(request, "hod_template/add_subject_template.html", {"staffs": staffs, "courses": courses, 'semesters':semesters})
@@ -259,11 +272,10 @@ def add_subject_save(request):
             for i in students:
                 subject.student_id.add(i)
             messages.success(request, "Successfully Added Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
+            return redirect('add_subject',sem.id,course.id)
         except:
             messages.error(request, "Failed to Add Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
-
+            return redirect('add_subject',sem.id,course.id)
 @admin_login_required
 def manage_staff(request):
     staffs = Staffs.objects.all()
@@ -282,10 +294,57 @@ def manage_course(request):
     return render(request, "hod_template/manage_course_template.html", {"courses": courses})
 
 @admin_login_required
-def manage_subject(request):
-    course = request.POST.get("course")
+def manage_subject(request,course):
+    
     subjects = Subjects.objects.filter(course_id=course)
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
+
+@admin_login_required
+def add_students_subject(request,subject_id):
+    subject=Subjects.objects.get(id=subject_id)
+    if request.method =="POST":
+        student=request.POST.get('student')
+        subject.student_id.add(student)
+        subject.save()
+        messages.success(request, "Successfully added student ")
+        return redirect('add_students_subject',subject_id)
+
+    else:
+        stu=[]
+        for x in subject.student_id.all():
+            stu.append(x.id)
+
+        students_=Students.objects.filter(id__in=stu)
+        students=Students.objects.exclude(id__in=stu)
+
+        context={
+            'students':students,
+            'students_':students_,
+            'subject':subject
+        }
+    return render(request,"hod_template/add_students_subject.html",context)
+
+@admin_login_required
+def remove_students_subject(request,subject_id):
+    subject=Subjects.objects.get(id=subject_id)
+    if request.method =="POST":
+        student=request.POST.get('student')
+        subject.student_id.remove(student)
+        subject.save()
+        messages.success(request, "Successfully removed student ")
+        return redirect('remove_students_subject',subject_id)
+    else:
+        stu=[]
+        for x in subject.student_id.all():
+            stu.append(x.id)
+        students=Students.objects.filter(id__in=stu)
+
+        context={
+            'students':students,
+            'subject':subject
+        }
+    return render(request,"hod_template/remove_students_subject.html",context)
+
 
 @admin_login_required
 def edit_staff(request, staff_id):
@@ -349,17 +408,17 @@ def edit_student(request, student_id):
     x = int(student_id) + 1
     courses = Courses.objects.all()
     sessions = SessionYearModel.objects.all()
-    parents = Parents.objects.get(user=str(x))
+    parents = Parents.objects.get(parent_of=student)
     print(student_id, x)
     return render(request, "hod_template/edit_student_template.html",
                   {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents,})
 
 @admin_login_required
-def edit_student_save(request):
+def edit_student_save(request,student_id):
     if request.method != 'POST':
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        student_id = request.POST.get("student_id")
+        #student_id = request.POST.get("student_id")
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         username = request.POST.get("username")
@@ -388,52 +447,33 @@ def edit_student_save(request):
         else:
             profile_pic_url = None
 
-        try:
-            # user = CustomUser.objects.get(id=request.user.id)
-            # student = Students.objects.get(user=user)
-            # user1 = int(request.user.id) + 1
-            # user2 = CustomUser.objects.get(id=str(user1))
-            # parent = Parents.objects.get(user=user2)
-            x = int(request.user.id) + 1
-            user = CustomUser.objects.get(id=request.user.id)
-            user1 = CustomUser.objects.get(id=str(x))
-            
-            
-            # user2 = CustomUser.objects.get(id=str(user1))
+        
+        try:    
+            user = CustomUser.objects.get(id=student_id)
+            parent_=Parents.objects.get(parent_of=user.students)
+            user1 = CustomUser.objects.get(id=parent_.user.id)
+
             user.first_name = first_name
             user.last_name = last_name
-            # user.username = username
+           
             user.email = email
             user.save()
 
-            # user1.first_name = father_name
-            # user1.last_name = mother_name
-            # user1.parents.username = parent_username
-            user1.parents.email = parent_email
-            # user1.save()
+            
+            
+            user1.email = parent_email
+            user1.save()
 
-            student = Students.objects.get(user=request.user.id)
-            parent = Parents.objects.get(user=str(x))
+            student = Students.objects.get(user=student_id)
+            parent = Parents.objects.get(parent_of=student)
+            parent.father_name=father_name
+            parent.mother_name=mother_name
+            parent.parent_address = parent_address
+            parent.ph_no = parent_ph_no
+            parent.father_occupation = father_occupation
+            parent.mother_occupation = mother_occupation
+            parent.save()
 
-            # parent.parent_address = parent_address
-            # parent.ph_no = parent_ph_no
-            # parent.father_occupation = father_occupation
-            # parent.mother_occupation = mother_occupation
-            # parent.save()
-
-
-        # comment
-
-        #  user1.refresh_from_db()
-            user1.parents.father_name=father_name
-            user1.parents.mother_name=mother_name
-            user1.parents.parent_ph_no = parent_ph_no
-            user1.parents.father_occupation = father_occupation
-            user1.parents.mother_occupation = mother_occupation
-            user1.parents.parent_address = parent_address
-            # user1.parents.parent_of=stu_id  
-            user1.parents.save()
-        # 
 
             student.address = address
             session_year = SessionYearModel.objects.get(id=session_year_id)
@@ -456,15 +496,15 @@ def edit_student_save(request):
         except:
             messages.error(request, "Failed to Edit Student Details")
             return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
-
+        
 @admin_login_required
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
-    courses = Courses.objects.all()
+    #courses = Courses.objects.all()
     staffs = Staffs.objects.all()
-    semesters=SessionYearModel.objects.all()
+    #semesters=SessionYearModel.objects.all()
     return render(request, "hod_template/edit_subject_template.html",
-                  {"subject": subject, "staffs": staffs, "courses": courses, "id": subject_id,"semesters":semesters})
+                  {"subject": subject, "staffs": staffs, "id": subject_id})
 
 @admin_login_required
 def edit_subject_save(request):
@@ -473,19 +513,20 @@ def edit_subject_save(request):
     else:
         subject_id = request.POST.get("subject_id")
         subject_name = request.POST.get("subject_name")
-        students= Students.objects.filter(course_id=course)
+        
         staff_id = request.POST.get("staff")
-        course_id = request.POST.get("course")
-        semester=request.POST.get("semester")
-        sem=SessionYearModel.objects.get(id=semester)
+        #course_id = request.POST.get("course")
+        #semester=request.POST.get("semester")
+        #sem=SessionYearModel.objects.get(id=semester)
         try:
             subject = Subjects.objects.get(id=subject_id)
+            students= Students.objects.filter(course_id=subject.course_id)
             subject.subject_name = subject_name
             staff = Staffs.objects.get(id=staff_id)
             subject.staff_id = staff
-            subject.session_year_id=sem
-            course = Courses.objects.get(id=course_id)
-            subject.course_id = course
+            #subject.session_year_id=sem
+            #course = Courses.objects.get(id=course_id)
+            #subject.course_id = course
             subject.save()
             for i in students:
                 subject.student_id.add(i)
@@ -794,8 +835,15 @@ def admin_profile_save(request):
             return HttpResponseRedirect(reverse("login"))
 
 @admin_login_required
+def select_semester_student(request):
+    session_years = SessionYearModel.objects.all()
+    return render(request, "hod_template/select_semester_manage_student.html",{"session_years": session_years})
+
+
+@admin_login_required
 def select_student_class(request):
-    courses = Courses.objects.all()
+    session_year=request.POST.get('session_year')
+    courses = Courses.objects.filter(session_year_id=session_year)
     return render(request, "hod_template/select_student_class_template.html", {"courses": courses})
 
 @admin_login_required
@@ -804,9 +852,17 @@ def select_attendance_class(request):
     return render(request, "hod_template/select_attendance_class_template.html", {"courses": courses})
 
 @admin_login_required
+def select_semester_subject(request):
+    session_years = SessionYearModel.objects.all()
+    return render(request, "hod_template/select_semester_manage_subject.html",{"session_years": session_years})
+
+
+@admin_login_required
 def select_subject(request):
-    courses = Courses.objects.all()
-    return render(request, "hod_template/select_subject_template.html", {"courses": courses})
+    session_year=request.POST.get('session_year')
+    courses = Courses.objects.filter(session_year_id=session_year)
+    #session=SessionYearModel.objects.filter(id=session_year)
+    return render(request, "hod_template/select_subject_template.html", {"courses": courses,"session_year":session_year})
 
 @admin_login_required
 def admin_send_notification_student(request):
@@ -926,9 +982,10 @@ def delete_course(request, course_id):
 
 @admin_login_required
 def delete_subject(request, subject_id):
-    user = Subjects.objects.get(id=subject_id)
-    user.delete()
-    return HttpResponseRedirect("/select_subject")
+    sub = Subjects.objects.get(id=subject_id)
+    course=Courses.objects.get(id=sub.course_id.id)
+    sub.delete()
+    return redirect("manage_subject",course.id)
 
 
 
@@ -1250,12 +1307,14 @@ def staff_take_attendance(request):
     # print(course)
     # subject1 = Subjects.objects.get(course_id=course)
     # subject2 = Subjects.objects.get(staff_id=request.user.id)
+
     semesters=SessionYearModel.objects.all()
     
     subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
     # session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
                   {"subjects": subjects,"semesters":semesters})
+
 
 @staff_login_required
 def select_session_year(request):
@@ -1272,6 +1331,11 @@ def select_class_result(request):
     courses = Courses.objects.filter(session_year_id=session_year)
     return render(request, "staff_template/select_class_result.html",
                   {"courses": courses})
+
+@staff_login_required
+def select_semester(request):
+    session_years = SessionYearModel.objects.all()
+    return render(request, "staff_template/select_semester_attendance.html",{"session_years": session_years})
 
 @staff_login_required
 def select_class(request):
@@ -1313,11 +1377,11 @@ def edit_select_class(request):
 @csrf_exempt
 def get_students(request):
     subject_id = request.POST.get("subject")
-    session_year = request.POST.get("session_year")
+    #session_year = request.POST.get("session_year")
 
     subject = Subjects.objects.get(id=subject_id)
-    session_model = SessionYearModel.objects.get(id=session_year)
-    students = Students.objects.filter(course_id=subject.course_id, session_year_id=session_model)
+    #session_model = SessionYearModel.objects.get(id=session_year)
+    students = Students.objects.filter(course_id=subject.course_id)
     list_data = []
 
     for student in students:
@@ -1332,23 +1396,25 @@ def save_attendance_data(request):
     student_ids = request.POST.get("student_ids")
     subject_id = request.POST.get("subject_id")
     attendance_date = request.POST.get("attendance_date")
-    session_year_id = request.POST.get("session_year_id")
+    #session_year_id = request.POST.get("session_year_id")
 
     subject_model = Subjects.objects.get(id=subject_id)
-    session_model = SessionYearModel.objects.get(id=session_year_id)
+    #session_model = SessionYearModel.objects.get(id=session_year_id)
     json_sstudent = json.loads(student_ids)
     # print(data[0]['id'])
 
     try:
-        attendance = Attendance(subject_id=subject_model, attendance_date=attendance_date,
-                                session_year_id=session_model)
-        attendance.save()
+        if Attendance.objects.filter(attendance_date=attendance_date).exists():
+            return HttpResponse("ERR")
+        else:
+            attendance = Attendance(subject_id=subject_model, attendance_date=attendance_date)
+            attendance.save()
 
-        for stud in json_sstudent:
-            student = Students.objects.get(user=stud['id'])
-            attendance_report = AttendanceReport(student_id=student, attendance_id=attendance, status=stud['status'])
-            attendance_report.save()
-        return HttpResponse("OK")
+            for stud in json_sstudent:
+                student = Students.objects.get(user=stud['id'])
+                attendance_report = AttendanceReport(student_id=student, attendance_id=attendance, status=stud['status'])
+                attendance_report.save()
+            return HttpResponse("OK")
     except:
         return HttpResponse("ERR")
 

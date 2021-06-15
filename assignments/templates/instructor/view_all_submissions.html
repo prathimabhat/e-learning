@@ -28,10 +28,14 @@ Assignments
                                 <br>
                                 {% else %}
 
-                                  <button class="btn btn-primary float-right" type="submit"><a href="" style="color: white;"> Grade</a></button>
-                                  <form method="POST" class="float-right" action="/view_all_submissions/" style="margin-right: 1rem;"><input type="number" min='0' name="marks" placeholder="Enter Marks" value="{{ marks }}"></form>&nbsp; &nbsp; <br><br>
+                                  
+                                  <form method="POST" class="float-right" action="/assignments/grade_view/{{submission.id}}/" style="margin-right: 1rem;">{%csrf_token%}
+                                    <input type="number" min='0' name="marks" placeholder="Enter Marks" value="{{ marks }}">
+                                &nbsp; &nbsp; 
+                                <input class="btn btn-primary" type="submit" value="Grade">
+                                </form><br><br>
                                 {% endif %}
-                            </div>
+                            </div><br><hr>
                         {% endfor %}
                       
                   </div>

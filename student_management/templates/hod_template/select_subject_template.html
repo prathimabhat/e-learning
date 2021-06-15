@@ -8,7 +8,7 @@ Manage Subjects
 
       <br>
       <section class="content">
-          <form role="form" action="/manage_subject" method="post">
+          <form role="form" action="/select_action_subject/{{session_year}}/" method="POST">
                {% csrf_token %}
       <div class="container-fluid">
           <div class="row">
@@ -20,15 +20,19 @@ Manage Subjects
                   {% for course in courses %}
                   <option value="{{ course.id }}">{{ course.course_name }}</option>
                   {% endfor %}
+                </select><br><br><br>
+                <select  class="form-control" name="action">
+                  
+                  <option value="fetch_subject">Fetch subject details</option><br>
+                  <option value="add_subject">Add subject</option><br>
+                  
                 </select>
               </div>
           </div>
-      </div>
-        <br><br><br><br><br><br><br><br><br><br><br><br>
+      </div><br><br><br><br><br><br><br>
       <div>
 
-        <button class="btn btn-primary" id="fetch_student">Fetch Subject Details</button>
-          <a href="/add_subject" class="btn btn-primary">Add Subject</a>
+       <input type="submit" class="btn btn-primary" value="Go">
 
       </div>
           </form>

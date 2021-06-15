@@ -1,0 +1,39 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Assignment
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+
+      <br>
+      <section class="content">
+          <form role="form" action="{%url 'assignments:select_question_type' quiz %}" method="POST">
+               {% csrf_token %}
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-4">
+
+
+                <h4>Select Type of question </h4>
+                <select  class="form-control" id="qtn_type" name="qtn_type">
+                  
+                  <option value="objective">Objective</option>
+                  <option value="subjective">Subjective</option>
+                  
+                </select>
+              </div>
+          </div>
+      </div>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
+      <div>
+
+        <button class="btn btn-primary" id="fetch_student">Add question</button>
+      </div>
+          </form>
+    </section>
+
+
+
+    <!-- /.content -->
+{% endblock main_content %}

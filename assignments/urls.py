@@ -9,7 +9,7 @@ app_name="assignments"
 urlpatterns = [
 	path('',views.assignment,name='assignment'),
     path('resource/',views.resource,name='resource'),
-
+    path('grade_view/<int:pk>/',views.gradeview,name="grade_view"),
     path('student_assignment/',views.student_assignment,name='student_assignment'),
     path('student_resources/',views.student_resources,name='student_resources'),
     path('view_assignments/<int:pk>/',views.view_assignments,name='view_assignments'),
@@ -34,5 +34,22 @@ urlpatterns = [
 
     path('class_links/',views.get_class_links_staff,name="class_links"),
     path('class_links/new/',views.post_class_links,name="new_class_link"),
-    path('students/class_links/',views.get_class_links_student,name="class_links_student")
+    path('students/class_links/',views.get_class_links_student,name="class_links_student"),
+
+    path('quiz/',views.all_quizzes,name="all_quizzes"),
+
+    path('quiz/new/',views.create_quiz,name="create_quiz"),
+    path('quiz/<int:pk>/',views.get_quiz,name="get_quiz"),
+    path('quiz/<int:pk>/question_type/',views.select_question_type,name="select_question_type"),
+    path('quiz/<int:pk>/add_questions/',views.add_quiz_questions,name="add_quiz_questions"),
+    path('quiz/<int:pk>/add_mcqs/',views.add_mcq_questions,name="add_mcq_questions"),
+    path('quiz/<int:pk>/add_choices/',views.add_choices,name="add_choices"),
+    path('quiz/<int:pk>/enable',views.enable_quiz,name="enable_quiz"),
+    path('quiz/all_submissions/<int:quiz_id>/',views.view_quiz_submissions,name="view_quiz_submissions"),
+    path('quiz/submission_detail/<int:quiz_id>/<int:student_id>/',views.get_submission_detail,name="get_submission_detail"),
+    path('student/quiz/',views.all_quizzes_students,name="all_quizzes_students"),
+    path('student/quiz/<int:pk>/',views.get_quiz_students,name="get_quiz_students"),
+    path('student/quiz/<int:quiz_id>/question/<int:question_id>/',views.quiz_question_detail,name="quiz_question_detail"),
+    path('student/<int:quiz_id>/<int:question_id>/answer_save/',views.quiz_answer_save,name="quiz_answer_save"),
+
 ]

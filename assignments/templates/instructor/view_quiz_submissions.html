@@ -1,0 +1,47 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Submissions
+{% endblock page_title %}
+{% block main_content %}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Submissions</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            {% for student in students %}
+                            <div class="row">
+                                <div class="col-lg-6 col-xs-12">
+                                    
+                                   <a href="{% url 'assignments:get_submission_detail' quiz.id student.id %}">{{student.student_name}}&nbsp;Roll number {{student.roll_number}}</a>
+                                    
+                                    
+                                </div>
+                                <div class="col-lg-3 col-xs-6">
+
+                               
+
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}

@@ -37,6 +37,8 @@ Manage Subjects
                   <td>{{ subject.staff_id.user.first_name }} {{ subject.staff_id.user.last_name }}</td>
                   <td><a href="/edit_subject/{{ subject.id }}" class="btn btn-success">Edit</a>
                     <a href="/delete_subject/{{ subject.id }}" class="btn btn-danger">Delete</a>
+                     <a href="/add_students_subject/{{ subject.id }}" class="btn btn-primary">+Add students</a>
+                     <a href="/remove_students_subject/{{ subject.id }}" class="btn btn-primary">+Remove students</a>
                   </td>
                 </tr>
                 {% endfor %}

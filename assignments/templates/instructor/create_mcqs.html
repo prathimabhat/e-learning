@@ -1,0 +1,49 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Choices
+{% endblock page_title %}
+{% block main_content %}
+
+<section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Choices</h3>
+              </div>
+
+               <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+               
+                {% for field in form %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+
+                        <span class="text-danger small">{{ field.errors }}</span>
+                    </div>
+                    
+                <label class="control-label col-sm-5">{{ field.label_tag }}</label>
+                <div class="col-sm-5">{{ field }}</div>
+                </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+          </div>
+          </div>
+      </div>
+    </section>
+{% endblock %}
+
+</div>
+
+
+
