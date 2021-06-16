@@ -16,7 +16,7 @@ Add Semester
 
 
                 <h4>Select Semester </h4>
-                <select  class="form-control" name="session_year">
+                <select  class="form-control btn btn-secondary dropdown-toggle" name="session_year">
                   {% for session_year in session_years %}
                   <option value="{{ session_year.id }}" id="session_year">{{ session_year.name }}->{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
                   {% endfor %}
@@ -24,10 +24,10 @@ Add Semester
               </div>
           </div>
       </div>
-        <br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br>
       <div>
 
-        <button class="btn btn-primary" id="fetch_class" type="Submit">Submit</button>
+        <button class="btn btn-primary" id="fetch_class" type="Submit">Continue</button>
       </div>
        <div id="class_data" class="card-footer">
 

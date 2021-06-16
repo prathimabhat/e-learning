@@ -414,14 +414,14 @@ def edit_student(request, student_id):
                   {"student": student, "courses": courses, "sessions": sessions, "id": student_id, "parents": parents,})
 
 @admin_login_required
-def edit_student_save(request,student_id):
+def edit_student_save(request):
     if request.method != 'POST':
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        #student_id = request.POST.get("student_id")
+        student_id = request.POST.get("student_id")
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
-        username = request.POST.get("username")
+        # username = request.POST.get("username")
         email = request.POST.get("email")
         address = request.POST.get("address")
         roll_number = request.POST.get("roll_number")
@@ -440,7 +440,7 @@ def edit_student_save(request,student_id):
         parent_username = request.POST.get("parent_username")
 
         if request.FILES.get('profile_pic', False):
-            profile_pic = request.FILES['profile_pic']
+            profile_pic = request.FILES.get('profile_pic')
             fs = FileSystemStorage()
             filename = fs.save(profile_pic.name, profile_pic)
             profile_pic_url = fs.url(filename)
@@ -448,54 +448,54 @@ def edit_student_save(request,student_id):
             profile_pic_url = None
 
         
-        try:    
-            user = CustomUser.objects.get(id=student_id)
-            parent_=Parents.objects.get(parent_of=user.students)
-            user1 = CustomUser.objects.get(id=parent_.user.id)
+        # try:    
+        user = CustomUser.objects.get(id=student_id)
+        parent_=Parents.objects.get(parent_of=user.students)
+        user1 = CustomUser.objects.get(id=parent_.user.id)
 
-            user.first_name = first_name
-            user.last_name = last_name
-           
-            user.email = email
-            user.save()
+        user.first_name = first_name
+        user.last_name = last_name
+        
+        user.email = email
+        user.save()
 
-            
-            
-            user1.email = parent_email
-            user1.save()
+        
+        
+        user1.email = parent_email
+        user1.save()
 
-            student = Students.objects.get(user=student_id)
-            parent = Parents.objects.get(parent_of=student)
-            parent.father_name=father_name
-            parent.mother_name=mother_name
-            parent.parent_address = parent_address
-            parent.ph_no = parent_ph_no
-            parent.father_occupation = father_occupation
-            parent.mother_occupation = mother_occupation
-            parent.save()
+        student = Students.objects.get(user=student_id)
+        parent = Parents.objects.get(parent_of=student)
+        parent.father_name=father_name
+        parent.mother_name=mother_name
+        parent.parent_address = parent_address
+        parent.ph_no = parent_ph_no
+        parent.father_occupation = father_occupation
+        parent.mother_occupation = mother_occupation
+        parent.save()
 
 
-            student.address = address
-            session_year = SessionYearModel.objects.get(id=session_year_id)
-            student.session_year_id = session_year
-            student.gender = gender
-            student.roll_number = roll_number
-            student.dob = dob
-            student.ph_no = ph_no
-            course = Courses.objects.get(id=course_id)
-            student.course_id = course
+        student.address = address
+        session_year = SessionYearModel.objects.get(id=session_year_id)
+        student.session_year_id = session_year
+        student.gender = gender
+        student.roll_number = roll_number
+        student.dob = dob
+        student.ph_no = ph_no
+        # course = Courses.objects.get(id=course_id)
+        student.course_id = course_id
 
-            if profile_pic_url != None:
-                student.profile_pic = profile_pic_url
+        if profile_pic_url != None:
+            student.profile_pic = profile_pic_url
 
-            student.save()
+        student.save()
 
-            # del request.session['student_id']
-            messages.success(request, "Successfully Updated Student Details")
-            return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
-        except:
-            messages.error(request, "Failed to Edit Student Details")
-            return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
+        # del request.session['student_id']
+        messages.success(request, "Successfully Updated Student Details")
+        return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
+        # except:
+        #     messages.error(request, "Failed to Edit Student Details")
+        #     return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
         
 @admin_login_required
 def edit_subject(request, subject_id):
@@ -1025,6 +1025,47 @@ def student_home(request):
                    "attendance_present": attendance_present, "subjects": subjects, "data_name": subject_name,
                    "data1": data_present, "data2": data_absent,"user": user, "user2": user2, "student": student, "parent": parent})
 
+# @student_login_required
+# def student_view_attendance(request):
+#     student = Students.objects.get(user=request.user.id)
+#     course = student.course_id
+#     subjects = Subjects.objects.filter(course_id=course)
+#     return render(request, "student_template/student_view_attendance.html", {"subjects": subjects})
+
+# @student_login_required
+# def student_view_attendance_post(request):
+#     subject_id = request.POST.get("subject")
+#     start_date = request.POST.get("start_date")
+#     end_date = request.POST.get("end_date")
+
+#     # start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
+    
+#     # end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
+#     end_date_parse=date.today()
+    
+#     subject_obj = Subjects.objects.get(id=subject_id)
+#     user_obj = CustomUser.objects.get(id=request.user.id)
+#     stud_obj = Students.objects.get(user=user_obj)
+#     start_date_parse=stud_obj.session_year_id.session_start_year
+#     subject_name=subject_obj.subject_name
+#     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
+#                                            subject_id=subject_obj)
+#     attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
+#     present_=0
+#     absent_=0
+#     for attendance_report in attendance_reports:
+#         if attendance_report.status == True:
+#             present_+=1
+#         else:
+#             absent_+=1
+#     try:
+#         percentage_attendence=round(((present_/(absent_+present_))*100),2)
+#     except:
+#         messages.error(request, "No Attendence Data")
+#         return HttpResponseRedirect(reverse("student_view_attendance"))
+
+#     return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports,"percentage_attendence":percentage_attendence,"present_":present_,"absent_":absent_,"subject_name":subject_name})
+
 @student_login_required
 def student_view_attendance(request):
     student = Students.objects.get(user=request.user.id)
@@ -1034,60 +1075,24 @@ def student_view_attendance(request):
 
 @student_login_required
 def student_view_attendance_post(request):
-    subject_id = request.POST.get("subject")
-    start_date = request.POST.get("start_date")
-    end_date = request.POST.get("end_date")
-
-    # start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
-    
-    # end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
-    end_date_parse=date.today()
-    
-    subject_obj = Subjects.objects.get(id=subject_id)
     user_obj = CustomUser.objects.get(id=request.user.id)
     stud_obj = Students.objects.get(user=user_obj)
-    start_date_parse=stud_obj.session_year_id.session_start_year
-    subject_name=subject_obj.subject_name
-    attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
-                                           subject_id=subject_obj)
-    attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
-    present_=0
-    absent_=0
-    for attendance_report in attendance_reports:
-        if attendance_report.status == True:
-            present_+=1
-        else:
-            absent_+=1
-    try:
-        percentage_attendence=round(((present_/(absent_+present_))*100),2)
-    except:
-        messages.error(request, "No Attendence Data")
-        return HttpResponseRedirect(reverse("student_view_attendance"))
-
-    return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports,"percentage_attendence":percentage_attendence,"present_":present_,"absent_":absent_,"subject_name":subject_name})
-
-
-'''def student_view_attendance(request):
-    student = Students.objects.get(user=request.user.id)
-    course = student.course_id
-    subjects = Subjects.objects.filter(course_id=course)
-    return render(request, "student_template/student_view_attendance.html", {"subjects": subjects})
-
-
-def student_view_attendance_post(request):
     subject_id = request.POST.get("subject")
-    start_date = request.POST.get("start_date")
-    end_date = request.POST.get("end_date")
+
+    start_date=str(stud_obj.session_year_id.session_start_year)
+    print(start_date)
+    # start_date = request.POST.get("start_date")
+    # end_date = str(date.today())
+    end_date=str(stud_obj.session_year_id.session_end_year)
 
     start_date_parse = datetime.strptime(start_date, "%Y-%m-%d").date()
     
     end_date_parse = datetime.strptime(end_date, "%Y-%m-%d").date()
-    end_date_parse=date.today()
+    # end_date_parse=date.today()
     
     subject_obj = Subjects.objects.get(id=subject_id)
-    user_obj = CustomUser.objects.get(id=request.user.id)
-    stud_obj = Students.objects.get(user=user_obj)
-    attendance_ = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),subject_id=subject_id)
+    print(subject_obj)
+    attendance_ = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse)).filter(subject_id=subject_id)
     attendance_present = AttendanceReport.objects.filter(attendance_id__in=attendance_, status=True,
                                                                    student_id=stud_obj.id).count()
     attendance_absent = AttendanceReport.objects.filter(attendance_id__in=attendance_, status=False,
@@ -1095,14 +1100,17 @@ def student_view_attendance_post(request):
     attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse),
                                            subject_id=subject_obj)
     attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
-    total_attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj).count()
-    try:
-        perc = attendance_present * 100 / total_attendance_reports
-    except ZeroDivisionError:
-        perc = 0
     
+    total_attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj).count()
+    
+    try:
+        perc = round(((attendance_present/total_attendance_reports)*100),2)
+    except ZeroDivisionError:
+        messages.error(request, "No Attendence Data")
+        return HttpResponseRedirect(reverse("student_view_attendance"))
+    print(perc)
     return render(request, "student_template/student_attendance_data.html", {"attendance_reports": attendance_reports, "attendance_present": attendance_present,
-        "attendance_absent":attendance_absent,"total_attendance_reports":total_attendance_reports,"perc":perc})'''
+        "attendance_absent":attendance_absent,"total_attendance_reports":total_attendance_reports,"perc":perc,"subject_obj":subject_obj})
    
 
 @student_login_required
@@ -1304,12 +1312,15 @@ def staff_profile(request):
 def staff_take_attendance(request):
     # print(request.user.id)
     course = request.POST.get("course")
+    course_obj=Courses.objects.get(id=course)
+    # print(course_obj)
     # print(course)
     # subject1 = Subjects.objects.get(course_id=course)
     # subject2 = Subjects.objects.get(staff_id=request.user.id)
-
-    semesters=SessionYearModel.objects.all()
-    
+    # session_year = ("session_year")
+    semesters=SessionYearModel.objects.filter(id=course_obj.session_year_id.id).first()
+    # semesters_object=SessionYearModel.objects.get(id=semesters)
+    # print(semesters)
     subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
     # session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
@@ -1339,9 +1350,10 @@ def select_semester(request):
 
 @staff_login_required
 def select_class(request):
-    courses = Courses.objects.all()
+    session_year = request.POST.get("session_year")
+    courses = Courses.objects.filter(session_year_id=session_year)
     return render(request, "staff_template/select_class_template.html",
-                  {"courses": courses})
+                  {"courses": courses,"session_year": session_year})
 @staff_login_required
 @csrf_exempt
 def get_class(request):

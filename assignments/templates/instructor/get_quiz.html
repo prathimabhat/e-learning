@@ -35,13 +35,13 @@
                                     <li>
                                     <div>
                                         {% if qtn.question_type == "subjective" %}
-                                            {{qtn.question_text|safe}}<br>
+                                            {{qtn.question_text|safe}}
                                             <span style="font-size: 1rem;">
                                             Marks: {{qtn.question_marks}}</span><br>
 
                                         {% elif qtn.question_type == "objective" %}
-                                            {{qtn.question_text|safe}}<br>
-                                            <span style="font-size: 1rem;">Marks :{{qtn.question_marks}}</span><br>
+                                            {{qtn.question_text|safe}}
+                                            <span style="font-size: 1rem;">Marks :{{qtn.question_marks}}</span><br><br>
                                             {% for choice in choices %}
 
                                                 {% if choice.question.id == qtn.id %}

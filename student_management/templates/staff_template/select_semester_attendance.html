@@ -16,7 +16,7 @@ Add Result
 
 
                 <h4>Select Semester </h4>
-                <select  class="form-control" name="session_year">
+                <select  class="form-control btn btn-secondary dropdown-toggle" name="session_year">
                   {% for session_year in session_years %}
                   <option value="{{ session_year.id }}" id="session_year">{{ session_year.name }}->{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
                   {% endfor %}

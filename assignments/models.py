@@ -111,7 +111,7 @@ class Quiz(models.Model):
     staff=models.ForeignKey(Staffs,related_name="quiz",on_delete=models.CASCADE,null=True)
     subject=models.ForeignKey(Subjects,related_name="quiz",on_delete=models.CASCADE,null=True)
     enable=models.BooleanField(default=False)
-
+    
 
     def __str__(self):
         return f"{self.id} {self.quiz_name}"

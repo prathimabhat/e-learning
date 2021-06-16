@@ -45,6 +45,7 @@ urlpatterns = [
     path('quiz/<int:pk>/add_mcqs/',views.add_mcq_questions,name="add_mcq_questions"),
     path('quiz/<int:pk>/add_choices/',views.add_choices,name="add_choices"),
     path('quiz/<int:pk>/enable',views.enable_quiz,name="enable_quiz"),
+    path('quiz/<int:pk>/disable',views.disable_quiz,name="disable_quiz"),
     path('quiz/all_submissions/<int:quiz_id>/',views.view_quiz_submissions,name="view_quiz_submissions"),
     path('quiz/submission_detail/<int:quiz_id>/<int:student_id>/',views.get_submission_detail,name="get_submission_detail"),
     path('student/quiz/',views.all_quizzes_students,name="all_quizzes_students"),

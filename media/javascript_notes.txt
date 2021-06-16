@@ -1,0 +1,22 @@
+<!-- // let uploadNotesRef = `/notes/upload_notes/${selectedSubjectId}/`
+// uploadNotes.href = uploadNotesRef
+// writeNotes.href = writeNotesRef
+// viewNotes.href = viewNotesRef
+// let writeNotesRef = `/notes/write_notes/${selectedSubjectId}/` -->	
+
+{% block custom_js %}
+<script>
+	let selectedSubjectId
+	const viewNotes = document.getElementById('viewNotes');
+	const uploadNotes = document.getElementById('uploadNotes');
+	const writeNotes = document.getElementById('writeNotes');
+	document.getElementById('subject').onchange = function () {
+		// const selectedId =this.find(	);
+		console.log(this.options[this.selectedIndex].value)
+		selectedSubjectId = this.options[this.selectedIndex].value
+		let viewNotesRef = `/notes/${selectedSubjectId}/` //
+		var writeNotesRef = "{% url 'notes:write_notes' obj " + selectedSubjectId + ")";
+		writeNotes.href = writeNotesRef
+	}
+</script>
+{% endblock custom_js %}

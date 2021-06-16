@@ -32,12 +32,13 @@ Quiz
 
                                     Time : {{quiz.time_for_quiz}}<br>
                                 </div>
+                                {% if quiz.enable == False %}
                                 <div class="col-lg-3 col-xs-6">
 
                                     <button type="submit" class="btn btn-primary"><a href="{% url 'assignments:select_question_type' quiz.id %}" style="color: white;">Add questions</a></button>
                                 </div>
 
-                                {% if quiz.enable == False %}
+                                
 
                                 <div class="col-lg-2 col-xs-6">
                                    <button type ="submit" class="btn btn-success"><a href="{% url 'assignments:enable_quiz' quiz.id %}" style="color: white;">Enable Quiz</a></button>
@@ -46,7 +47,9 @@ Quiz
                                 <div class="col-lg-3 col-xs-6">
                                     <span style="color: green;font-weight: bold;"> Quiz enabled</span>
                                 </div>
-
+                                <div class="col-lg-2 col-xs-6">
+                                    <button type ="submit" class="btn btn-success"><a href="{% url 'assignments:disable_quiz' quiz.id %}" style="color: white;">Disable Quiz</a></button>
+                                 </div>
                                 {% endif %}
 
                             </div>

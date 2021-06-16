@@ -671,6 +671,13 @@ def enable_quiz(request,pk):
     quiz_.save()
     return redirect('assignments:all_quizzes')
 
+@staff_login_required
+def disable_quiz(request,pk):
+    quiz_=Quiz.objects.get(id=pk)
+    quiz_.enable=False
+    quiz_.save()
+    return redirect('assignments:all_quizzes')
+
 @student_login_required
 def all_quizzes_students(request):
     sub=Subjects.objects.filter(course_id=request.user.students.course_id)

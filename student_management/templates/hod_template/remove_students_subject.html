@@ -21,7 +21,7 @@
             <div class="card-body">
               <div class="form-group">
                 
-                <select class="form-control" name="student" autocomplete="on">
+                <select class="form-control btn btn-secondary dropdown-toggle" name="student" autocomplete="on">
                   {% for student in students %}
                   <option value="{{student.id}}">{{student.student_name}} Roll number: {{student.roll_number}} </option>
                   {% endfor %}

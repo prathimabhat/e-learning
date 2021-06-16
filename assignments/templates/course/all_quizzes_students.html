@@ -25,7 +25,7 @@ Quiz
                                    {% if quiz.enable %} 
                                    <a href="{% url 'assignments:get_quiz_students' quiz.id %}"><span style="font-weight: bolder;"> Quiz name : {{ quiz.quiz_name }}</span></a><br>
                                    {% else %}
-                                   <span style="font-weight: bolder;"> Quiz name : {{ quiz.quiz_name }}</span> &nbsp;<small>Quiz not enabled yet</small><br>
+                                   <span style="font-weight: bolder;"> Quiz name : {{ quiz.quiz_name }}</span> &nbsp;<small>Quiz not enabled yet/Has been disabled</small><br>
                                     {% endif %}
                                     <span style="color:green; font-weight: bold;">Subject : {{quiz.subject}}</span><br>
                                     Date : {{quiz.quiz_date}}<br>
