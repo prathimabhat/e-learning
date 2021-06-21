@@ -49,8 +49,9 @@ INSTALLED_APPS = [
     'forum',
     'assignments',
     'notes',
+    'sorl.thumbnail'
 ]
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

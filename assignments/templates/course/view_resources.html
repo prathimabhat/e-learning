@@ -1,10 +1,10 @@
-
 {% extends 'student_template/base_template.html' %}
 {% block page_title %}
 <input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
-Resources
+View Resource
 {% endblock page_title %}
 {% block main_content %}
+
  <section class="content" >
       <div class="container-fluid" >
                     <div class="row" >
@@ -18,19 +18,22 @@ Resources
             <div style="padding-left: 2%">
                 
                 <div style="position:right">
+                    Name of the Resource:   {{ resource.title }}<br>
+                    {% if resource.file_resource %}
+                    <br>
+                    File:
+                        <a href="{{ resource.file_resource.url }}" style="text-align:right">
 
-                    Name of the Resource:   {{ resource.title }}
-                    {% if resource.file %}
-                      <a href="{{ resource.file_resource.url }}" style="text-align:right">
-                          <button type="submit" class="btn btn-primary float-right" style="margin-right: 60%">Download</button>
-                      </a><br>
-                    {%endif%}
+                        <button type="submit" class="btn btn-primary">Download</button>
+                        </a><br><br>
+                    {% endif %}
                     {% if resource.text_resource %}
-                      {{ resource.text_resource|safe }}
-                    {%endif%}<br>
+                        {{resource.text_resource|safe}}<br><br>
+                    {% endif %}
                     {% if resource.link %}
-                      <a href="{{resource.link}}"> {{ resource.link }}</a>
-                    {%endif%}<br>
+                        URL : <a href="{{resource.link}}">{{resource.link}}</a><br>
+                    {% endif %}
+                    
                 </div>
                 <br>
             </div>
@@ -44,3 +47,54 @@ Resources
       </div>
     </section>
 {% endblock %}
+<!--<br>
+=======
+<br>
+>>>>>>> 843a0a41a28f0f3eea175757f371cdb9b27ebf88
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+                    <a href="{% url 'assignments:instructor_detail' course.id %}">
+                        <!-- {% if course.course_logo %}
+                        <img src="{{ course.course_logo.url }}" class="img-responsive">
+                        {% else %}
+                        <h3>No image to display</h3>
+                        {% endif %} -->
+                    </a>
+                    <h1 align="center">{{ course.code }}<br> <small>{{ course.name }}</small></h1>
+                    <h2 align="center">{{ course.instructor }}</h2>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-7"
+            style="position:fixed-righ; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
+            <h3 align="center" ; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">
+                Resources</h3>
+
+            {% for resource in resources reversed %}
+            <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+                {{ resource.title }} -
+                <div style="position:right">
+                    <a href="{{ resource.file_resource.url }}" style="text-align:right">
+                        <button type="submit" class="btn btn-success">Download</button>
+                    </a><br>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+<<<<<<< HEAD
+</div>-->
+
+
+

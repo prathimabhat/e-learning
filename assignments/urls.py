@@ -12,8 +12,12 @@ urlpatterns = [
     path('grade_view/<int:pk>/',views.gradeview,name="grade_view"),
     path('student_assignment/',views.student_assignment,name='student_assignment'),
     path('student_resources/',views.student_resources,name='student_resources'),
+
+    path('assignment/<int:pk>/enable',views.enable_assignment,name="enable_assignment"),
+    path('assignment/<int:pk>/disable',views.disable_assignment,name="disable_assignment"),
     path('view_assignments/<int:pk>/',views.view_assignments,name='view_assignments'),
-    path('upload_submission/<int:assignment_id>/',views.upload_submission,name='upload_submission'),
+    path('view_single_assignment/<int:assignment_id>/',views.view_single_assignment, name='view_single_assignment'),
+    path('upload_submission/<int:assignment_id>/',views.upload_submission, name='upload_submission'),
     path('view_resources/<int:course_id>/',views.view_resources,name='view_resources'),
 	#path('select_subject/',views.select_subject,name="select_subject"),
     # url(r'^(?P<course_id>[0-9]+)/view_resources/$', views.view_resources, name='view_resources'),
@@ -37,7 +41,9 @@ urlpatterns = [
     path('students/class_links/',views.get_class_links_student,name="class_links_student"),
 
     path('quiz/',views.all_quizzes,name="all_quizzes"),
-
+    path('editquestions/<int:quiz_id>/<int:question_id>/',views.edit_questions,name="edit_questions"),
+    path('editquiz/<int:quiz_id>/',views.edit_quiz,name="edit_quiz"),
+    path('editchoices/<int:quiz_id>/<int:question_id>/<int:choice>/',views.edit_choices,name="edit_choices"),
     path('quiz/new/',views.create_quiz,name="create_quiz"),
     path('quiz/<int:pk>/',views.get_quiz,name="get_quiz"),
     path('quiz/<int:pk>/question_type/',views.select_question_type,name="select_question_type"),

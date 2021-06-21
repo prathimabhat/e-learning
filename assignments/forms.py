@@ -101,6 +101,27 @@ class QuizForm(forms.ModelForm):
         model=Quiz
         fields=['quiz_name','quiz_date','total_marks','min_marks','time_for_quiz']
 
+class EditQuizForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(EditQuizForm, self).__init__(*args, **kwargs)
+        self.fields['subject'].queryset = Subjects.objects.filter(staff_id=user)
+        self.fields['time_for_quiz'].required=False
+        self.fields['min_marks'].required=False
+
+    quiz_name=forms.CharField(label="Quiz name",widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter a name for the quiz '}))
+    quiz_date=forms.DateTimeField(label="Date and time of quiz", input_formats = ['%Y-%m-%dT%H:%M'],widget=forms.DateTimeInput(attrs={'type':'datetime-local','class': 'form-control'},
+            format='%Y-%m-%dT%H:%M'))
+    time_for_quiz=forms.DurationField(label="Duration of the quiz",widget=forms.TextInput(attrs={'class':'form-control','placeholder':'HH:MM:SS'}))
+
+    total_marks=forms.IntegerField(label="Total marks",widget=forms.NumberInput(attrs={'class':'form-control','min':'0'}))
+    min_marks=forms.IntegerField(label="Minimum marks to pass",widget=forms.NumberInput(attrs={'class':'form-control','min':'0'}))
+    subject=forms.ModelChoiceField(queryset=None, widget=forms.Select, required=True)
+
+    class Meta:
+        model=Quiz
+        fields=['quiz_name','quiz_date','total_marks','min_marks','time_for_quiz']
+
 class QuizQuestionsForm(forms.ModelForm):
     #question_type=forms.CharField(help_text="example:objective,subjective",label="Question type",widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter type of question'}))
     question_text=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
@@ -110,7 +131,26 @@ class QuizQuestionsForm(forms.ModelForm):
         model=QuizQuestions
         fields=['question_text','question_marks']
 
+class EditQuizQuestionsForm(forms.ModelForm):
+    #question_type=forms.CharField(help_text="example:objective,subjective",label="Question type",widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter type of question'}))
+    question_text=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
+    question_marks=forms.IntegerField(label="Total marks",widget=forms.NumberInput(attrs={'class':'form-control','min':'0'}))
+
+    class Meta:
+        model=QuizQuestions
+        fields=['question_text','question_marks']
+
 class MCQForm(forms.ModelForm):
+    choice1=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    choice2=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    choice3=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    choice4=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    class Meta:
+        
+        model=QuizChoice
+        fields=['choice1','choice2','choice3','choice4']
+
+class EditMCQForm(forms.ModelForm):
     choice1=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     choice2=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     choice3=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))

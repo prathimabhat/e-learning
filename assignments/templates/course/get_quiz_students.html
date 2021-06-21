@@ -39,7 +39,7 @@
 
                                             <span style="font-size: 1rem;">
                                             Marks: {{qtn.question_marks}}</span><br>
-
+                                            <a href="{% url 'assignments:quiz_question_detail' quiz.id qtn.id %}">Click Here To Answer</a><br>   
                                         {% elif qtn.question_type == "objective" %}
                                            <a href="{% url 'assignments:quiz_question_detail' quiz.id qtn.id %}"> {{qtn.question_text|safe}}</a><br>
                                             
@@ -53,9 +53,9 @@
                                                     4. {{choice.choice4}}<br>
                                                     
                                                      
-                                                     
-                                                    
-                                                {% endif %}<br>
+                                                 <hr>    
+                                                <a href="{% url 'assignments:quiz_question_detail' quiz.id qtn.id %}">Click Here To Answer</a><br>      
+                                                {% endif %}
                                             {% endfor %}
 
                                             <span style="font-size: 1rem;">Marks :{{qtn.question_marks}}</span><br><br>

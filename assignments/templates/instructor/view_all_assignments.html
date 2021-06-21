@@ -18,32 +18,52 @@ Assignments
                     <!-- form start -->
                     <div class="card-body">
                         <div class="form-group">
+                            <ol>
                             {% for assignment in assignments reversed %}
+                            <li>
                             <div>
+
                                 Assignment name : {{ assignment.description }}<br>
                                 {% if assignment.file %}
                                     File : {{assignment.file}}<br>
                                 {% endif %}
                                 {% if assignment.text_assignment %}
                                     Assignment : {{assignment.text_assignment|safe}}
-                                    <br>
-                               
                                 {% endif %}
                                 Deadline for submission : {{ assignment.deadline }}
                                 <br>
                                 Maximum marks : {{ assignment.max_marks }}<br>
-                                <div>
+                                <div class="d-flex align-items-center">
                                     <a href="{% url 'assignments:view_all_submissions' assignment.id %}">
                                         <button type="submit" class="btn btn-primary"
-                                            style="margin-right: 50px">Submissions</button>
+                                            style="margin-right: 20px; float:left;">Submissions</button>
                                     </a>
-                                    <a href="{% url 'assignments:view_feedback' assignment.id %}">
-                                        <!-- <button type="submit" class="btn btn-primary">Feedback</button> -->
-                                    </a><br><br>
+                                    {% if assignment.enable == False%}
+                                    <a href="{% url 'assignments:enable_assignment' assignment.id %}">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-right: 50px">Enable Assignment</button>
+                                    </a>
+                                    {% else %}
+                                    
+                                    <div class="col-lg-2 col-xs-6">
+                                        <a href="{% url 'assignments:disable_assignment' assignment.id %}">
+                                            <button type="submit" class="btn btn-primary"
+                                                style="margin-right: 20px">Disable/Archive</button>
+                                        </a>
+                                    </div>
+                                   
+                                    {% endif %}
+                                    <br><br>
                                 </div>
-
+                                {% if assignment.enable == True%}
+                                <div class="col-lg-3 col-xs-6">
+                                    <span style="color: green;font-weight: bold; margin-right: 50px"> Assignment enabled</span>
+                                </div>
+                                {% endif %}
                             </div>
+                        </li><hr>
                             {% endfor %}
+                        </ol>
                         </div>
 
                     </div>

@@ -20,9 +20,11 @@ Assignments
                    <div class="form-group">
                         {% for submission in submissions reversed %}
                             <div>
-                                Name of student: <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">{{ submission.user.student_name }}</a><br>
+                                <span >Name of student: {{ submission.user.student_name }}<br></span>
+                                Assignment:{{assignment.description}}<br>
                                 Time of submission: {{ submission.time_submitted }}<br>
                                 Maximum marks : {{ submission.assignment.max_marks }}<br>
+                                <button class="btn btn-primary" ><a href="{{ submission.file_submitted.url }}" style="color: white">View Assignment</a></button><br>
                                 {% if submission.marks %}
                                 Marks obtained : {{ submission.marks }}<br>
                                 <br>

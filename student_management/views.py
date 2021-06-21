@@ -1,3 +1,4 @@
+from typing import ContextManager
 from django.shortcuts import redirect, render
 import datetime
 from django.core.files.storage import FileSystemStorage
@@ -9,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models import Students,CustomUser , SessionYearModel,Parents,Staffs,AdminHOD
 from student_management.models import Courses, Subjects,  Attendance, AttendanceReport,FeedBackStudent, LeaveReportStudent, NotificationStudent, StudentResult
-
+from assignments.models import  Submission, Assignment
 from datetime import date
 #AdminHod views 
     
@@ -1229,8 +1230,19 @@ def student_all_notification(request):
 @student_login_required
 def student_view_result(request):
     student = Students.objects.get(user=request.user.id)
-    studentresult = StudentResult.objects.filter(student_id=student.id)
-    return render(request, "student_template/student_result.html", {"studentresult": studentresult})
+    assignments = Assignment.objects.all()
+    # subjects=Subjects.objects.filter()
+
+    # assignments = Assignment.objects.filter(subject=course).filter(id=assignment_id)
+    
+    submissions=Submission.objects.filter(user=student)
+    print(submissions)
+    context = {
+        "student":student,
+        "submissions":submissions,
+        "assignments":assignments
+    }
+    return render(request, "student_template/student_result.html", context)
 
 
 
@@ -1321,7 +1333,7 @@ def staff_take_attendance(request):
     semesters=SessionYearModel.objects.filter(id=course_obj.session_year_id.id).first()
     # semesters_object=SessionYearModel.objects.get(id=semesters)
     # print(semesters)
-    subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.id)
+    subjects = Subjects.objects.filter(course_id=course).filter(staff_id=request.user.staffs.id)
     # session_years = SessionYearModel.objects.all()
     return render(request, "staff_template/staff_take_attendance.html",
                   {"subjects": subjects,"semesters":semesters})

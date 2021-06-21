@@ -44,4 +44,15 @@ Assignments
       </div>
     </section>
 {% endblock %}
+{% block custom_js %}
+<script>
+  $('form').on('submit',function(){
+           alert('submitted');
+});
+
+$('form').submit(function(){
+    $(this).children('input[type=submit]').prop('disabled', true);
+});
+</script>
+{% endblock custom_js %}
 

@@ -5,7 +5,7 @@
 {% endblock page_title %}
 {% block main_content %}
 
-<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:create_quiz' %}">Edit questions</a></button>
+<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_quiz' quiz.id %}">Edit Quiz</a></button>
 <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:view_quiz_submissions' quiz.id %}">View submissions</a>
 </button>
 
@@ -50,15 +50,19 @@
                                                     2.{{choice.choice2}}<br>
                                                     3.{{choice.choice3}}<br>
                                                     4.{{choice.choice4}}<br>
+                                                    <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_choices' quiz.id qtn.id choice.id %}">Edit Choices</a></button>
                                                 {% endif %}<br>
                                             {% endfor %}
                                             <hr>
                                             
                                             {%if qtn.choices %}
+                                        
+
                                             {% else %}
                                             <button class="btn btn-primary" type="submit"><a href="{% url 'assignments:add_choices' qtn.id %}" style="color: white;">+Add choices</a></button>
                                             {% endif %}
                                         {% endif %}
+                                        <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_questions' quiz.id qtn.id %}">Edit question</a></button>
 
                                     </div>
                                 </li>

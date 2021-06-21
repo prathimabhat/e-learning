@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import login_required
 from .models import  Submission, Assignment,Message,Notification,\
 Resources,LectureLinks,Quiz,QuizQuestions,QuizChoice,QuizAnswers
 from student_management.models import Subjects
-from accounts.models import Students,Staffs
+from accounts.models import Courses, Students,Staffs
 from django.shortcuts import render, HttpResponse, redirect
 from accounts.decorators import staff_login_required,admin_login_required,student_login_required
 from .forms import AssignmentForm, NotificationForm, ResourceForm,\
-MessageForm,SubmissionForm,LecturelinksForm,QuizForm,QuizQuestionsForm,MCQForm
+MessageForm,SubmissionForm,LecturelinksForm,QuizForm,QuizQuestionsForm,MCQForm,EditQuizQuestionsForm,EditMCQForm,EditQuizForm
 import datetime
 from datetime import date, time
 from django.conf import settings
@@ -15,7 +15,8 @@ from django.core.mail import send_mail,EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template.loader import render_to_string
 from django.contrib import messages
-
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse, Http404
 # Create your views here.
 
 
@@ -77,6 +78,7 @@ def get_subject_student(request):
     action=request.POST.get("action")
     subject=Subjects.objects.get(id=sub)
     sub_=subject.id
+    
     return redirect('assignments:view_assignments',sub_)
     # else:
         
@@ -212,6 +214,8 @@ def gradeview(request,pk):
         assignment_id= submission.assignment.id
         submission.save()
         assignment=Assignment.objects.get(id=assignment_id)
+        assignment.enable=False
+        assignment.save()
         student=Students.objects.get(id=submission.user.id)
         from_email = settings.EMAIL_HOST_USER
         ctx={
@@ -263,9 +267,24 @@ def view_all_submissions(request,assignment_id):
     assignment = Assignment.objects.get(id=assignment_id)
     submissions = Submission.objects.filter(assignment=assignment)
     course = assignment.subject
-    return render(request, 'instructor/view_all_submissions.html', {'submissions' : submissions,'course': course})
+    return render(request, 'instructor/view_all_submissions.html', {'submissions' : submissions,'course': course,"assignment":assignment})
 
+@staff_login_required
+def enable_assignment(request,pk):
+    assignment_=Assignment.objects.get(id=pk)
+    course_id = assignment_.subject.id
+    assignment_.enable=True
+    assignment_.save()
+    # print("course id",course_id)
+    return redirect('assignments:view_all_assignments',course_id)
 
+@staff_login_required
+def disable_assignment(request,pk):
+    assignment_=Assignment.objects.get(id=pk)
+    course_id = assignment_.subject.id
+    assignment_.enable=False
+    assignment_.save()
+    return redirect('assignments:view_all_assignments',course_id)
 ## @brief view for the feedback page containing an histogram of all the feddbacks provided by the students.
 #
 # This view is called by <assignment_id>/view_feedback url.\n
@@ -375,19 +394,39 @@ def instructor_detail(request, course_id):
         return render(request, 'instructor/instructor_detail.html', context)
 
 from django.utils import timezone
-@student_login_required
 
+@student_login_required
 def view_assignments(request, pk):
     course = Subjects.objects.get(id=pk)
-    today_=timezone.localtime(timezone.now())
-    print(today_)
     assignments = Assignment.objects.filter(subject=course)
     context = {
         'course' : course,
         'assignments' : assignments,
-        'today':today_
     }
     return render(request,'course/view_assignments.html',context)
+
+@student_login_required
+def view_single_assignment(request,assignment_id):
+    # course = Subjects.objects.get(id=pk)
+    today_=timezone.localtime(timezone.now())
+    # print(today_)
+    assignment = Assignment.objects.get(id=assignment_id)
+    
+    # assignments = Assignment.objects.filter(subject=course).filter(id=assignment_id)
+    if(Submission.objects.filter(assignment=assignment).exists()):
+        submissions=Submission.objects.filter(assignment=assignment).last()
+    else:
+        submissions=None
+    context = {
+        'assignment' : assignment,
+        'today':today_,
+        'submissions':submissions
+    }
+    print("Assignment",assignment.description)
+    print("marks",submissions)
+    # print("status",submissions.submission_status)
+    # print("name",submissions.file_submitted)
+    return render(request,'course/view_single_assignment.html',context)
 
 
 ## @brief view for the resources page of a course.
@@ -423,13 +462,15 @@ def upload_submission(request, assignment_id):
         student_=Students.objects.get(id=student.id)
         submission.assignment = assignment
         submission.time_submitted = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        submission.submission_status=True
         submission.save()
         from_email = settings.EMAIL_HOST_USER
         ctx={
             "subjects":course,
             "assignment":assignment,
             "students":student_,
-            "domain":domain
+            "domain":domain,
+            
         }
         html_message = render_to_string('instructor/send_email_submission.html',ctx,request=request)
         plain_message = strip_tags(html_message)
@@ -438,9 +479,14 @@ def upload_submission(request, assignment_id):
         to_email.append(course.staff_id.user.email)
         print(to_email)
         mail.send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
-
+        
+        # if(Submission.objects.filter(assignment=assignment,user=request.user.students).exists()):
+   
+        #     submission_status="True"
+        # else:
+        #     submission_status="False"
         return view_assignments(request, course_id)
-
+    
     return render(request, 'course/upload_submission.html', {'form': form,'course': course})
 
 @student_login_required
@@ -600,11 +646,19 @@ def get_quiz(request,pk):
         'choices':choices
     }
     return render(request,'instructor/get_quiz.html',context)
-'''
+
 @staff_login_required
-def edit_quiz(request,pk):
-    form=EditQuizForm(obj=)
-'''
+def edit_quiz(request,*args,**kwargs):
+    quiz_id=kwargs['quiz_id']
+    context={}
+    quiz_=get_object_or_404(Quiz,id=quiz_id)
+    form=EditQuizForm(request.POST or None, user=request.user.staffs, instance=quiz_)
+    if form.is_valid():
+        form.save()
+        return redirect('assignments:all_quizzes')
+    context["form"]=form
+    return render(request,'instructor/edit_quiz.html',context)
+
 @staff_login_required
 def add_quiz_questions(request,pk):
     form=QuizQuestionsForm()
@@ -624,6 +678,33 @@ def add_quiz_questions(request,pk):
         form=QuizQuestionsForm()
 
     return render(request,'instructor/create_quiz_questions.html',{'form':form})
+
+@staff_login_required
+def edit_questions(request,*args,**kwargs):
+    quiz_id=kwargs['quiz_id']
+    question_id=kwargs['question_id']
+    context={}
+    question=get_object_or_404(QuizQuestions,id=question_id)
+    form=EditQuizQuestionsForm(request.POST or None, instance=question)
+    if form.is_valid():
+        form.save()
+        return redirect('assignments:get_quiz',quiz_id)
+    context["form"]=form
+    return render(request,'instructor/edit_questions.html',context)
+
+@staff_login_required
+def edit_choices(request,*args,**kwargs):
+    quiz_id=kwargs['quiz_id']
+    question_id=kwargs['question_id']
+    choice_=kwargs['choice']
+    context={}
+    choices=get_object_or_404(QuizChoice,id=choice_)
+    form=EditMCQForm(request.POST or None, instance=choices)
+    if form.is_valid():
+        form.save()
+        return redirect('assignments:get_quiz',quiz_id)
+    context["form"]=form
+    return render(request,'instructor/edit_choice.html',context)
 
 @staff_login_required
 def add_mcq_questions(request,pk):

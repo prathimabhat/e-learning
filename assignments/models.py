@@ -23,6 +23,7 @@ class Assignment(models.Model):
     ## The deadline to complete the assignment for the students
     deadline = models.DateTimeField(default=timezone.now)
 
+    enable=models.BooleanField(default=False)
     def __str__(self):
         return f"{self.id} -> {self.description}"
 
@@ -45,7 +46,7 @@ class Submission(models.Model):
 
     ## @var The list of integer choices available to give feedback for the assignment for which the submission is uploaded
     CHOICES = [(i+1, i+1) for i in range(10)]
-
+    submission_status=models.BooleanField(default=False)
    
     def __str__(self):
         return f"{self.id}"

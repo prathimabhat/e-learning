@@ -1,0 +1,120 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+Assignments
+{% endblock page_title %}
+{% block main_content %}
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">View Assignments</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group">
+            
+                            <div>
+                                Assignment name : {{ assignment.description }}<br>
+
+                                
+                                <div>
+                                    
+                                    {% if assignment.link %}
+                                        <a href="{{assignment.link}}">{{assignment.link}}</a><br>
+                                    {% endif %}
+                                    {% if assignment.text_assignment %}
+                                        {{assignment.text_assignment|safe}}
+                                    {% endif %}
+                                    <br>
+                                    Post Time: {{ assignment.post_time }}<br>
+                                    Deadline for submission : {{ assignment.deadline}}<br>
+                                    Maximum marks : {{ assignment.max_marks }}<br>
+                                    {% if assignment.file %}
+                                        <a href="{{ assignment.file.url }}">
+                                            <button type="submit" class="btn btn-primary"
+                                                style="margin-right: 20px; float:left;">Download Assignment</button></a>
+                                    {% endif %}
+                                    
+                                    <!-- {% if submissions.marks %}
+                                    HI
+                                    {% endif %} -->
+                                    
+                                    
+                                    {% if today <= assignment.deadline and submissions and assignment.enable == True%}
+                                    <a href="{% url 'assignments:upload_submission' assignment.id %}">
+                                        <button type="submit" class="btn btn-primary" style="margin-left : 20px;float:left;">Re Upload</button></a>
+                                    {% endif%}
+                                    {%if submissions%}
+                                    <br><br>Time of Submission:{{submissions.time_submitted}}
+                                    {%if submissions.marks %}
+                                    <br> Marks: {{submissions.marks}}
+                                    {% endif%}
+                                    {% endif%}    
+                                    {% if today <= assignment.deadline and submissions == None and assignment.enable == True%} 
+                                        <a href="{% url 'assignments:upload_submission' assignment.id %}">
+                                            <button type="submit" class="btn btn-primary" style="margin-left : 20px;float:left;">Upload</button></a>
+                                    {% endif%}
+                                    {% if today > assignment.deadline %}
+                                    <br>
+                                    <br>
+                                        <p style="color: red;font-weight: bolder; float: left;">Oops! It's past the deadline.</p>
+                                    
+                                    {% elif assignment.enable == False%}
+                                    <br>
+                                    <br>
+                                        <p style="color:gray;font-weight: bolder; float: left;">The assignment has been archived you can't add or edit .</p>
+                                    {% endif%}
+                                        <br><br><hr>
+                                </div>
+
+                            </div>
+                        
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}
+
+
+{% block custom_js %}
+<script>
+    if ( window.history.replaceState ) {
+      window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+{% endblock custom_js %}
+<!--<div class="container-fluid songs-container"
+
+        <div class="col-sm-7"
+            style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
+            <h3 align="center" ; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">
+                Assignments</h3>
+            {% for assignment in assignments reversed %}
+            <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+                {{ assignment.description }}<br>
+                Post Time: {{ assignment.post_time }}<br>
+                Deadline: {{ assignment.deadline }}<br><br>
+                <a href="{{ assignment.file.url }}">
+                    <button type="submit" class="btn btn-success">Download Assignment</button></a>
+                <a href="{% url 'assignments:upload_submission' assignment.id %}">
+                    <button type="submit" class="btn btn-success">Upload Submission</button></a>
+                <br>
+            </div>
+            {% endfor %}
+        </div><br><br><br>
+    </div>
+
+</div><br><br><br>-->
