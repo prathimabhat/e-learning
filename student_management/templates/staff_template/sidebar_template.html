@@ -114,10 +114,11 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
-          <!--{% url 'select_result_class' as select_result_class %}-->
+        <!--<li class="nav-item">
+          {% url 'select_result_class' as select_result_class %}
           {% url 'select_session_year' as select_session_year %}
-          <!--<a href="{{ select_result_class }}" class="nav-link {% if request.path == select_result_class %} active {% endif %} {% if request.path == staff_add_result %} active {% endif %}" >-->
+          <a href="{{ select_result_class }}" class="nav-link {% if request.path == select_result_class %} active {% endif %} {% if request.path == staff_add_result %} active {% endif %}" >
+
           <a href="{{ select_session_year }}"
             class="nav-link {% if request.path == select_session_year %} active {% endif %}">
             <i class="nav-icon fas fa-th"></i>
@@ -125,7 +126,7 @@
               Add Result
             </p>
           </a>
-        </li>
+        </li>-->
 
 
         <!-- <li class="nav-item">

@@ -12,13 +12,13 @@ Assignment
     {% csrf_token %}
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
 
 
           <h4>Select subject </h4>
           <select class="form-control btn btn-secondary dropdown-toggle" name="subject" >
             {% for subject in subjects %}
-            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+            <option value="{{ subject.id }}">{{ subject.subject_name }} &nbsp; ({{subject.course_id.course_name}}) &nbsp; {{subject.session_year_id.name}}</option>
             {% endfor %}
           </select>
           <br><br><br>
