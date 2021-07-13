@@ -84,6 +84,9 @@ class Courses(models.Model):
 	class Meta:
 		ordering = ['session_year_id']
 
+	def __str__(self):
+		return f"{self.course_name}"
+
 class Students(models.Model):
 	class Meta:
 		verbose_name_plural="Students"
