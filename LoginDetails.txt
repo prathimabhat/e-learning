@@ -20,3 +20,17 @@ Student
 
 2) namgudi009@gmail.com
    Namgudi009
+
+3) richatak01@gmail.com
+   Richatak01
+
+4)nidhighosh03@gmail.com
+   Nidhighosh03
+5)surajoomommen05@gmail.com
+   Surajoomommen05
+
+
+
+Richa Tak   richatak01@gmail.com Female   June 10, 2000  A+ 9999999999  1/123S,Kankanadi,Mangalore    1st semester ISE->Aug. 1, 2021 TO Jan. 10, 2022 ISE C qadimhayer02@gmail.com  Qadim Hayer Sona Kothari   Bank employee  Post office employee 9999999999  1/123S,Kankanadi,Mangalore
+
+Nidhi Ghosh nidhighosh03@gmail.com  Female   Jan. 2, 1998   O+ 91111111110 3/124B,ABC complex,Bengaluru     1st semester ISE->Aug. 1, 2021 TO Jan. 10, 2022 ISE C surajghosh04@gmail.com  Suraj Ghosh Usha  Business home maker  9999999999  3/124B,ABC complex,Bengaluru
