@@ -822,13 +822,34 @@ def admin_profile_save(request):
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         password = request.POST.get("password")
+        dob = request.POST.get("dob")
+        qualification = request.POST.get("qualification")
+        ph_no = request.POST.get("ph_no")
+        address = request.POST.get("address")
+        gender = request.POST.get("gender")
+        blood_group = request.POST.get("blood_group")
+        profile_pic = request.FILES['profile_pic']
+        fs = FileSystemStorage()
+        filename = fs.save(profile_pic.name, profile_pic)
+        profile_pic_url = fs.url(filename)
+
         try:
             customuser = CustomUser.objects.get(id=request.user.id)
             customuser.first_name = first_name
             customuser.last_name = last_name
+            customuser.adminhod.admin_name = first_name+" "+last_name
+            customuser.adminhod.dob=dob
+            customuser.adminhod.qualification=qualification
+            customuser.adminhod.ph_no=ph_no
+            customuser.adminhod.address=address
+            customuser.adminhod.gender=gender
+            customuser.adminhod.blood_group=blood_group
+            customuser.adminhod.profile_pic=profile_pic_url
+
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
+            customuser.user.save()
             #messages.success(request, "Successfully Updated Profile")
             return HttpResponseRedirect(reverse("login"))
         except:

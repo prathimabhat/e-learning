@@ -1,10 +1,11 @@
 {% extends 'staff_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Quiz
 {% endblock page_title %}
 {% block main_content %}
-
+{% google_translate %}
 <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:create_quiz' %}">+New quiz</a></button>
 <br><br>
 <section class="content">

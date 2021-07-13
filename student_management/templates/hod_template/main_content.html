@@ -1,13 +1,15 @@
 {% extends 'hod_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Home
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
+{% google_translate%}
 <section class="content">
   <div class="container-fluid">
-  <div id="google_translate_element"></div>
+  <!--<div id="google_translate_element"></div>
 
 
 <script type="text/javascript">
@@ -16,13 +18,16 @@ function googleTranslateElementInit() {
 }
 </script>
 
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>-->
 
 <section id="student-detail-section header">
   <div id="student-detail-section--inner">
     <div class="container">
       <div class="row py-5">
-        
+        <div class="col-3">
+          <img class="staff-profile-img" src="{{ user.adminhod.profile_pic }}" alt="" width="200" height="200" style="border-radius: 50%;
+          box-shadow: 0 1px 30px rgb(0 0 0 / 50%);">
+        </div>
         <div class="col-8">
           <ul style="list-style-type: none;">
             <li>
@@ -30,6 +35,25 @@ function googleTranslateElementInit() {
             </li>
             
               Email ID : <span class="data">{{ user.email }}</span>
+            </li>
+             <li>
+              Gender : <span class="data">{{ user.adminhod.gender }}</span>
+            </li>
+            <li>
+              Date Of Birth : <span class="data">{{ user.adminhod.dob | date:'d-m-Y' }}</span>
+            </li>
+            <li>
+              Qualification : <span class="data">{{user.adminhod.qualification }}</span>
+            </li>
+            <li>
+              Blood Group : <span class="data">{{ user.adminhod.blood_group }}</span>
+            </li>
+           
+            <li>
+              Contact Number : <span class="data">{{ user.adminhod.ph_no }}</span>
+            </li>
+            <li>
+              Address : <span class="data">{{ user.adminhod.address }}</span>
             </li>
             
           </ul>

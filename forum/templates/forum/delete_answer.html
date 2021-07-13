@@ -1,11 +1,12 @@
 {% extends 'student_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Ask a question
 {% endblock page_title %}
 {% block main_content %}
 <br><br>
-
+{% google_translate %}
 <div class="container">
 	<div class="row">
 		<div class="col-lg-6 offset-lg-4">

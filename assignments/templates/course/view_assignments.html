@@ -1,11 +1,13 @@
 
 {% extends 'student_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Assignments
 {% endblock page_title %}
 {% load thumbnail %}
 {% block main_content %}
+{% google_translate %}
 <br>
 <style>
     .verticalLine {
@@ -17,38 +19,7 @@ Assignments
         <div class="row">
             <div class="col-md-12">
                 <!-- general form elements -->
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">View Assignments</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <div class="card-body">
-                        <div class="form-group">
-                            <ol class="list-group list-group-flush">
-                                {% for assignment in assignments reversed %}
-                                    <li class="list-group-item ">
-                                        <a href="{% url 'assignments:view_single_assignment' assignment.id %}">
-
-                                        <div class="card text-white bg-dark mb-3 " style="max-width: 18rem;">
-                                            <div class="card-body ">
-                                            Assignment : {{ assignment.description }}<br>
-                                            <br>
-                                            </div>
-                                        </div>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                    </div>
-                    <!-- /.card -->
-
-
-
-                </div>
-            </div>
-        </div>
+               
         
         <div class="card card-primary" >
             <div class="card-header">

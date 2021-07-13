@@ -1,10 +1,12 @@
 {% extends 'hod_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Edit Profile
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
+{% google_translate%}
 <section class="content">
   <div class="container-fluid">
     <div class="row">
@@ -16,7 +18,7 @@ Edit Profile
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-          <form role="form" action="{% url 'admin_profile_save' %}" method="post">
+          <form role="form" action="{% url 'admin_profile_save' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card-body">
               <div class="form-group">
@@ -35,6 +37,51 @@ Edit Profile
                 <label>Last Name</label>
                 <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
               </div>
+              <div class="form-group">
+                <label>Date of birth</label>
+                <input type="date" class="form-control" name="dob">
+              </div>
+              <div class="form-group">
+                <label>Qualification</label>
+                <input type="text" class="form-control" name="qualification" value="{{user.user.qualification}}">
+              </div>
+              <div class="form-group">
+                <label>Phone number</label>
+                <input type="tel" class="form-control" name="ph_no" value="{{user.user.ph_no}}" max="10">
+              </div>
+              <div class="form-group">
+                <label>Address</label>
+                <input type="text" class="form-control" name="address" value="{{user.user.address}}">
+              </div>
+               <div class="form-group">
+                  <label>Gender</label>
+                  <select class="form-control" name="gender" required>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Blood Group</label>
+                  <select class="form-control" name="blood_group" required>
+                    <option value="A+">A+</option>
+                    <option value="O+">O+</option>
+                    <option value="B+">B+</option>
+                    
+                    <option value="AB+">AB+</option>
+                    <option value="A-">A-</option>
+                    <option value="O-">O-</option>
+                    <option value="B-">B-</option>
+                    <option value="AB-">AB-</option>
+                    <option value="Other">Other</option>
+
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Profile Picture</label>
+                  <input type="file" class="form-control" placeholder="Upload Your Picture"
+                    accept="image/png, image/jpeg" name="profile_pic" required>
+                </div>
               <div class="form-group">
                 <label>Change Password?</label>
                 <input type="password" class="form-control" name="password"

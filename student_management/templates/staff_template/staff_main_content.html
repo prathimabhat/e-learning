@@ -1,10 +1,12 @@
 {% extends 'staff_template/base_template.html' %}
+{% load google_translate %}
 {% block page_title %}
-<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;">
+<input type=button value="&#129128" onClick="javascript:history.go(-1);" style="border: none; color:none;" class="notranslate">
 Home
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
+{% google_translate %}
 <!-- <form role="form" action="{% url 'staff_profile_save' %}" method="post">
   {% csrf_token %}
   <div class="card-body"> -->

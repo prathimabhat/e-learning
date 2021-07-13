@@ -1,4 +1,5 @@
 {% extends 'student_template/base_template.html' %}
+{% load google_translate %}
 {% block custom_css %}
 <style>
   .col-lg-3.attendance_div_red {
@@ -35,6 +36,7 @@ Attendance Data
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
+{% google_translate %}
 <section class="content">
   <div class="container-fluid">
     <div class="row">

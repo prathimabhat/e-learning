@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'forum',
     'assignments',
     'notes',
-    'sorl.thumbnail'
+    'sorl.thumbnail',
+    'google_translate',
 ]
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 MIDDLEWARE = [
