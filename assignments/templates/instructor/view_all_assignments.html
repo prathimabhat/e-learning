@@ -18,6 +18,7 @@ Assignments
                     <!-- form start -->
                     <div class="card-body">
                         <div class="form-group">
+                           
                             <ol>
                             {% for assignment in assignments reversed %}
                             <li>
@@ -62,6 +63,9 @@ Assignments
                                 {% endif %}
                             </div>
                         </li><hr>
+                        {% empty %}
+                            <h3>No Assignments created </h3>
+                            <a href="#">Click here to Create Assignment</a>
                             {% endfor %}
                         </ol>
                         </div>
