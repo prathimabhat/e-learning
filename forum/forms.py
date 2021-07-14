@@ -7,14 +7,13 @@ class AnswerForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(AnswerForm, self).__init__(*args, **kwargs)
 		self.fields['anonymous'].required = False
-		self.fields['teachers_forum'].required=False
-
+		
 	answer=forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control','placeholder': 'Type here'}))
 	anonymous = forms.BooleanField()
-	teachers_forum=forms.BooleanField()
+	
 	class Meta:
 		model=Answers
-		fields=['answer','anonymous','teachers_forum']
+		fields=['answer','anonymous']
 		
    
 class QuestionForm(forms.ModelForm):

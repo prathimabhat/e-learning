@@ -6,9 +6,10 @@
 {% endblock page_title %}
 {% block main_content %}
 {% google_translate %}
-<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_quiz' quiz.id %}">Edit Quiz</a></button>
+<button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_quiz' quiz.id %}">Edit Quiz</a></button>&nbsp;
+<button type="submit" class="btn btn-primary float-right" style="margin-right:1rem;"><a href="{% url 'assignments:select_question_type' quiz.id %}" style="color: white;">Add questions</a></button>&nbsp;
 <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:view_quiz_submissions' quiz.id %}">View submissions</a>
-</button>
+</button>&nbsp;
 
 
 <br><br>
@@ -54,7 +55,7 @@
                                                     <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_choices' quiz.id qtn.id choice.id %}">Edit Choices</a></button>
                                                 {% endif %}<br>
                                             {% endfor %}
-                                            <hr>
+                                            <br>
                                             
                                             {%if qtn.choices %}
                                         
@@ -64,6 +65,8 @@
                                             {% endif %}
                                         {% endif %}
                                         <button class="btn btn-primary float-right" style="margin-right: 1rem;"><a style="color: white;" href="{% url 'assignments:edit_questions' quiz.id qtn.id %}">Edit question</a></button>
+                                        <br>
+                                        <hr>
 
                                     </div>
                                 </li>
