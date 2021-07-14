@@ -173,7 +173,7 @@ Add Staff
             }
             else {
               $(".email_error").remove();
-              $("<span class='email_error' style='padding: 5px;color: green;font-weight: bold;'>Email Available</span>").insertAfter("#id_email");
+              $("<span class='email_error' style='padding: 5px;color: green;font-weight: bold;'>Email is unique</span>").insertAfter("#id_email");
             }
           })
           .fail(function () {
